@@ -1,4 +1,6 @@
+package group1;
+
 public interface IImage
 {
-	Pixel[][] getYUVImage();
+    IPixel[][] getImage();
 }
