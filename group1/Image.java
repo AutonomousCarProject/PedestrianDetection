@@ -1,26 +1,14 @@
 package group1;
 
-<<<<<<< HEAD
-
 import java.io.*;
 import fly2cam.FlyCamera;
 
-public FlyCamera flyCam = new FlyCamera();
-public byte[] camBytes = null;
-
-
-
-void readCam(){
-
-	flyCam.NextFrame(camBytes);
-
-}
-
-=======
-class Image extends IImage{
+class Image implements IImage{
 	int height;
 	int width;
 	int colorMargin = 30;
+	public FlyCamera flyCam = new FlyCamera();
+	public byte[] camBytes = null;
 	
 	Pixel[][] image;
 	
@@ -32,5 +20,9 @@ class Image extends IImage{
 		this.width = width;
 	}
 	
+	void readCam(){
+		
+		flyCam.NextFrame(camBytes);
+
+	}
 }
->>>>>>> 3adad10fdae8dbe47da94a3d948cde492bef5f23
