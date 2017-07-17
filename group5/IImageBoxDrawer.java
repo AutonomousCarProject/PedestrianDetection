@@ -21,9 +21,9 @@ public class IImageBoxDrawer
     {
         //...
     }
-    protected IImage drawLines(Point[] corners, IImage image, Color lineColor, int lineThickness)
+    protected IImage drawLines(Rectangle[] corners, IImage image, Color lineColor, int lineThickness)
     {
-        //...
+        
     }
             
             
