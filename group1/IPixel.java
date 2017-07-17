@@ -1,4 +1,4 @@
-public interface Pixel
+public interface IPixel
 {
 	// All values between 0 and 255
 	
