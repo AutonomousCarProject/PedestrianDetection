@@ -9,22 +9,20 @@ public class BlobFilter implements IMovingBlobReduction
 	
 	public List<MovingBlob> reduce(List<MovingBlob> blobs)
 	{
-		for (Blob blob : blobs)
+		for (int i = 0; i < blobs.length(); i++)
 		{
-			if (!isPerson(blob))
+			if (!isPerson(blobs.get(i)))
 			{
-				blobs.remove(blob);
+				blobs.remove(i--);
 			}
 		}
 	}
 	
-	public boolean isPerson(Blob blob)
+	public boolean isPerson(MovingBlob blob)
 	{
-		if (blob.width > blob.height)
-		{
-			return false;
-		}
-		
-		
+		if (blob.width > blob.height) return false;
+		if (blob.age < 10) return false;
+		if (blob.movementX > 10) return false;
+		return true;
 	}
 }
