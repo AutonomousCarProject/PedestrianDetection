@@ -3,15 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.looi.looi.utilities;
-
-import java.io.Serializable;
+package group5;
 
 /**
  *
  * @author peter_000
  */
-public interface Action extends Serializable
+public interface IBlob
 {
-    public void act(Object...objects);
+	int getWidth();
+	int getHeight();
+	int getCenterX();
+	int getCenterY();
+	IPixel getColor();
+	
+		
 }

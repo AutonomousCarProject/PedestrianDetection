@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.looi.looi.utilities;
+package group5;
 
-import java.io.Serializable;
+import java.util.List;
 
 /**
  *
  * @author peter_000
  */
-public interface InputBoolean<InputType> extends Serializable
+public interface IBlobDetection
 {
-    public boolean check(InputType i);
+	List<IBlob> getBlobs();
 }
