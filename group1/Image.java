@@ -1,27 +1,28 @@
+package group1;
+
 import java.io.*;
 import fly2cam.FlyCamera;
 
-public FlyCamera flyCam = new FlyCamera();
-public String fiName = "FlyCapped.By8";
-public byte[] camBytes = null;
-
-public Pixel[][] rgbPixels = null;
-public int pos = null;
-
-
-class Image extends IImage{
+class Image implements IImage{
+	
 	int height;
 	int width;
+	int colorMargin = 30;
 	int frameRate = 15;
-	
+	public FlyCamera flyCam = new FlyCamera();
+	public byte[] camBytes = null;
+	public Pixel[][] rgbPixels = null;
+	public int pos = null;
 	Pixel[][] image;
 	
-	Image(){
+	Image(int width, int height){
 		for(int i = 0; i < height; i++) for(int j = 0; j < weight; j++){
 			image[i][j] = new Pixel();
 		}
+		this.height = height;
+		this.width = width;
 	}
-	
+
 	void convert(){	//converts rgb to yuv format
 		
 		for(int i = 0; i < height; i++) for(int j = 0; j < weight; j++){
@@ -63,4 +64,3 @@ class Image extends IImage{
 	}
 	
 }
-
