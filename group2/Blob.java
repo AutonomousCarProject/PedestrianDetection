@@ -1,10 +1,6 @@
-public interface IBlob
+public class IBlob
 {
-	int getWidth();
-	int getHeight();
-	int getCenterX();
-	int getCenterY();
-	IPixel getColor();
-	
-		
+	public int width, height;
+	public int centerX, centerY;
+	public IPixel color;
 }
