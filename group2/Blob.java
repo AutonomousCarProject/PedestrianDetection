@@ -1,4 +1,4 @@
-public class IBlob
+public class Blob
 {
 	public int width, height;
 	public int centerX, centerY;
