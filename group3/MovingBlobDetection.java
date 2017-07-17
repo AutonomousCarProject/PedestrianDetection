@@ -4,7 +4,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MovingBlobDetection implements IMovingBlobDetection {
-	private LinkedList<MovingBlob> movingBlobs;
+	private List<MovingBlob> movingBlobs;
+	
+	public MovingBlobDetection() {
+		movingBlobs = new LinkedList<>();
+	}
 
 	public List<MovingBlob> getMovingBlobs(List<Blob> blobList){
 		updateMovingBlobs(blobList);
@@ -12,9 +16,20 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	}
 	
 	private void updateMovingBlobs(List<Blob> blobList){
-		//match blobs with moving blobs
+		for(Blob blob:blobList){
+			for(MovingBlob movingBlob:movingBlobs){
+				if(blob.color.getColor()==movingBlob.color.getColor()){
+					int distanceX = Math.abs(movingBlob.predictedX-blob.centerX);
+					int distanceY = Math.abs(movingBlob.predictedY-blob.centerY);
+					int distance = (int) Math.sqrt(distanceX*distanceX+distanceY*distanceY);
+					
+					//use distance
+				}
+			}
+		}
 		
 	}
+
 	
 	private void calculateVelocity(MovingBlob movingBlob, Blob newBlob){
 		int movementX = newBlob.centerX - movingBlob.centerX;
