@@ -19,6 +19,28 @@ public class Group5 {
     }
     public static IImage drawBoxes(IImage image, IBlobDetection iBlobs)
     {
+        Point[] corners = findFourCorners(image,iBlobs);
+        return drawLines(corners,image);
+        //find the four corners
+    }
+    public static Point[] findFourCorners(IImage image, IBlobDetection iBlobs)
+    {
+        
+    }
+    
+    public static class Point
+    {
+        private int x,y;
+        public Point(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+        public int getX(){return x;}
+        public int getY(){return y;}
+    }
+    public static IImage drawLines(Point[] corners, IImage image)
+    {
         
     }
     
