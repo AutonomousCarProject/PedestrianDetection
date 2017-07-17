@@ -6,6 +6,8 @@ public class MovingBlob extends Blob {
     public float velocityX, velocityY;
     public int age;
     public int ageOffScreen;
+    public int predictedX;
+    public int predictedY;
     
 	public MovingBlob(){
 		this.velocityX = 0;
