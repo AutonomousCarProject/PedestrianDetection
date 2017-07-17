@@ -9,9 +9,19 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
 	}
-
+	
+	/*
 	public List<MovingBlob> getMovingBlobs(List<Blob> blobList){
 		updateMovingBlobs(blobList);
+		return movingBlobs;
+	}
+	*/
+	
+	// test data
+	public List<MovingBlob> getMovingBlobs(List<Blob> blobList){
+		for (Blob blob:blobList){
+			this.movingBlobs.add(new MovingBlob());
+		}
 		return movingBlobs;
 	}
 	
