@@ -2,17 +2,20 @@ package group1;
 import java.lang.Math;
 
 	
-class Pixel implements IPixel {	//0-765
+public class Pixel implements IPixel {	//0-765
 	//YUV
-	
-	short luma;
-    short saturation;
-    short color;
+	private short luma;
+    private short saturation;
+    private short color;
 
+	
+	
     // RGB
-    short red;
-    short green;
-    short blue;
+    private short red;
+    private short green;
+    private short blue;
+	
+	int colorMargin = 30;
 	
 	Pixel(short red, short green, short blue){
 		this.red = red;
@@ -20,16 +23,40 @@ class Pixel implements IPixel {	//0-765
 		this.blue = blue;
 		convert();
 	}
+	
+	public short getLuma(){
+		return luma;
+	}
 
+	public short getSaturation(){
+		return saturation;
+	}
+	
+	public short getColor(){
+		return color;
+	}	
+	
+	public short getRed(){
+		return red;
+	}	
+	
+	public short getGreen(){
+		return green;
+	}	
+	
+	public short getBlue(){
+		return blue;
+	}	
+	
 	private void convert(){
 		//luminance = sum of rgb
-		luma = red + green + blue;
+		luma = (short)(red + green + blue);
 		
 		//saturation = max - min of rgb
-		saturation = (Math.max(Math.max(red, green), blue) - Math.min(Math.min(red, green), blue))*3;
+		saturation = (short)((Math.max(Math.max(red, green), blue) - Math.min(Math.min(red, green), blue))*3);
 		
 		//hue
-		short ave = (red + green + blue);
+		short ave = (short)(red + green + blue);
 		int r = red*3;
 		int g = green*3;
 		int b = blue*3;

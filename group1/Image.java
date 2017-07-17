@@ -6,11 +6,11 @@ import fly2cam.FlyCamera;
 class Image implements IImage{
 	int height;
 	int width;
-	int colorMargin = 30;
+
 	public FlyCamera flyCam = new FlyCamera();
 	public byte[] camBytes = null;
 	
-	Pixel[][] image;
+	IPixel[][] image;
 	
 	Image(int width, int height){
 		for(int i = 0; i < height; i++) for(int j = 0; j < weight; j++){
@@ -18,6 +18,10 @@ class Image implements IImage{
 		}
 		this.height = height;
 		this.width = width;
+	}
+	
+	IPixel[][] getImage(){
+		return image;
 	}
 	
 	void readCam(){
