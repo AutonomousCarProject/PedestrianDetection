@@ -6,11 +6,12 @@ import java.util.List;
 public class MovingBlobDetection implements IMovingBlobDetection {
 	private LinkedList<MovingBlob> movingBlobs;
 
-	public List<MovingBlob> getMovingBlobs(){
+	public List<MovingBlob> getMovingBlobs(List<Blob> blobList){
+		updateMovingBlobs(blobList);
 		return movingBlobs;
 	}
 	
-	public void updateMovingBlobs(List<Blob> blobList){
+	private void updateMovingBlobs(List<Blob> blobList){
 		//match blobs with moving blobs
 		
 	}
@@ -19,9 +20,9 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		int movementX = newBlob.centerX - movingBlob.centerX;
 		int movementY = newBlob.centerY - movingBlob.centerY;
 		
-		movingBlob.movementX += movementX;
-		movingBlob.movementX /= 2;
-		movingBlob.movementY += movementY;
-		movingBlob.movementY /= 2;
+		movingBlob.velocityX += movementX;
+		movingBlob.velocityX /= 2;
+		movingBlob.velocityY += movementY;
+		movingBlob.velocityY /= 2;
 	}
 }
