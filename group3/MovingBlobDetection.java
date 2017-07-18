@@ -19,7 +19,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		return movingBlobs;
 	}
 	
-	// test data is in "MovingBlobDetectionTest.java"
+	//test data is in "MovingBlobDetectionTest.java"
 	
 	private void updateMovingBlobs(List<Blob> blobList){
 		//maximum distance where blobs can be matched
@@ -38,12 +38,6 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 					if(distance<distanceLimit){
 						queue.add(new BlobPair(distance, blob, movingBlob));
 					}
-
-					
-					//use distance
-					
-					
-
 				}
 			}
 		}
@@ -74,10 +68,11 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		calculateVelocity(movingBlob, newBlob);
 		movingBlob.age++;
 		movingBlob.ageOffScreen=0;
+		movingBlob.updatePredictedPosition();
 	}
 	
 	private void updateUnmatched(MovingBlob movingBlob){
-		//maximum time before unmatched movingblob is deleted
+		//maximum time before unmatched MovingBlob is deleted
 		int maxTimeOffScreen = 30;
 		if(movingBlob.ageOffScreen>maxTimeOffScreen){
 			movingBlobs.remove(movingBlob);
@@ -87,9 +82,9 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			movingBlob.centerY += movingBlob.velocityY;
 			movingBlob.age++;
 			movingBlob.ageOffScreen++;
+			movingBlob.updatePredictedPosition();
 		}
 	}
-
 	
 	private void calculateVelocity(MovingBlob movingBlob, Blob newBlob){
 		int movementX = newBlob.centerX - movingBlob.centerX;

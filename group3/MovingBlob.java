@@ -11,10 +11,15 @@ public class MovingBlob extends Blob {
 	
 	public MovingBlob(Blob b){
 		super(b.width, b.height, b.centerX, b.centerY, b.color);
-		
 		this.velocityX = 0;
 		this.velocityY = 0;
 		this.age = 0;
 		this.ageOffScreen = 0;
+		updatePredictedPosition();
+	}
+	
+	public void updatePredictedPosition(){
+		predictedX = (int)velocityX + centerX;
+		predictedY = (int)velocityY + centerY;
 	}
 }

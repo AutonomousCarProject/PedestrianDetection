@@ -13,6 +13,11 @@ public class MovingBlobDetectionTest implements IMovingBlobDetection {
 		TestBlobDetection test = new TestBlobDetection();
 		MovingBlobDetectionTest movingtest = new MovingBlobDetectionTest();
 		List<MovingBlob> list = movingtest.getMovingBlobs(test.getBlobs(null));	
+		
+		MovingBlobDetection detection = new MovingBlobDetection();
+		TestBlobDetection testBlobDetection = new TestBlobDetection();
+		detection.getMovingBlobs(testBlobDetection.getBlobs(null));
+		detection.getMovingBlobs(testBlobDetection.getBlobs2(null));
 	}
 	
 	public MovingBlobDetectionTest() {
