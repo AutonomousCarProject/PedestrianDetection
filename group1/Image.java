@@ -41,6 +41,12 @@ class Image implements IImage{
 
 	}
 
+	void finish(){
+
+		flyCam.Finish();
+
+	}
+
 	void byteConvert(){
 
 		pos = 0;
@@ -50,9 +56,15 @@ class Image implements IImage{
 
 			for(int j = 0 ; j < width * 2 ; j =+ 2){
 
+
+				rgbPixels[j/2][i/2] = new Pixel(camBytes[pos], camBytes[pos + 1], camBytes[pos + 1 + width * 2]);
+
+				/*
 				rgbPixels[j/2][i/2].red = camBytes[pos];
 				rgbPixels[j/2][i/2].green = camBytes[pos + 1];
 				rgbPixels[j/2][i/2].blue = camBytes[pos + 1 + width * 2];
+				*/
+
 				pos =+ 2;
 
 			}
