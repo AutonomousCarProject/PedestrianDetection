@@ -7,7 +7,7 @@ class test2{
 
 	public static void main(String args[]){
 
-		Image testImage = new Image(320, 240);
+		Image testImage = new Image();
 
 		testImage.readCam();
 		//System.out.println("File read...");

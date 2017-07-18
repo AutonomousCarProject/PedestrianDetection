@@ -6,8 +6,8 @@ import group1.fly0cam.FlyCamera;
 
 class Image implements IImage{
 	
-	int height;
-	int width;
+	public int height;
+	public int width;
 
 	int colorMargin = 30;
 	int frameRate = 3;
