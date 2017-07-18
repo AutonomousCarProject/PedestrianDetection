@@ -5,12 +5,10 @@
  */
 package group5;
 
-import com.looi.looi.LooiObject;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.sql.Blob;
 import java.util.List;
 
 /**
@@ -19,7 +17,7 @@ import java.util.List;
  * Box Drawers, you're fked because each one is a jframe
  * @author peter_000
  */
-public class IImageBoxDrawer 
+public class IImageBoxDrawer implements IImageDrawing
 {
     public static final int DEFAULT_LINE_THICKNESS = 10;
     public static final Color DEFAULT_LINE_COLOR = Color.YELLOW;
@@ -32,27 +30,26 @@ public class IImageBoxDrawer
     }
     
     
-    public void draw(IImage image, IBlobDetection iBlobs)
+    public void draw(IImage image, List<MovingBlob> iBlobs)
     {
         Rectangle[] rectangles = findRectangles(image,iBlobs);
-        BufferedImage b = new BufferedImage(image.getYUVImage().length,image.getYUVImage()[0].length,BufferedImage.TYPE_INT_ARGB);
-        setPixels(b,image.getYUVImage());
+        BufferedImage b = new BufferedImage(image.getImage().length,image.getImage()[0].length,BufferedImage.TYPE_INT_ARGB);
+        setPixels(b,image.getImage());
         drawLines(rectangles,b,DEFAULT_LINE_COLOR,DEFAULT_LINE_THICKNESS);
         currentImage = b;
     }
-    protected Rectangle[] findRectangles(IImage image, IBlobDetection iBlobs)
+    protected Rectangle[] findRectangles(IImage image, List<MovingBlob> iBlobs)
     {
         //...
-        Rectangle[] rectangles = new Rectangle[iBlobs.getBlobs().size()];
-        List<IBlob> blobs = iBlobs.getBlobs();
-        for(int i = 0; i < blobs.size(); i++)
+        Rectangle[] rectangles = new Rectangle[iBlobs.size()];
+        for(int i = 0; i < iBlobs.size(); i++)
         {
-            IBlob b = blobs.get(i);
+            Blob b = iBlobs.get(i);
             Point[] points = new Point[4];
-            points[0] = new Point(b.getCenterX()-b.getWidth()/2,b.getCenterY()-b.getHeight()/2);
-            points[1] = new Point(b.getCenterX()+b.getWidth()/2,b.getCenterY()-b.getHeight()/2);
-            points[2] = new Point(b.getCenterX()+b.getWidth()/2,b.getCenterY()+b.getHeight()/2);
-            points[3] = new Point(b.getCenterX()-b.getWidth()/2,b.getCenterY()+b.getHeight()/2);
+            points[0] = new Point(b.centerX-b.width/2,b.centerY-b.height/2);
+            points[1] = new Point(b.centerX+b.width/2,b.centerY-b.height/2);
+            points[2] = new Point(b.centerX+b.width/2,b.centerY+b.height/2);
+            points[3] = new Point(b.centerX-b.width/2,b.centerY+b.height/2);
             rectangles[i] = new Rectangle(points);
         }
         return rectangles;
@@ -98,7 +95,7 @@ public class IImageBoxDrawer
                 
                 g.setStroke(bs);
                 g.setColor(lineColor);
-                g.drawLine(start.getX(),start.getY(),end.getX(),end.getY());
+                g.drawLine((int)start.getX(),(int)start.getY(),(int)end.getX(),(int)end.getY());
             }
         }
     }
@@ -106,14 +103,14 @@ public class IImageBoxDrawer
     
     public class Point
     {
-        private int x,y;
-        public Point(int x, int y)
+        private float x,y;
+        public Point(float x, float y)
         {
             this.x = x;
             this.y = y;
         }
-        public int getX(){return x;}
-        public int getY(){return y;}
+        public float getX(){return x;}
+        public float getY(){return y;}
     }
     public class Rectangle
     {
