@@ -13,11 +13,13 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
 	}
-
+	
 	public List<MovingBlob> getMovingBlobs(List<Blob> blobList){
 		updateMovingBlobs(blobList);
 		return movingBlobs;
 	}
+	
+	// test data is in "MovingBlobDetectionTest.java"
 	
 	private void updateMovingBlobs(List<Blob> blobList){
 		//maximum distance where blobs can be matched
@@ -36,6 +38,12 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 					if(distance<distanceLimit){
 						queue.add(new BlobPair(distance, blob, movingBlob));
 					}
+
+					
+					//use distance
+					
+					
+
 				}
 			}
 		}

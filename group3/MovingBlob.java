@@ -8,8 +8,14 @@ public class MovingBlob extends Blob {
     public int ageOffScreen;
     public int predictedX;
     public int predictedY;
-    
-	public MovingBlob(){
+	
+	public MovingBlob(Blob b){
+		this.centerX = b.centerX;
+		this.centerY = b.centerY;
+		this.width = b.width;
+		this.height = b.height;
+		this.color = b.color;
+		
 		this.velocityX = 0;
 		this.velocityY = 0;
 		this.age = 0;
