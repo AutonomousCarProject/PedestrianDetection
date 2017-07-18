@@ -1,5 +1,6 @@
 package group3;
 import group2.Blob;
+import group2.TestBlobDetection;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -10,6 +11,23 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	private List<MovingBlob> movingBlobs;
 	//maximum time before unmatched MovingBlob is deleted
 	int maxTimeOffScreen = 30;
+	
+	public static void main(String[] args){
+		TestBlobDetection test = new TestBlobDetection();
+		MovingBlobDetection movingtest = new MovingBlobDetection();
+		
+		final long startTime = System.currentTimeMillis();
+		List<MovingBlob> list = movingtest.getMovingBlobs(test.getBlobs(0, null));	
+		
+		for (int i = 0; i < 4; i++) {
+			list = movingtest.getMovingBlobs(test.getBlobs(i+1, null));
+			
+		}
+
+		final long endTime = System.currentTimeMillis();
+
+		System.out.println("Total execution time: " + (endTime - startTime) );
+	}
 	
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
@@ -65,13 +83,17 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	}
 	
 	private void matchBlob(MovingBlob movingBlob, Blob newBlob){
+		System.out.println(movingBlob);
+		System.out.println(new MovingBlob(newBlob));
+		System.out.println();
+		
 		//update information based on new position
+		calculateVelocity(movingBlob, newBlob);
 		movingBlob.centerX = newBlob.centerX;
 		movingBlob.centerY = newBlob.centerY;
-		calculateVelocity(movingBlob, newBlob);
 		movingBlob.age++;
 		movingBlob.ageOffScreen=0;
-		movingBlob.updatePredictedPosition();
+		movingBlob.updatePredictedPosition();	
 	}
 	
 	private void updateUnmatched(MovingBlob movingBlob){
@@ -89,8 +111,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	}
 	
 	private void calculateVelocity(MovingBlob movingBlob, Blob newBlob){
-		int movementX = newBlob.centerX - movingBlob.centerX;
-		int movementY = newBlob.centerY - movingBlob.centerY;
+		float movementX = newBlob.centerX - movingBlob.centerX;
+		float movementY = newBlob.centerY - movingBlob.centerY;
 		//finds average of previous velocity and velocity between last and current frame
 		movingBlob.velocityX += movementX;
 		movingBlob.velocityX /= 2;
