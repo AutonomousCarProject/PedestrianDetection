@@ -15,7 +15,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		return movingBlobs;
 	}
 	
-	// test data in "MovingBlobDetectionTest.java"
+	// test data is in "MovingBlobDetectionTest.java"
 	
 	private void updateMovingBlobs(List<Blob> blobList){
 		for(Blob blob:blobList){
@@ -26,6 +26,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 					int distance = (int) Math.sqrt(distanceX*distanceX+distanceY*distanceY);
 					
 					//use distance
+					
+					
 				}
 			}
 		}

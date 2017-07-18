@@ -13,7 +13,7 @@ public class MovingBlobDetectionTest implements IMovingBlobDetection {
 	// test data
 	public List<MovingBlob> getMovingBlobs(List<Blob> blobList){
 		for (Blob blob:blobList){
-			this.movingBlobs.add(new MovingBlob());
+			this.movingBlobs.add(new MovingBlob(blob));
 		}
 		return movingBlobs;
 	}
