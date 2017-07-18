@@ -10,7 +10,11 @@ public class MovingBlob extends Blob {
     public int predictedY;
 	
 	public MovingBlob(Blob b){
-		super(b.width, b.height, b.centerX, b.centerY, b.color);
+		this.centerX = b.centerX;
+		this.centerY = b.centerY;
+		this.width = b.width;
+		this.height = b.height;
+		this.color = b.color;
 		
 		this.velocityX = 0;
 		this.velocityY = 0;
