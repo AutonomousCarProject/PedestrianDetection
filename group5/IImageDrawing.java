@@ -7,5 +7,5 @@ import group3.MovingBlob;
 
 public interface IImageDrawing
 {
-    void draw(IPixel[][] image, List<MovingBlob> blobs);
+    void draw(IImage image, IBlobDetection iBlobs);
 }
