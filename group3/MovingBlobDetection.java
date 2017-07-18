@@ -5,10 +5,11 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Set;
 
 public class MovingBlobDetection implements IMovingBlobDetection {
 	private List<MovingBlob> movingBlobs;
+	//maximum time before unmatched MovingBlob is deleted
+	int maxTimeOffScreen = 30;
 	
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
@@ -49,6 +50,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 				movingBlobSet.remove(pair.oldBlob);
 				blobSet.remove(pair.newBlob);
 				queue.remove();
+			} else {
+				queue.remove();
 			}
 		}
 		//updates unmatched MovingBlobs
@@ -72,8 +75,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	}
 	
 	private void updateUnmatched(MovingBlob movingBlob){
-		//maximum time before unmatched MovingBlob is deleted
-		int maxTimeOffScreen = 30;
+
 		if(movingBlob.ageOffScreen>maxTimeOffScreen){
 			movingBlobs.remove(movingBlob);
 		} else {

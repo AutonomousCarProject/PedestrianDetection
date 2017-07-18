@@ -11,13 +11,16 @@ public class MovingBlobDetectionTest implements IMovingBlobDetection {
 	
 	public static void main(String[] args){
 		TestBlobDetection test = new TestBlobDetection();
-		MovingBlobDetectionTest movingtest = new MovingBlobDetectionTest();
-		List<MovingBlob> list = movingtest.getMovingBlobs(test.getBlobs(null));	
+		MovingBlobDetection movingtest = new MovingBlobDetection();
 		
-		MovingBlobDetection detection = new MovingBlobDetection();
-		TestBlobDetection testBlobDetection = new TestBlobDetection();
-		detection.getMovingBlobs(testBlobDetection.getBlobs(null));
-		detection.getMovingBlobs(testBlobDetection.getBlobs2(null));
+		final long startTime = System.currentTimeMillis();
+		List<MovingBlob> list = movingtest.getMovingBlobs(test.getBlobs(null));	
+		for (int i = 0; i < 1000; i++) {
+			list = movingtest.getMovingBlobs(test.getBlobs(null));
+		}
+		final long endTime = System.currentTimeMillis();
+
+		System.out.println("Total execution time: " + (endTime - startTime) );
 	}
 	
 	public MovingBlobDetectionTest() {
