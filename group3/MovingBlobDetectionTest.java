@@ -26,30 +26,4 @@ public class MovingBlobDetectionTest implements IMovingBlobDetection {
 		}
 		return movingBlobs;
 	}
-	
-	private void updateMovingBlobs(List<Blob> blobList){
-		for(Blob blob:blobList){
-			for(MovingBlob movingBlob:movingBlobs){
-				if(blob.color.getColor()==movingBlob.color.getColor()){
-					int distanceX = Math.abs(movingBlob.predictedX-blob.centerX);
-					int distanceY = Math.abs(movingBlob.predictedY-blob.centerY);
-					int distance = (int) Math.sqrt(distanceX*distanceX+distanceY*distanceY);
-					
-					//use distance
-				}
-			}
-		}
-		
-	}
-
-	
-	private void calculateVelocity(MovingBlob movingBlob, Blob newBlob){
-		int movementX = newBlob.centerX - movingBlob.centerX;
-		int movementY = newBlob.centerY - movingBlob.centerY;
-		
-		movingBlob.velocityX += movementX;
-		movingBlob.velocityX /= 2;
-		movingBlob.velocityY += movementY;
-		movingBlob.velocityY /= 2;
-	}
 }
