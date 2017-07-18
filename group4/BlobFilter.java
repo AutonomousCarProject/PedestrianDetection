@@ -34,7 +34,7 @@ public class BlobFilter implements IMovingBlobReduction
 	{
 		for (int i = 0; i < blobs.size(); i++)
 		{
-			if (!isPedestrian(blobs.get(i)) blobs.remove(i--);
+			if (!isPedestrian(blobs.get(i))) blobs.remove(i--);
 
 		}
 		return blobs;
