@@ -31,18 +31,6 @@ class Image implements IImage{
 		return image;
 	}
 	
-	/*
-	void readCam(){
-		
-		for(int i = 0; i < height; i++) for(int j = 0; j < weight; j++){
-			
-			Pixel current = image[i][j];
-			short lum = current.red + current.green + current.blue;
-			lum = lum/765;		
-			
-		}
-	}
-	*/
 
 	void readCam(){
 
