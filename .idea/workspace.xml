@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b8ebc98e-eb7e-4267-8be7-cf5c6364d8cb" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/group1/Image.java" afterPath="$PROJECT_DIR$/group1/Image.java" />
-    </list>
+    <list default="true" id="b8ebc98e-eb7e-4267-8be7-cf5c6364d8cb" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -17,11 +15,11 @@
       <file leaf-file-name="Image.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/group1/Image.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="489">
-              <caret line="73" column="12" lean-forward="false" selection-start-line="73" selection-start-column="12" selection-end-line="73" selection-end-column="12" />
+            <state relative-caret-position="268">
+              <caret line="59" column="40" lean-forward="false" selection-start-line="59" selection-start-column="40" selection-end-line="59" selection-end-column="40" />
               <folding>
-                <element signature="e#526#527#0" expanded="true" />
-                <element signature="e#545#546#0" expanded="true" />
+                <marker date="1500398452149" expanded="true" signature="1030:1051" ph="{...}" />
+                <marker date="1500398452149" expanded="true" signature="1086:1243" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -265,11 +263,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/group1/Image.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="489">
-          <caret line="73" column="12" lean-forward="false" selection-start-line="73" selection-start-column="12" selection-end-line="73" selection-end-column="12" />
+        <state relative-caret-position="268">
+          <caret line="59" column="40" lean-forward="false" selection-start-line="59" selection-start-column="40" selection-end-line="59" selection-end-column="40" />
           <folding>
-            <element signature="e#526#527#0" expanded="true" />
-            <element signature="e#545#546#0" expanded="true" />
+            <marker date="1500398452149" expanded="true" signature="1030:1051" ph="{...}" />
+            <marker date="1500398452149" expanded="true" signature="1086:1243" ph="{...}" />
           </folding>
         </state>
       </provider>
