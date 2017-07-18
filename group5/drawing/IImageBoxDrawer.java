@@ -19,24 +19,19 @@ import java.util.List;
  * Box Drawers, you're fked because each one is a jframe
  * @author peter_000
  */
-public class IImageBoxDrawer extends LooiObject
+public class IImageBoxDrawer 
 {
     public static final int DEFAULT_LINE_THICKNESS = 10;
     public static final Color DEFAULT_LINE_COLOR = Color.YELLOW;
     
     private BufferedImage currentImage;
     
-    
-    
-    @Override
-    protected void looiPaint()
+    public BufferedImage getCurrentImage()
     {
-        if(currentImage != null)
-        {
-            drawImage(currentImage,0,0,this.getInternalWidth(),this.getInternalHeight());
-        }
-        
+        return currentImage;
     }
+    
+    
     public void draw(IImage image, IBlobDetection iBlobs)
     {
         Rectangle[] rectangles = findRectangles(image,iBlobs);
