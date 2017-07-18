@@ -33,25 +33,14 @@ class Image implements IImage{
 		return image;
 	}
 	
-	/*
-	void readCam(){
-		
-		for(int i = 0; i < height; i++) for(int j = 0; j < weight; j++){
-			
-			Pixel current = image[i][j];
-			short lum = current.red + current.green + current.blue;
-			lum = lum/765;		
-			
-		}
-	}
-	*/
 
-	void readCam(){
+	public void readCam(){
 
 		System.out.println(flyCam.Connect(frameRate));
 		System.out.println(flyCam.errn);
 		flyCam.NextFrame(camBytes);
 		System.out.println(flyCam.errn);
+		byteConvert();
 
 	}
 
@@ -82,6 +71,14 @@ class Image implements IImage{
 
 		}
 
+	}
+	
+	void saveImage(String filename){
+		try(BufferedWriter bw = new BufferedWriter(new FileWriter(filename))){
+			
+		} catch( IOException e){
+			System.out.println("Error Opening File");
+		}
 	}
 	
 }
