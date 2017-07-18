@@ -33,9 +33,9 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			for(MovingBlob movingBlob:movingBlobs){
 				//creates pairs in queue of blobs & moving blobs with same color within 100 pixels
 				if(blob.color.getColor()==movingBlob.color.getColor()){
-					int distanceX = Math.abs(movingBlob.predictedX-blob.centerX);
-					int distanceY = Math.abs(movingBlob.predictedY-blob.centerY);
-					int distance = (int) Math.sqrt(distanceX*distanceX+distanceY*distanceY);
+					float distanceX = Math.abs(movingBlob.predictedX-blob.centerX);
+					float distanceY = Math.abs(movingBlob.predictedY-blob.centerY);
+					float distance = (float)Math.sqrt(distanceX*distanceX+distanceY*distanceY);
 					if(distance<distanceLimit){
 						queue.add(new BlobPair(distance, blob, movingBlob));
 					}
