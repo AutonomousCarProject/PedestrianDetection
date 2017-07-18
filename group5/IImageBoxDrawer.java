@@ -5,12 +5,13 @@
  */
 package group5;
 
-import com.looi.looi.LooiObject;
+import group1.IImage;
+import group1.IPixel;
+import group2.IBlobDetection;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.sql.Blob;
 import java.util.List;
 
 /**
