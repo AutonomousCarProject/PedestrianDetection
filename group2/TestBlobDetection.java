@@ -12,7 +12,7 @@ public class TestBlobDetection implements IBlobDetection
     {
         List<Blob> blobs = new ArrayList<>();
 
-        blobs.add(new Blob(120, 120, 60, 60, new TestPixel(0)));
+        blobs.add(new Blob(120, 121, 60, 60, new TestPixel(0)));
         blobs.add(new Blob(120, 120, 180, 60, new TestPixel(1)));
         blobs.add(new Blob(120, 120, 300, 60, new TestPixel(0)));
         blobs.add(new Blob(120, 120, 420, 60, new TestPixel(1)));

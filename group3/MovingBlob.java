@@ -14,7 +14,9 @@ public class MovingBlob extends Blob {
 		
 		this.velocityX = 0;
 		this.velocityY = 0;
-		this.age = 0;
+		this.age = 15;
 		this.ageOffScreen = 0;
+		this.predictedX = 25;
+		this.predictedY = 25;
 	}
 }
