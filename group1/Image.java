@@ -69,4 +69,12 @@ class Image implements IImage{
 
 	}
 	
+	void saveImage(String filename){
+		try(BufferedWriter bw = new BufferedWriter(new FileWriter(filename))){
+			
+		} catch( IOException e){
+			System.out.println("Error Opening File");
+		}
+	}
+	
 }
