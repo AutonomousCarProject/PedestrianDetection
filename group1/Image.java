@@ -1,29 +1,38 @@
 package group1;
 
 import java.io.*;
-import fly2cam.FlyCamera;
+//import fly2cam.FlyCamera;
+import group1.fly0cam.FlyCamera;
 
 class Image implements IImage{
 	
 	int height;
 	int width;
+
 	int colorMargin = 30;
-	int frameRate = 15;
+	int frameRate = 3;
 	public FlyCamera flyCam = new FlyCamera();
-	public byte[] camBytes = null;
-	public Pixel[][] rgbPixels = null;
-	public int pos = null;
-	Pixel[][] image;
 	
+	//307200
+	public byte[] camBytes = new byte[307200*4];
+	public Pixel[][] rgbPixels = null;
+	public int pos = 0;
+	public IPixel[][] image;
+
 	Image(int width, int height){
-		for(int i = 0; i < height; i++) for(int j = 0; j < weight; j++){
-			image[i][j] = new Pixel();
-		}
+
 		this.height = height;
 		this.width = width;
+
 	}
 
-	void convert(){	//converts rgb to yuv format
+	
+	public IPixel[][] getImage(){
+		return image;
+	}
+	
+	/*
+	void readCam(){
 		
 		for(int i = 0; i < height; i++) for(int j = 0; j < weight; j++){
 			
@@ -33,11 +42,14 @@ class Image implements IImage{
 			
 		}
 	}
+	*/
 
 	void readCam(){
 
-		flyCam.Connect(frameRate);
+		System.out.println(flyCam.Connect(frameRate));
+		System.out.println(flyCam.errn);
 		flyCam.NextFrame(camBytes);
+		System.out.println(flyCam.errn);
 
 	}
 
@@ -50,26 +62,19 @@ class Image implements IImage{
 	void byteConvert(){
 
 		pos = 0;
+		System.out.println("Position: " + pos);
 
-		for(int i = 0 ; i < height * 2 ; =+ 2){
+		for(int i = 0 ; i < height * 2 ; i =+ 2){
 
 
 			for(int j = 0 ; j < width * 2 ; j =+ 2){
 
-
-				rgbPixels[j/2][i/2] = new Pixel(camBytes[pos], camBytes[pos + 1], camBytes[pos + 1 + width * 2]);
-
-				/*
-				rgbPixels[j/2][i/2].red = camBytes[pos];
-				rgbPixels[j/2][i/2].green = camBytes[pos + 1];
-				rgbPixels[j/2][i/2].blue = camBytes[pos + 1 + width * 2];
-				*/
-
+				image[j/2][i/2] = new Pixel(camBytes[pos], camBytes[pos + 1], camBytes[pos + 1 + width * 2]);
 				pos =+ 2;
 
 			}
 
-			pos + width * 2;
+			pos =+ width * 2;
 
 		}
 
