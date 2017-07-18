@@ -5,6 +5,10 @@
  */
 package group5;
 
+import group1.IImage;
+import group1.IPixel;
+import group2.IBlobDetection;
+
 /**
  *
  * @author peter_000
@@ -25,7 +29,7 @@ public class Group5 {
     }
     public static Point[] findFourCorners(IImage image, IBlobDetection iBlobs)
     {
-        
+        return new Point[] {};
     }
     
     public static class Point
@@ -41,7 +45,12 @@ public class Group5 {
     }
     public static IImage drawLines(Point[] corners, IImage image)
     {
-        
+        return new IImage() {
+            @Override
+            public IPixel[][] getImage() {
+                return new IPixel[0][];
+            }
+        };
     }
     
 }
