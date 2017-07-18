@@ -5,7 +5,7 @@ import java.io.*;
 import group1.fly0cam.FlyCamera;
 
 //Defines image as an 2d array of pixels
-class Image implements IImage{
+public class Image implements IImage{
 	
 	public static final int height = 480;
 	public static final int width = 640;

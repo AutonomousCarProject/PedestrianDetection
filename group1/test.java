@@ -2,7 +2,7 @@ package group1;
 
 import java.io.*;
 
-class test{
+public class test{
 
 	public static void main (String args[]){
  		/*

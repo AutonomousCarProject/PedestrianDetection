@@ -3,7 +3,7 @@ package group1;
 import java.io.*;
 
 
-class test2{
+public class test2{
 
 	public static void main(String args[]){
 
