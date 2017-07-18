@@ -55,13 +55,17 @@ public class BlobDetection2 implements IBlobDetection
     {
         for (Blob b : blobs)
         {
-            if ((Math.abs(b.centerX - x) < (b.width / 2f)) && (Math.abs(b.centerY - y) < (b.height / 2f))
-                    && (b.color.getColor() == color) && (b.color.getSaturation() == saturation))
+            if (blobContains(b, x, y) && (b.color.getColor() == color) && (b.color.getSaturation() == saturation))
             {
                 return b;
             }
         }
 
         return null;
+    }
+
+    private boolean blobContains(Blob b, int x, int y)
+    {
+        return (Math.abs(b.centerX - x) < (b.width / 2f)) && (Math.abs(b.centerY - y) < (b.height / 2f));
     }
 }
