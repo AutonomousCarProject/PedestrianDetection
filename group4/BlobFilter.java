@@ -52,7 +52,8 @@ public class BlobFilter implements IMovingBlobReduction
 		//lol formatting wut
 		return  blob.width <= blob.height * WIDTH_HEIGHT_RATIO_MAX
 				&& blob.age >= AGE_MIN
-				&& Math.abs(blob.movementX) <= X_VELOCITY_MAX;
+				&& Math.abs(blob.movementX) <= X_VELOCITY_MAX
+				&& checkVelocity(blob.centerX, blob.centerY, blob.movementX, blob.movementY);
 	}
 
 	/**
