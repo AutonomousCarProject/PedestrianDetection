@@ -14,7 +14,7 @@ class Image implements IImage{
 	public FlyCamera flyCam = new FlyCamera();
 	
 	//307200
-	public byte[] camBytes = new byte[307200*4];
+	public byte[] camBytes = new byte[2457636];
 	public Pixel[][] rgbPixels = null;
 	public int pos = 0;
 	public IPixel[][] image;
@@ -23,6 +23,8 @@ class Image implements IImage{
 
 		this.height = height;
 		this.width = width;
+		image = new Pixel[width][height];
+
 
 	}
 
@@ -32,12 +34,13 @@ class Image implements IImage{
 	}
 	
 
-	void readCam(){
+	public void readCam(){
 
 		System.out.println(flyCam.Connect(frameRate));
 		System.out.println(flyCam.errn);
 		flyCam.NextFrame(camBytes);
 		System.out.println(flyCam.errn);
+		byteConvert();
 
 	}
 
@@ -52,17 +55,19 @@ class Image implements IImage{
 		pos = 0;
 		System.out.println("Position: " + pos);
 
-		for(int i = 0 ; i < height * 2 ; i =+ 2){
+		for(int i = 0 ; i < height * 2 ; i += 2){
 
 
-			for(int j = 0 ; j < width * 2 ; j =+ 2){
+			for(int j = 0 ; j < width * 2 ; j += 2){
 
-				image[j/2][i/2] = new Pixel(camBytes[pos], camBytes[pos + 1], camBytes[pos + 1 + width * 2]);
-				pos =+ 2;
+				System.out.println(camBytes[pos]+"  "+camBytes[pos+1]+"  "+camBytes[pos + 1 + width * 2]);
+				image[j/2][i/2] = new Pixel((short)(camBytes[pos]+128), (short)(camBytes[pos + 1]+128), (short)(camBytes[pos + 1 + width * 2]+128));
+
+				pos += 2;
 
 			}
 
-			pos =+ width * 2;
+			pos += width * 2;
 
 		}
 

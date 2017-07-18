@@ -23,6 +23,15 @@ public class Pixel implements IPixel {	//0-765
 		this.blue = blue;
 		convert();
 	}
+
+	//Pixel(){}
+
+	public void setRGB(short red, short green, short blue){
+		this.red = red;
+		this.green = green;
+		this.blue = blue;
+		convert();
+	}
 	
 	public short getLuma(){
 		return luma;

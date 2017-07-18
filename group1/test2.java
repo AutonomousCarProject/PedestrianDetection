@@ -10,9 +10,9 @@ class test2{
 		Image testImage = new Image(320, 240);
 
 		testImage.readCam();
-		System.out.println("File read...");
-		testImage.byteConvert();
-		System.out.println("Converted...");
+		//System.out.println("File read...");
+		//testImage.byteConvert();
+		//System.out.println("Converted...");
 
 	}
 
