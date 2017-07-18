@@ -4,10 +4,10 @@ import group2.Blob;
 
 public class MovingBlob extends Blob {
     public float velocityX, velocityY;
+    public float predictedX, predictedY;
+    
     public int age;
     public int ageOffScreen;
-    public int predictedX;
-    public int predictedY;
 	
 	public MovingBlob(Blob b){
 		super(b.width, b.height, b.centerX, b.centerY, b.color);
@@ -19,7 +19,7 @@ public class MovingBlob extends Blob {
 	}
 	
 	public void updatePredictedPosition(){
-		predictedX = (int)velocityX + centerX;
-		predictedY = (int)velocityY + centerY;
+		predictedX = velocityX + centerX;
+		predictedY = velocityY + centerY;
 	}
 }
