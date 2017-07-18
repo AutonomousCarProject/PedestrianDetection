@@ -33,11 +33,27 @@ public class BlobDetection2 implements IBlobDetection
                     Blob b = findBlob(row, col, pixel.getColor(), pixel.getSaturation());
                     if (b == null)
                     {
-                        b = new Blob(2, 1, row + 0.5f, col + 0.5f, pixel);
+                        b = findBlob(row, col + 1, pixel.getColor(), pixel.getSaturation());
+                        if (b == null)
+                        {
+                            b = new Blob(2, 1, row + 0.5f, col + 0.5f, pixel);
+                        }
+                        else
+                        {
+                            if (!blobContains(b, row, col + 1))
+                            {
+                                b.width = b.width + 1;
+                                b.centerX = b.centerX - 0.5f;
+                            }
+                        }
                     }
                     else
                     {
-
+                        if (!blobContains(b, row, col + 1))
+                        {
+                            b.width = b.width + 1;
+                            b.centerX = b.centerX + 0.5f;
+                        }
                     }
                 }
             }
