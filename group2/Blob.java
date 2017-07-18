@@ -5,10 +5,15 @@ import group1.IPixel;
 public class Blob
 {
     public int width, height;
-    public int centerX, centerY;
+    public float centerX, centerY;
     public IPixel color;
 
-    public Blob(int width, int height, int centerX, int centerY, IPixel color)
+    public Blob(int width, int height, float centerX, float centerY, IPixel color)
+    {
+        set(width, height, centerX, centerY, color);
+    }
+
+    public void set(int width, int height, float centerX, float centerY, IPixel color)
     {
         this.width = width;
         this.height = height;
