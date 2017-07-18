@@ -1,10 +1,19 @@
 package group3;
 import group2.Blob;
+import group2.TestBlobDetection;
+import group2.TestPixel;
+import group2.IBlobDetection;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MovingBlobDetectionTest implements IMovingBlobDetection {
 	private List<MovingBlob> movingBlobs;
+	
+	public static void main(String[] args){
+		TestBlobDetection test = new TestBlobDetection();
+		MovingBlobDetectionTest movingtest = new MovingBlobDetectionTest();
+		List<MovingBlob> list = movingtest.getMovingBlobs(test.getBlobs(null));	
+	}
 	
 	public MovingBlobDetectionTest() {
 		movingBlobs = new LinkedList<>();
