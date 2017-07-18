@@ -1,10 +1,13 @@
-package group2;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package autonomouscarfinalprogram;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import group1.IImage;
-import group1.IPixel;
 
 //creates a class for detecting blobs 
 

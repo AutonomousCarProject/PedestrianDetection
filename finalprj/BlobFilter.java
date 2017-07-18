@@ -1,7 +1,10 @@
-package group4;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package autonomouscarfinalprogram;
 
-import group3.MovingBlob;
-import group4.IMovingBlobReduction;
 
 import java.util.List;
 
@@ -16,8 +19,8 @@ public class BlobFilter implements IMovingBlobReduction
 	private static final double WIDTH_HEIGHT_RATIO_MAX = 1;
 	//the minimum age (in frames) the blob must be to be considered valid
 	private static final short AGE_MIN = 10;
-	//the maximum X velocity the blob can have to be considered valid (6 m/s converted to px/frame)
-	private static final short X_VELOCITY_MAX = 6 / 15 * 32;
+	//the maximum X velocity the blob can have to be considered valid
+	private static final short X_VELOCITY_MAX = 10;
 	//the minimum distance from the top, left, or right border the predicted position of the blob must be in order to be considered (in px)
 	private static final short PREDICTED_BORDER_DISTANCE_MIN = 20;
 	
@@ -48,7 +51,7 @@ public class BlobFilter implements IMovingBlobReduction
 	private boolean isPedestrian(MovingBlob blob)
 	{
 		//lol formatting wut
-		return  blob.width / blob.height <= WIDTH_HEIGHT_RATIO_MAX
+		return  blob.width <= blob.height * WIDTH_HEIGHT_RATIO_MAX
 				&& blob.age >= AGE_MIN
 				&& Math.abs(blob.velocityX) <= X_VELOCITY_MAX
 				&& blob.predictedX >= PREDICTED_BORDER_DISTANCE_MIN && blob.predictedX <= (640 - PREDICTED_BORDER_DISTANCE_MIN)
