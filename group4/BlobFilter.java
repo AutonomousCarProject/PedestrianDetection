@@ -48,7 +48,7 @@ public class BlobFilter implements IMovingBlobReduction
 	private boolean isPedestrian(MovingBlob blob)
 	{
 		//lol formatting wut
-		return  blob.width * WIDTH_HEIGHT_RATIO_MAX <= blob.height
+		return  blob.width / blob.height <= WIDTH_HEIGHT_RATIO_MAX
 				&& blob.age >= AGE_MIN
 				&& Math.abs(blob.velocityX) <= X_VELOCITY_MAX
 				&& blob.predictedX >= PREDICTED_BORDER_DISTANCE_MIN && blob.predictedX <= (640 - PREDICTED_BORDER_DISTANCE_MIN)
