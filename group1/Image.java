@@ -4,20 +4,18 @@ import java.io.*;
 //import fly2cam.FlyCamera;
 import group1.fly0cam.FlyCamera;
 
+//Defines image as an 2d array of pixels
 class Image implements IImage{
 	
-	int height;
-	int width;
+	private int height;
+	private int width;
 
-	int colorMargin = 30;
-	int frameRate = 3;
-	public FlyCamera flyCam = new FlyCamera();
+	private int frameRate = 3;
+	private FlyCamera flyCam = new FlyCamera();
 	
 	//307200
-	public byte[] camBytes = new byte[2457636];
-	public Pixel[][] rgbPixels = null;
-	public int pos = 0;
-	public IPixel[][] image;
+	private byte[] camBytes = new byte[2457636];
+	private IPixel[][] image;
 
 	Image(int width, int height){
 
@@ -34,6 +32,7 @@ class Image implements IImage{
 	}
 	
 
+	//gets a single frame
 	public void readCam(){
 
 		System.out.println(flyCam.Connect(frameRate));
@@ -44,15 +43,15 @@ class Image implements IImage{
 
 	}
 
-	void finish(){
+	public void finish(){
 
 		flyCam.Finish();
 
 	}
 
-	void byteConvert(){
+	private void byteConvert(){
 
-		pos = 0;
+		int pos = 0;
 		System.out.println("Position: " + pos);
 
 		for(int i = 0 ; i < height * 2 ; i += 2){
@@ -71,14 +70,6 @@ class Image implements IImage{
 
 		}
 
-	}
-	
-	void saveImage(String filename){
-		try(BufferedWriter bw = new BufferedWriter(new FileWriter(filename))){
-			
-		} catch( IOException e){
-			System.out.println("Error Opening File");
-		}
 	}
 	
 }
