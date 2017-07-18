@@ -2,7 +2,7 @@ package group1;
 
 public class Pixel implements IPixel
 { // 0-765
-    // YUV
+  // YUV
     private short luma;
     private short saturation;
     private short color;
@@ -14,7 +14,7 @@ public class Pixel implements IPixel
 
     int colorMargin = 30;
 
-    Pixel(short red, short green, short blue)
+    public Pixel(short red, short green, short blue)
     {
         this.red = red;
         this.green = green;

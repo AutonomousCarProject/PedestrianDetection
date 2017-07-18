@@ -2,21 +2,17 @@ package group1;
 
 public class Dummy2 implements IImage
 {
-
-    public int height = 240;
-    public int width = 320;
-    Pixel[][] image = new Pixel[320][240];
+    public int height = 480;
+    public int width = 640;
+    Pixel[][] image = new Pixel[height][width];
 
     public Dummy2()
     {
-
-        for (int i = 0; i < height; i++)
+        for (int x = 0; x < width; x++)
         {
-
-            for (int j = 0; j < width; j++)
+            for (int y = 0; y < height; y++)
             {
-
-                image[j][i] = new Pixel((short) 255, (short) 0, (short) 0);
+                image[y][x] = new Pixel((short) 255, (short) 0, (short) 0);
 
             }
 
@@ -29,5 +25,4 @@ public class Dummy2 implements IImage
     {
         return image;
     }
-
 }
