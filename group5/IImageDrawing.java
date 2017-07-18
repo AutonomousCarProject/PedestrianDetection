@@ -1,11 +1,12 @@
 package group5;
 
-import java.util.List;
-
-import group1.IPixel;
+import group1.IImage;
+import group2.IBlobDetection;
 import group3.MovingBlob;
+
+import java.util.List;
 
 public interface IImageDrawing
 {
-    void draw(IPixel[][] image, List<MovingBlob> blobs);
+    void draw(IImage image, List<MovingBlob> iBlobs);
 }

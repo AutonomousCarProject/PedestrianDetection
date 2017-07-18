@@ -4,7 +4,6 @@ import java.util.Random;
 
 public class Dummy implements IImage
 {
-
     public int height = 240;
     public int width = 320;
     Random myRand = new Random();
@@ -33,5 +32,4 @@ public class Dummy implements IImage
     {
         return image;
     }
-
 }
