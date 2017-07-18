@@ -99,6 +99,9 @@ public class FlyCamera {
     tile = 0;} //~Finish
 
   public boolean Connect(int frameRate) { // required at start, sets rose,colz,tile
+
+    System.out.println("test: " + new File("group1/fly0cam/FlyCapped.By8").exists());
+
     int why = 27;                         // frameRate is ignored; rtns false at eof
     File myFile = new File(fiName);
     if (theFile==null) {
