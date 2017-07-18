@@ -10,7 +10,7 @@ import group1.IPixel;
 
 public class BlobDetection implements IBlobDetection
 {
-    private static final int SATURATION_THRESHOLD = 5;
+    private static final int SATURATION_THRESHOLD = 15;
 
     private boolean isWithinThreshold(int val1, int val2, int thresh)
     {
@@ -44,7 +44,7 @@ public class BlobDetection implements IBlobDetection
             final int iSaturation = pixels[iRow][iCol].getSaturation();
             // FIXME possibly update with averages
 
-            List<Integer> pixelsInBlob = new ArrayList<>();
+            int top = Integer.MAX_VALUE, bottom = 0, left = Integer.MAX_VALUE, right = 0;
 
             while (!toVisit.isEmpty())
             {
@@ -78,12 +78,22 @@ public class BlobDetection implements IBlobDetection
                         toVisit.add(n + 1);
                     }
 
-                    pixelsInBlob.add(n);
+                    top = Math.min(row, top);
+                    bottom = Math.max(row, bottom);
+                    left = Math.min(col, left);
+                    right = Math.max(row, right);
                 }
             }
 
+            int width = right - left;
+            int height = bottom - top;
+
+            if (width > 4 && height > 4)
+            {
+                blobs.add(new Blob(width, height, left + (width / 2), top + (height / 2), pixels[iRow][iCol]));
+            }
         }
 
-        return null;
+        return blobs;
     }
 }

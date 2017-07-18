@@ -9,6 +9,11 @@ public class TestPixel implements IPixel
     public TestPixel(int color)
     {
         this.color = (short) color;
+
+        if (color != 0 && color != 1)
+        {
+            throw new IllegalArgumentException("TestPixel does not work with color code " + color);
+        }
     }
 
     @Override
@@ -32,13 +37,13 @@ public class TestPixel implements IPixel
     @Override
     public short getRed()
     {
-        return 255;
+        return (short) (color == 0 ? 255 : 0);
     }
 
     @Override
     public short getGreen()
     {
-        return 0;
+        return (short) (color == 1 ? 255 : 0);
     }
 
     @Override
