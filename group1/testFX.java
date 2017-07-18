@@ -1,4 +1,5 @@
-import java.lang.*;
+package group1;
+
 import java.io.*;
 import java.util.*;
 import javafx.scene.shape.*;
@@ -7,14 +8,9 @@ import javafx.scene.*;
 import javafx.scene.Node.*;
 import javafx.stage.Stage;
 import javafx.scene.canvas.*;
-import java.util.ArrayList;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.control.Button;
-import javafx.scene.control.*;
-import javafx.event.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Color.*;
 
 public class testFX extends Application{
 	
@@ -23,12 +19,17 @@ public class testFX extends Application{
 	public double height = 1000.0;
 	public Group rootNode = new Group();
 
+	public static void main(String args[]){
+		
+		launch(args);
+
+	}
 
 	public void start(Stage stage){
 
+		
 		stage.setTitle("JavaFX Window");
 
- 
    		Scene myScene = new Scene(rootNode, width, height);
 		stage.setScene(myScene);
 		//Canvas myCanvas = new Canvas(width, height);
@@ -39,14 +40,15 @@ public class testFX extends Application{
 
 		Rectangle pixel;
 
+		
 
 		for(int i = 0 ; i < image.height ; i++){
 			
 			for(int j = 0 ; j < image.width ; j++){
 
-				pixel = new Rectangle((double)i, (double)j, 1, 1);
+				pixel = new Rectangle((double)j, (double)i, 1, 1);
 
-				switch(image.getImage()[i][j].getColor())
+				switch(image.getImage()[j][i].getColor())
 				{
 
 					case 0:
@@ -83,6 +85,21 @@ public class testFX extends Application{
 			}
 
 		}
+
+		
+		/*
+		for(int i = 0 ; i < image.height ; i++){
+			
+			for(int j = 0 ; j < image.width ; j++){
+
+				pixel = new Rectangle((double)j*2, (double)i*2, 1, 1);
+				pixel.setFill(Color.color((double)image.getImage()[j][i].getRed()/255.0, (double)image.getImage()[j][i].getGreen()/255.0, (double)image.getImage()[j][i].getBlue()/255.0));
+				rootNode.getChildren().add(pixel);
+
+			}
+
+		}*/
+
 
 		//rootNode.getChildren().add()
 		stage.show();

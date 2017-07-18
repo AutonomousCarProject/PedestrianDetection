@@ -1,7 +1,7 @@
 package group1;
 import java.util.Random;
 
-
+//Generates dummy data
 class Dummy implements IImage{
 	
 	public int height = 240;
@@ -9,7 +9,7 @@ class Dummy implements IImage{
 	Random myRand = new Random();
 	Pixel[][] image = new Pixel[320][240];
 	
-	
+	//fills image array
 	Dummy(){
 		
 		for(int i = 0 ; i < height ; i++){

@@ -4,29 +4,19 @@ import java.io.*;
 //import fly2cam.FlyCamera;
 import group1.fly0cam.FlyCamera;
 
+//Defines image as an 2d array of pixels
 class Image implements IImage{
 	
-	public int height;
-	public int width;
 
-	int colorMargin = 30;
-	int frameRate = 3;
-	public FlyCamera flyCam = new FlyCamera();
+	public static final int height = 480;
+	public static final int width = 640;
+
+	private int frameRate = 3;
+	private FlyCamera flyCam = new FlyCamera();
 	
 	//307200
-	public byte[] camBytes = new byte[2457636];
-	public Pixel[][] rgbPixels = null;
-	public int pos = 0;
-	public IPixel[][] image;
-
-	Image(int width, int height){
-
-		this.height = height;
-		this.width = width;
-		image = new Pixel[width][height];
-
-
-	}
+	private byte[] camBytes = new byte[2457636];
+	private IPixel[][] image = new Pixel[width][height];
 
 	
 	public IPixel[][] getImage(){
@@ -34,6 +24,7 @@ class Image implements IImage{
 	}
 	
 
+	//gets a single frame
 	public void readCam(){
 
 		System.out.println(flyCam.Connect(frameRate));
@@ -44,41 +35,30 @@ class Image implements IImage{
 
 	}
 
-	void finish(){
+	public void finish(){
 
 		flyCam.Finish();
 
 	}
 
-	void byteConvert(){
+	private void byteConvert(){
 
-		pos = 0;
-		System.out.println("Position: " + pos);
+		int pos = 0;
 
 		for(int i = 0 ; i < height * 2 ; i += 2){
 
-
 			for(int j = 0 ; j < width * 2 ; j += 2){
+				
+				image[j/2][i/2] = new Pixel((short)(camBytes[pos]&255), (short)(camBytes[pos + 1]&255), (short)(camBytes[pos + 1 + width]&255));
 
-				System.out.println(camBytes[pos]+"  "+camBytes[pos+1]+"  "+camBytes[pos + 1 + width * 2]);
-				image[j/2][i/2] = new Pixel((short)(camBytes[pos]+128), (short)(camBytes[pos + 1]+128), (short)(camBytes[pos + 1 + width * 2]+128));
-
-				pos += 2;
+				pos += 1;
 
 			}
 
-			pos += width * 2;
+			//pos += width;
 
 		}
 
-	}
-	
-	void saveImage(String filename){
-		try(BufferedWriter bw = new BufferedWriter(new FileWriter(filename))){
-			
-		} catch( IOException e){
-			System.out.println("Error Opening File");
-		}
 	}
 	
 }
