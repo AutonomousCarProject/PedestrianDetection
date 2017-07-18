@@ -16,8 +16,8 @@ public class BlobFilter implements IMovingBlobReduction
 	private static final double WIDTH_HEIGHT_RATIO_MAX = 1;
 	//the minimum age (in frames) the blob must be to be considered valid
 	private static final short AGE_MIN = 10;
-	//the maximum X velocity the blob can have to be considered valid
-	private static final short X_VELOCITY_MAX = 10;
+	//the maximum X velocity the blob can have to be considered valid (6 m/s converted to px/frame)
+	private static final short X_VELOCITY_MAX = 6 / 15 * 32;
 	//the minimum distance from the top, left, or right border the predicted position of the blob must be in order to be considered (in px)
 	private static final short PREDICTED_BORDER_DISTANCE_MIN = 20;
 	
