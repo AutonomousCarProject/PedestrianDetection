@@ -21,5 +21,11 @@ public class MovingBlob extends Blob {
 	public void updatePredictedPosition(){
 		predictedX = velocityX + centerX;
 		predictedY = velocityY + centerY;
+		System.out.println(predictedX);
+		System.out.println(predictedY);
+	}
+	
+	public String toString(){
+		return "Moving blob: Color " + color.getColor() + " X: " + centerX + " Y: " + centerY;
 	}
 }

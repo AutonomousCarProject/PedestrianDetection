@@ -1,4 +1,5 @@
 package group1;
+
 import java.util.Random;
 
 //Generates dummy data

@@ -3,11 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package autonomouscarfinalprogram;
+package com.looi.looi.utilities;
 
-import java.util.List;
+import java.io.Serializable;
 
-public interface IMovingBlobReduction
+/**
+ *
+ * @author peter_000
+ */
+public interface Supplier<E> extends Serializable
 {
-    List<MovingBlob> reduce(List<MovingBlob> blobs);
+    public E get();
 }

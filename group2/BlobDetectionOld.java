@@ -1,19 +1,24 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package autonomouscarfinalprogram;
+package group2;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
+import group1.IImage;
+import group1.IPixel;
 
 //creates a class for detecting blobs 
 
-public class BlobDetection implements IBlobDetection
+public class BlobDetectionOld implements IBlobDetection
 {
     private static final int SATURATION_THRESHOLD = 15;
+
+    private static Deque<Integer> visited = new ArrayDeque<>();
+    private static Deque<Integer> toVisit = new ArrayDeque<>();
+    private static List<Blob> blobs = new ArrayList<>();
+
+    private static Deque<Blob> unusedBlobs = new ArrayDeque<>();
 
     private boolean isWithinThreshold(int val1, int val2, int thresh)
     {
@@ -28,8 +33,9 @@ public class BlobDetection implements IBlobDetection
         final int colSize = pixels.length;
         final int size = rowSize * colSize;
 
-        List<Integer> visited = new ArrayList<>();
-        List<Blob> blobs = new ArrayList<>();
+        visited.clear();
+        unusedBlobs.addAll(blobs);
+        blobs.clear();
 
         for (int i = 0; i < size; i++)
         {
@@ -38,11 +44,11 @@ public class BlobDetection implements IBlobDetection
                 continue;
             }
 
-            List<Integer> toVisit = new ArrayList<>();
+            toVisit.clear();
             toVisit.add(i);
 
-            final int iRow = i % rowSize;
-            final int iCol = i / rowSize;
+            final int iRow = i / rowSize;
+            final int iCol = i % rowSize;
             final int iColor = pixels[iRow][iCol].getColor();
             final int iSaturation = pixels[iRow][iCol].getSaturation();
             // FIXME possibly update with averages
@@ -51,11 +57,11 @@ public class BlobDetection implements IBlobDetection
 
             while (!toVisit.isEmpty())
             {
-                int n = toVisit.remove(0);
+                int n = toVisit.pop();
                 visited.add(n);
 
-                final int row = n % rowSize;
-                final int col = n / rowSize;
+                final int row = n / rowSize;
+                final int col = n % rowSize;
 
                 if (iColor == pixels[row][col].getColor()
                         && isWithinThreshold(iSaturation, pixels[row][col].getSaturation(), SATURATION_THRESHOLD))
@@ -91,12 +97,26 @@ public class BlobDetection implements IBlobDetection
             int width = right - left;
             int height = bottom - top;
 
-            if (width > 4 && height > 4)
+            if (width >= 4 && height >= 4)
             {
-                blobs.add(new Blob(width, height, left + (width / 2), top + (height / 2), pixels[iRow][iCol]));
+                blobs.add(getBlob(width, height, left + (width / 2), top + (height / 2), pixels[iRow][iCol]));
             }
         }
 
         return blobs;
+    }
+
+    private Blob getBlob(int width, int height, int centerX, int centerY, IPixel color)
+    {
+        if (unusedBlobs.isEmpty())
+        {
+            return new Blob(width, height, centerX, centerY, color);
+        }
+        else
+        {
+            Blob b = unusedBlobs.pop();
+            b.set(width, height, centerX, centerY, color);
+            return b;
+        }
     }
 }
