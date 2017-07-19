@@ -13,7 +13,7 @@ public class MovingBlobDetectionTest implements IMovingBlobDetection {
 		movingBlobs = new LinkedList<>();
 	}
 	
-	/**public static void main(String[] args){
+	public static void main(String[] args){
 		TestBlobDetection test = new TestBlobDetection();
 		MovingBlobDetection movingtest = new MovingBlobDetection();
 		
@@ -29,7 +29,6 @@ public class MovingBlobDetectionTest implements IMovingBlobDetection {
 
 		System.out.println("Total execution time: " + (endTime - startTime) );
 	}
-	 */
 	
 	// test data
 	public List<MovingBlob> getMovingBlobs(List<Blob> blobList){
