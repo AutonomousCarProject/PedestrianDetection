@@ -8,26 +8,13 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 public class MovingBlobDetection implements IMovingBlobDetection {
+	//list of all moving blobs that have been recently tracked
 	private List<MovingBlob> movingBlobs;
 	//maximum time before unmatched MovingBlob is deleted
 	int maxTimeOffScreen = 30;
-	
-	public static void main(String[] args){
-		TestBlobDetection test = new TestBlobDetection();
-		MovingBlobDetection movingtest = new MovingBlobDetection();
-		
-		final long startTime = System.currentTimeMillis();
-		List<MovingBlob> list = movingtest.getMovingBlobs(test.getBlobs(0, null));	
-		
-		for (int i = 0; i < 4; i++) {
-			list = movingtest.getMovingBlobs(test.getBlobs(i+1, null));
-			
-		}
-
-		final long endTime = System.currentTimeMillis();
-
-		System.out.println("Total execution time: " + (endTime - startTime) );
-	}
+	//maximum distance in pixels between blobs that can be matched
+	int distanceLimit = 100;
+	 
 	
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
@@ -38,14 +25,12 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		return movingBlobs;
 	}
 	
-	//test data is in "MovingBlobDetectionTest.java"
-	
 	private void updateMovingBlobs(List<Blob> blobList){
-		//maximum distance where blobs can be matched
-		int distanceLimit = 100;
+		//set of unmatched movingblobs (all are unmatched at start of frame)
 		HashSet<MovingBlob> movingBlobSet = new HashSet<>(movingBlobs);
+		//set of unmatched blobs
 		HashSet<Blob> blobSet = new HashSet<>(blobList);
-		//queue with smallest distance pairs in front
+		//queue with shortest distance pairs of movingblobs and blobs in front
 		PriorityQueue<BlobPair> queue = new PriorityQueue<>();
 		for(Blob blob:blobList){
 			for(MovingBlob movingBlob:movingBlobs){
@@ -62,13 +47,17 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		}
 		//matches closest pairs until it runs out of movingBlobs, blobs, or pairs
 		while(!movingBlobSet.isEmpty()&&!blobSet.isEmpty()&&!queue.isEmpty()){
+			//finds shortest pair in queue
 			BlobPair pair = queue.peek();
+			//checks if neither blobs are matched already
 			if(movingBlobSet.contains(pair.oldBlob)&&blobSet.contains(pair.newBlob)){
+				//matches blobs and updates sets and queue
 				matchBlob(pair.oldBlob, pair.newBlob);
 				movingBlobSet.remove(pair.oldBlob);
 				blobSet.remove(pair.newBlob);
 				queue.remove();
 			} else {
+				//if either blob is matched, removes pair from queue
 				queue.remove();
 			}
 		}
@@ -82,11 +71,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		}
 	}
 	
-	private void matchBlob(MovingBlob movingBlob, Blob newBlob){
-		System.out.println(movingBlob);
-		System.out.println(new MovingBlob(newBlob));
-		System.out.println();
-		
+	private void matchBlob(MovingBlob movingBlob, Blob newBlob){		
 		//update information based on new position
 		calculateVelocity(movingBlob, newBlob);
 		movingBlob.centerX = newBlob.centerX;
