@@ -87,18 +87,18 @@ public class testFX extends Application{
 		}
 
 		
-		/*
+		
 		for(int i = 0 ; i < image.height ; i++){
 			
-			for(int j = 0 ; j < image.width ; j++){
+			for(int j = 320 ; j < image.width + 320 ; j++){
 
-				pixel = new Rectangle((double)j*2, (double)i*2, 1, 1);
-				pixel.setFill(Color.color((double)image.getImage()[j][i].getRed()/255.0, (double)image.getImage()[j][i].getGreen()/255.0, (double)image.getImage()[j][i].getBlue()/255.0));
+				pixel = new Rectangle((double)j, (double)i, 1, 1);
+				pixel.setFill(Color.color((double)image.getImage()[j - 320][i].getRed()/255.0, (double)image.getImage()[j - 320][i].getGreen()/255.0, (double)image.getImage()[j -320][i].getBlue()/255.0));
 				rootNode.getChildren().add(pixel);
 
 			}
 
-		}*/
+		}
 
 
 		//rootNode.getChildren().add()

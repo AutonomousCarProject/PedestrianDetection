@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 public class FlyCamera {
   public static final int FrameRate_15 = 3, FrameRate_30 = 4;
 
+//  private final String fiName = "group1/fly0cam/FlyCapped.By8";
   private final String fiName = "src/group1/fly0cam/FlyCapped.By8";
 
   public int rose, // actual number of rows = FlyCap2.fc2Image.rows/2
@@ -133,7 +134,9 @@ public class FlyCamera {
       break;} //~while
     if (why>0) if (why<3) System.out.println("Can't open file " + fiName);
     errn = why;
+    System.out.println("Tile: " + tile);
     return why==0;} //~Connect
+
 
   public static String ErrorNumberText(int errno) { // to explain errn in toString()
     if (errno == -20) return "ByteArray is not same size as received data";
