@@ -47,6 +47,7 @@ public class BlobDetection2 implements IBlobDetection
                 IPixel up = pixels[row - 1][col];
                 if (pixel.getColor() == up.getColor())
                 {
+                    System.out.println(pixel.getColor());
                     Blob blob = blobRow[col];
                     if (blob == null)
                     {
@@ -68,6 +69,8 @@ public class BlobDetection2 implements IBlobDetection
                 IPixel left = pixels[row][col - 1];
                 if (pixel.getColor() == left.getColor())
                 {
+                    Blob upBlob = blobRowSet ? blobRow[col] : null;
+
                     Blob blob = blobRow[col - 1];
                     if (blob == null)
                     {
@@ -79,6 +82,23 @@ public class BlobDetection2 implements IBlobDetection
                     {
                         blob.width = blob.width + 1;
                         blobRow[col] = blobRow[col - 1];
+                    }
+
+                    if (upBlob != null && upBlob != blobRow[col])
+                    {
+                        combine(upBlob, blobRow[col]);
+
+                        unusedBlobs.add(blobRow[col]);
+                        blobs.remove(blobRow[col]);
+
+                        for (int j = 0; j <= col; j++)
+                        {
+                            if (blobRow[j] == blobRow[col])
+                            {
+                                blobRow[j] = upBlob;
+                            }
+                        }
+
                     }
 
                     blobRowSet = true;
@@ -130,5 +150,16 @@ public class BlobDetection2 implements IBlobDetection
             b.set(width, height, centerX, centerY, color);
             return b;
         }
+    }
+
+    private Blob combine(Blob b1, Blob b2)
+    {
+        final int up = (int) Math.min(b1.centerY, b2.centerY), left = (int) Math.min(b1.centerX, b2.centerX);
+        final int down = (int) Math.max(b1.centerY + b1.height, b2.centerY + b2.height),
+                right = (int) Math.max(b1.centerX + b1.width, b2.centerX + b2.width);
+
+        b1.set(right - left + 1, down - up + 1, up, left, b1.color);
+
+        return b1;
     }
 }
