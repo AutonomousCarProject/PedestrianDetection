@@ -2,7 +2,7 @@ package group1;
 
 import java.io.*;
 
-class test{
+public class test{
 
 	public static void main (String args[]){
  		/*
@@ -28,7 +28,7 @@ class test{
 		int dummyWidth = image.getImage()[0].length;
 		for(int i = 0; i < dummyHeight; i++){ System.out.println("New line");
 			for(int j = 0; j < dummyWidth; j++){
-				System.out.println(image.getImage()[i][j].getColor());
+				System.out.println(image.getImage()[i][j].getRed()+" "+image.getImage()[i][j].getGreen()+" "+image.getImage()[i][j].getBlue()+" ");
 			}
 		}
 
