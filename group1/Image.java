@@ -27,7 +27,7 @@ public class Image implements IImage{
 	//gets a single frame
 	public void readCam(){
 
-		//System.out.println(flyCam.Connect(frameRate));
+		flyCam.Connect(frameRate);
 		//System.out.println(flyCam.errn);
 		flyCam.NextFrame(camBytes);
 		//System.out.println(flyCam.errn);
