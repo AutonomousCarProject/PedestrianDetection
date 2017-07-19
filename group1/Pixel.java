@@ -13,9 +13,9 @@ public class Pixel implements IPixel {	//0-765
     private short green;
     private short blue;
 	
-	private static final int greyMargin = 0;
-	private static final int blackMargin = 600;
-	private static final int whiteMargin = 50;
+	private final int greyMargin = 30;
+	private final int blackMargin = 700;
+	private final int whiteMargin = 30;
 
 
 	Pixel(short red, short green, short blue){
@@ -103,10 +103,9 @@ public class Pixel implements IPixel {	//0-765
 		int rdiff = r - ave;
 		int gdiff = g - ave;
 		int bdiff = b - ave;
-		if(rdiff < colorMargin && gdiff < colorMargin && bdiff < colorMargin){	//if its not a distinct color
-			int topMargin = 765 - colorMargin;
-			if(r < colorMargin && g < colorMargin && b < colorMargin) color = 4;	//black
-			else if(r > topMargin && g > topMargin && b > topMargin) color = 5;	//white
+		if(rdiff < greyMargin && gdiff < greyMargin && bdiff < greyMargin){	//if its not a distinct color
+			if(r < blackMargin && g < blackMargin && b < blackMargin) color = 4;	//black
+			else if(r > whiteMargin && g > whiteMargin && b > whiteMargin) color = 5;	//white
 			else color = 3;
 		}
 		else if(rdiff > gdiff && rdiff > bdiff) color = 0;
