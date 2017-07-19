@@ -58,7 +58,7 @@ public class BlobFilter implements IMovingBlobReduction
 											&& blob.centerX <= 640 - CENTER_CHECK_WIDTH / 2
 											&& blob.centerY >= CENTER_CHECK_HEIGHT / 2
 											&& blob.centerY <= 480 - CENTER_CHECK_HEIGHT / 2
-											&& blob.velocityX >= CENTER_X_VELOCITY_MIN)
+											&& blob.velocityX >= CENTER_X_VELOCITY_MIN))
 				&& Math.abs(blob.velocityX) <= X_VELOCITY_MAX
 				&& blob.predictedX >= PREDICTED_BORDER_DISTANCE_MIN && blob.predictedX <= (640 - PREDICTED_BORDER_DISTANCE_MIN)
 				&& blob.predictedY >= PREDICTED_BORDER_DISTANCE_MIN && blob.predictedY <= (480 - PREDICTED_BORDER_DISTANCE_MIN);
