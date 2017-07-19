@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class IImageBoxDrawer implements IImageDrawing
 {
-    public static final int DEFAULT_LINE_THICKNESS = 10;
+    public static final int DEFAULT_LINE_THICKNESS = 3;
     public static final Color DEFAULT_LINE_COLOR = Color.YELLOW;
     
     private BufferedImage currentImage;
@@ -61,22 +61,30 @@ public class IImageBoxDrawer implements IImageDrawing
     }
     protected void setPixels(BufferedImage b, IPixel[][] pixels)
     {
-        int[] pixelColors1D = new int[pixels.length * pixels[0].length];
-        int i = 0;
+        //int[] pixelColors1D = new int[pixels.length * pixels[0].length];
+        //int i = 0;
         for(int r = 0; r < pixels.length; r++)
         {
             for(int c = 0; c < pixels[0].length; c++)
             {
-                short red = pixels[r][c].getRed();
-                short green = pixels[r][c].getGreen();
-                short blue = pixels[r][c].getBlue();
+                try
+                {
+                    short red = pixels[r][c].getRed();
+                    short green = pixels[r][c].getGreen();
+                    short blue = pixels[r][c].getBlue();
+
+                    int p = (255/*alpha*/ << 24) | (red << 16) | (green << 8) | blue;
+                    b.setRGB(r,c,p);
+                }
+                catch(ArrayIndexOutOfBoundsException e)
+                {
+                    
+                }
                 
-                int p = (255/*alpha*/ << 24) | (red << 16) | (green << 8) | blue;
-                pixelColors1D[i] = p;
                 
-                i++;
             }
         }
+        
     }
     protected void drawLines(Rectangle[] rects, BufferedImage image, Color lineColor, int lineThickness)
     {
@@ -100,7 +108,7 @@ public class IImageBoxDrawer implements IImageDrawing
                 
                 g.setStroke(bs);
                 g.setColor(lineColor);
-                g.drawLine(start.getX(),start.getY(),end.getX(),end.getY());
+                g.drawLine((int)start.getX(),(int)start.getY(),(int)end.getX(),(int)end.getY());
             }
         }
     }
@@ -108,14 +116,14 @@ public class IImageBoxDrawer implements IImageDrawing
     
     public class Point
     {
-        private int x,y;
-        public Point(int x, int y)
+        private float x,y;
+        public Point(float x, float y)
         {
             this.x = x;
             this.y = y;
         }
-        public int getX(){return x;}
-        public int getY(){return y;}
+        public float getX(){return x;}
+        public float getY(){return y;}
     }
     public class Rectangle
     {
