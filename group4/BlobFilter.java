@@ -3,7 +3,9 @@ package group4;
 import group3.MovingBlob;
 import group4.IMovingBlobReduction;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BlobFilter implements IMovingBlobReduction
 {
@@ -38,8 +40,7 @@ public class BlobFilter implements IMovingBlobReduction
 	 */
 	public List<MovingBlob> reduce(List<MovingBlob> blobs)
 	{
-		for (int i = blobs.size() - 1; i >= 0; i--) if (!isPedestrian(blobs.get(i))) blobs.remove(i);
-		return blobs;
+		return blobs.parallelStream().filter(p -> isPedestrian(p)).collect(Collectors.toList());
 	}
 	
 	/**
