@@ -13,6 +13,7 @@ import group3.MovingBlob;
 import group3.MovingBlobDetection;
 import group4.BlobFilter;
 import group5.IImageBoxDrawer;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,11 @@ public class Control extends LooiObject
         blobFilter = new BlobFilter();
         currentImage = new Image();
         boxDrawer = new IImageBoxDrawer();
+        boxDrawer.setUsingBasicColors(true);
     }
+    /**
+     * This method runs 60 timer per sec
+     */
     protected void looiStep()
     {
         currentImage.readCam();
@@ -54,17 +59,11 @@ public class Control extends LooiObject
         List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
         
         List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
-        
+        //System.out.println(movingBlobs.size());
         List<MovingBlob> filteredBlobs = blobFilter.reduce(movingBlobs);
         boxDrawer.draw(currentImage,filteredBlobs);
         
-        /*for(int r = 0; r < boxDrawer.getCurrentImage().getHeight(); r++)
-        {
-            for(int c = 0; c < boxDrawer.getCurrentImage().getWidth(); c++)
-            {
-                System.out.println(boxDrawer.getCurrentImage().getRGB(c,r));
-            }
-        }*/
+        
         
     }
     protected void looiPaint()
