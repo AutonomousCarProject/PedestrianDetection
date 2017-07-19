@@ -1,5 +1,7 @@
 package group2;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,15 +10,26 @@ import group1.IPixel;
 
 public class BlobDetection implements IBlobDetection
 {
-    private List<Blob> blobs = new LinkedList<>();
+    private static Deque<Blob> unusedBlobs = new ArrayDeque<>();
+    private static List<Blob> blobs = new LinkedList<>();
+
+    private static Blob[] blobRow = null;
 
     @Override
     public List<Blob> getBlobs(IImage image)
     {
+        unusedBlobs.addAll(blobs);
+        blobs.clear();
+
         IPixel[][] pixels = image.getImage();
         final int height = pixels.length;
         final int width = pixels[0].length;
         final int size = height * width;
+
+        if (blobRow == null)
+        {
+            blobRow = new Blob[width];
+        }
 
         for (int i = 0; i < size; i++)
         {
@@ -36,7 +49,7 @@ public class BlobDetection implements IBlobDetection
                         b = findBlob(col + 1, row, pixel.getColor(), pixel.getSaturation());
                         if (b == null)
                         {
-                            b = new Blob(2, 1, col, row, pixel);
+                            b = getBlob(2, 1, col, row, pixel);
                             blobs.add(b);
                         }
                         else
@@ -69,7 +82,7 @@ public class BlobDetection implements IBlobDetection
                         b = findBlob(col, row + 1, pixel.getColor(), pixel.getSaturation());
                         if (b == null)
                         {
-                            b = new Blob(1, 2, col, row, pixel);
+                            b = getBlob(1, 2, col, row, pixel);
                             blobs.add(b);
                         }
                         else
@@ -126,5 +139,19 @@ public class BlobDetection implements IBlobDetection
     {
         final float rx = x - b.centerX, ry = y - b.centerY;
         return (rx >= 0 && rx < b.width) && (ry >= 0 && ry < b.height);
+    }
+
+    private Blob getBlob(int width, int height, int centerX, int centerY, IPixel color)
+    {
+        if (unusedBlobs.isEmpty())
+        {
+            return new Blob(width, height, centerX, centerY, color);
+        }
+        else
+        {
+            Blob b = unusedBlobs.pop();
+            b.set(width, height, centerX, centerY, color);
+            return b;
+        }
     }
 }

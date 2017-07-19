@@ -5,17 +5,26 @@
  */
 package autonomouscarfinalprogram2;
 
+import com.looi.looi.LooiWindow;
+
 /**
  *
  * @author peter_000
  */
 public class AutonomousCarFinalProgram2 {
 
+    private static Hotkeys hotkeys;
+    private static LooiWindow mainWindow;
+    private static Control control;
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        // TODO code application logic here
+    public static void main(String[] args) 
+    {
+        mainWindow = new LooiWindow(60,true);
+        mainWindow.fitWindow();
+        hotkeys = new Hotkeys();
+        control = new Control();
     }
     
 }
