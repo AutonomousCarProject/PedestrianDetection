@@ -20,6 +20,10 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		movingBlobs = new LinkedList<>();
 	}
 	
+	public List<UnifiedBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
+		
+	}
+	
 	public List<MovingBlob> getMovingBlobs(List<Blob> blobList){
 		updateMovingBlobs(blobList);
 		return movingBlobs;
@@ -84,9 +88,10 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	private void updateUnmatched(MovingBlob movingBlob){
 
 		if(movingBlob.ageOffScreen>maxTimeOffScreen){
+			//removes blob if it has been gone too long
 			movingBlobs.remove(movingBlob);
 		} else {
-			//update position based on velocity
+			//update position based on most recent velocity
 			movingBlob.centerX += movingBlob.velocityX;
 			movingBlob.centerY += movingBlob.velocityY;
 			movingBlob.age++;
