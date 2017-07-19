@@ -8,7 +8,7 @@ import java.util.List;
 import group1.IImage;
 import group1.IPixel;
 
-public class BlobDetection implements IBlobDetection
+public class BlobDetection2 implements IBlobDetection
 {
     private static Deque<Blob> unusedBlobs = new ArrayDeque<>();
     private static List<Blob> blobs = new LinkedList<>();
@@ -38,70 +38,49 @@ public class BlobDetection implements IBlobDetection
 
             IPixel pixel = pixels[row][col];
 
-            if (col < width - 1)
+            if (row > 0)
             {
-                IPixel rightPixel = pixels[row][col + 1];
-                if (pixel.getColor() == rightPixel.getColor() && pixel.getSaturation() == rightPixel.getSaturation())
+                // Up Look
+                IPixel up = pixels[row - 1][col];
+                if (pixel.getColor() == up.getColor() && pixel.getSaturation() == up.getSaturation())
                 {
-                    Blob b = findBlob(col, row, pixel.getColor(), pixel.getSaturation());
-                    if (b == null)
+                    Blob blob = blobRow[col];
+                    if (blob == null)
                     {
-                        b = findBlob(col + 1, row, pixel.getColor(), pixel.getSaturation());
-                        if (b == null)
-                        {
-                            b = getBlob(2, 1, col, row, pixel);
-                            blobs.add(b);
-                        }
-                        else
-                        {
-                            if (!blobContains(b, col, row))
-                            {
-                                b.width = b.width + 1;
-                                b.centerX = col;
-                            }
-                        }
+                        blobRow[col] = getBlob(1, 2, col, row - 1, pixel);
                     }
-                    else
+                    else if (!blobContains(blob, col, row))
                     {
-                        if (!blobContains(b, col + 1, row))
-                        {
-                            b.width = b.width + 1;
-                        }
+                        blob.height = blob.height + 1;
                     }
+
+                    // no change to blobRow needed
                 }
             }
 
-            if (row < height - 1)
+            if (col > 0)
             {
-                IPixel downPixel = pixels[row + 1][col];
-                if (pixel.getColor() == downPixel.getColor() && pixel.getSaturation() == downPixel.getSaturation())
+                // Left look
+                IPixel left = pixels[row][col - 1];
+                if (pixel.getColor() == left.getColor() && pixel.getSaturation() == left.getSaturation())
                 {
-                    Blob b = findBlob(col, row, pixel.getColor(), pixel.getSaturation());
-                    if (b == null)
+                    Blob blob = blobRow[col - 1];
+                    if (blob == null)
                     {
-                        b = findBlob(col, row + 1, pixel.getColor(), pixel.getSaturation());
-                        if (b == null)
-                        {
-                            b = getBlob(1, 2, col, row, pixel);
-                            blobs.add(b);
-                        }
-                        else
-                        {
-                            if (!blobContains(b, col, row))
-                            {
-                                b.height = b.height + 1;
-                                b.centerY = row;
-                            }
-                        }
+                        blobRow[col] = getBlob(2, 1, col - 1, row, pixel);
                     }
-                    else
+                    else if (!blobContains(blob, col, row))
                     {
-                        if (!blobContains(b, col, row + 1))
-                        {
-                            b.height = b.height + 1;
-                        }
+                        blob.width = blob.width + 1;
                     }
+
+                    blobRow[col] = blobRow[col - 1];
                 }
+            }
+
+            if (blobRow[col] != null)
+            {
+                blobs.add(blobRow[col]);
             }
         }
 
@@ -116,6 +95,8 @@ public class BlobDetection implements IBlobDetection
             b.centerX = b.centerX + (b.width / 2f);
             b.centerY = b.centerY + (b.height / 2f);
         }
+
+        System.out.println(toRemove.size());
 
         blobs.removeAll(toRemove);
 
