@@ -88,6 +88,7 @@ public class Pixel implements IPixel {	//0-765
 	
 	}
 	
+	/*
 	public void convert(){
 		//luminance = sum of rgb
 		luma = (short)(red + green + blue);
@@ -113,4 +114,5 @@ public class Pixel implements IPixel {	//0-765
 		else if(gdiff > rdiff && gdiff > bdiff) color = 1;
 		else if(bdiff > rdiff && bdiff > gdiff) color = 2;
 	}
+	*/
 }
