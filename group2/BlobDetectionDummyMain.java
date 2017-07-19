@@ -2,14 +2,14 @@ package group2;
 
 import java.util.List;
 
-import group1.Dummy3;
-import group1.IImage;
+import group1.*;
 
 public class BlobDetectionDummyMain
 {
     public static void main(String... args)
     {
-        IImage image = new Dummy3();
+        IImage image = new Image();
+        image.readCam();
         IBlobDetection blobDetect = new BlobDetection();
 
         List<Blob> blobs = blobDetect.getBlobs(image);
