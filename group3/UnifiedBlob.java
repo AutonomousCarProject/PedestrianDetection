@@ -6,32 +6,26 @@ import java.util.Set;
 import group2.Blob;
 
 public class UnifiedBlob extends MovingBlob {
-	
-	// The X and Y components of the MovingBlob's velocity.
-    public float velocityX, velocityY;
-    
-	// The predicted X and Y coordinates of the MovingBlob in the next frame.
-    public float predictedX, predictedY;
-    
-    // The time, in frames, that the MovingBlob has been on-screen.
-    public int age;
-    
-    // The time, in frames, that the MovingBlob has been off-screen.
-    public int ageOffScreen;
-    
-    public int width, height;
-    public float centerX, centerY;
 
 	public UnifiedBlob(Set<MovingBlob> movingBlobs) {
 		super();
 		int numBlobs = movingBlobs.size();
-		float totalVelocityX;
-		float totalVelocityY;
-		float totalCenterX;
-		float totalCenterY;
-		//find average
-		
-		
+		float totalVelocityX = 0;
+		float totalVelocityY = 0;
+		float totalCenterX = 0;
+		float totalCenterY = 0;
+		int top = 1000000;
+		int bottom = 0;
+		int left = 1000000;
+		int right = 0;
+		//find averages and other values
+		for(MovingBlob movingBlob: movingBlobs){
+			totalVelocityX +=movingBlob.velocityX;
+			totalVelocityY +=movingBlob.velocityY;
+			totalCenterX +=movingBlob.centerX;
+			totalCenterY +=movingBlob.centerY;
+			
+		}
 	}
 
 }
