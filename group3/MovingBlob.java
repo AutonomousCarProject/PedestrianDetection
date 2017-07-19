@@ -31,6 +31,10 @@ public class MovingBlob extends Blob {
 		updatePredictedPosition();
 	}
 	
+	public MovingBlob(){
+		super(0, 0, 0, 0, null);
+	}
+	
 	/**
 	 * Updates the predicted position of the MovingBlob based on its center and
 	 * velocity.

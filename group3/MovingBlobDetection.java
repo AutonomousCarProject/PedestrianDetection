@@ -20,6 +20,10 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		movingBlobs = new LinkedList<>();
 	}
 	
+	public List<UnifiedBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
+		
+	}
+	
 	public List<MovingBlob> getMovingBlobs(List<Blob> blobList){
 		updateMovingBlobs(blobList);
 		return movingBlobs;
