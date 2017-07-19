@@ -15,7 +15,7 @@ public class MovingBlob extends Blob {
     
     // The time, in frames, that the MovingBlob has been off-screen.
     public int ageOffScreen;
-	
+	 
     /**
      * Creates a MovingBlob from a Blob. This is used when a previously unseen Blob
      * comes on-screen.
