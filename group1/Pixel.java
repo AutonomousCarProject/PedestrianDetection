@@ -84,7 +84,7 @@ public class Pixel implements IPixel {	//0-765
 		}
 		else if(rdiff > gdiff && rdiff > bdiff) color = 0;
 		else if(gdiff > rdiff && gdiff > bdiff) color = 1;
-		else if(bdiff > rdiff && bdiff > gdiff) color = 2;		
+		else if(bdiff > rdiff && bdiff > gdiff) color = 2;
 	
 	}
 	
