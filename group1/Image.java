@@ -5,7 +5,7 @@ import java.io.*;
 import group1.fly0cam.FlyCamera;
 
 //Defines image as an 2d array of pixels
-class Image implements IImage{
+public class Image implements IImage{
 	
 
 	public static final int height = 240;
@@ -28,7 +28,8 @@ class Image implements IImage{
 	//gets a single frame
 	public void readCam(){
 
-		System.out.println(flyCam.Connect(frameRate));
+		flyCam.Connect(frameRate);
+		System.out.println("TILE: " + flyCam.tile);
 		System.out.println(flyCam.errn);
 		flyCam.NextFrame(camBytes);
 		System.out.println(flyCam.errn);
@@ -51,12 +52,13 @@ class Image implements IImage{
 			for(int j = 0 ; j < width ; j ++){
 				
 				image[j][i] = new Pixel((short)(camBytes[pos]&255), (short)(camBytes[pos + 1]&255), (short)(camBytes[pos + 1 + width * 2]&255));
-
 				pos += 2;
 
 			}
 
+
 			pos += width * 2;
+
 
 		}
 

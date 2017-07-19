@@ -3,13 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package autonomouscarfinalprogram;
+package com.looi.looi.utilities;
+
+import java.io.Serializable;
 
 /**
  *
  * @author peter_000
  */
-public interface IImage
+public interface InputBoolean<InputType> extends Serializable
 {
-    IPixel[][] getImage();
+    public boolean check(InputType i);
 }

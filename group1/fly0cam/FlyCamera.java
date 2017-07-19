@@ -133,7 +133,9 @@ public class FlyCamera {
       break;} //~while
     if (why>0) if (why<3) System.out.println("Can't open file " + fiName);
     errn = why;
+    System.out.println("Tile: " + tile);
     return why==0;} //~Connect
+
 
   public static String ErrorNumberText(int errno) { // to explain errn in toString()
     if (errno == -20) return "ByteArray is not same size as received data";
