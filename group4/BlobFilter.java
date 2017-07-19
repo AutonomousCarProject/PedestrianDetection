@@ -30,11 +30,7 @@ public class BlobFilter implements IMovingBlobReduction
 	 */
 	public List<MovingBlob> reduce(List<MovingBlob> blobs)
 	{
-		for (int i = 0; i < blobs.size(); i++)
-		{
-			if (!isPedestrian(blobs.get(i))) blobs.remove(i--);
-
-		}
+		for (int i = blobs.size() - 1; i >= 0; i--) if (!isPedestrian(blobs.get(i))) blobs.remove(i);
 		return blobs;
 	}
 	
