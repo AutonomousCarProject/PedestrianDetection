@@ -19,6 +19,9 @@ public class Image implements IImage{
 	private byte[] camBytes = new byte[height*width*4];
 	private IPixel[][] image = new Pixel[width][height];
 
+	public Image(){
+		flyCam.Connect(frameRate);
+	}
 	
 	public IPixel[][] getImage(){
 		return image;
@@ -28,11 +31,11 @@ public class Image implements IImage{
 	//gets a single frame
 	public void readCam(){
 
-		flyCam.Connect(frameRate);
-		System.out.println("TILE: " + flyCam.tile);
-		System.out.println(flyCam.errn);
+
+		//System.out.println("TILE: " + flyCam.tile);
+		//System.out.println(flyCam.errn);
 		flyCam.NextFrame(camBytes);
-		System.out.println(flyCam.errn);
+		//System.out.println(flyCam.errn);
 		byteConvert();
 
 	}
