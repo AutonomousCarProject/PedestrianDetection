@@ -8,6 +8,8 @@ package group5;
 import group1.IImage;
 import group1.IPixel;
 import group2.IBlobDetection;
+import group2.Blob;
+import group3.MovingBlob;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -33,27 +35,26 @@ public class IImageBoxDrawer implements IImageDrawing
     }
     
     
-    public void draw(IImage image, IBlobDetection iBlobs)
+    public void draw(IImage image, List<MovingBlob> iBlobs)
     {
         Rectangle[] rectangles = findRectangles(image,iBlobs);
-        BufferedImage b = new BufferedImage(image.getYUVImage().length,image.getYUVImage()[0].length,BufferedImage.TYPE_INT_ARGB);
-        setPixels(b,image.getYUVImage());
+        BufferedImage b = new BufferedImage(image.getImage().length,image.getImage()[0].length,BufferedImage.TYPE_INT_ARGB);
+        setPixels(b,image.getImage());
         drawLines(rectangles,b,DEFAULT_LINE_COLOR,DEFAULT_LINE_THICKNESS);
         currentImage = b;
     }
-    protected Rectangle[] findRectangles(IImage image, IBlobDetection iBlobs)
+    protected Rectangle[] findRectangles(IImage image, List<MovingBlob> iBlobs)
     {
         //...
-        Rectangle[] rectangles = new Rectangle[iBlobs.getBlobs().size()];
-        List<IBlob> blobs = iBlobs.getBlobs();
-        for(int i = 0; i < blobs.size(); i++)
+        Rectangle[] rectangles = new Rectangle[iBlobs.size()];
+        for(int i = 0; i < iBlobs.size(); i++)
         {
-            IBlob b = blobs.get(i);
+            Blob b = iBlobs.get(i);
             Point[] points = new Point[4];
-            points[0] = new Point(b.getCenterX()-b.getWidth()/2,b.getCenterY()-b.getHeight()/2);
-            points[1] = new Point(b.getCenterX()+b.getWidth()/2,b.getCenterY()-b.getHeight()/2);
-            points[2] = new Point(b.getCenterX()+b.getWidth()/2,b.getCenterY()+b.getHeight()/2);
-            points[3] = new Point(b.getCenterX()-b.getWidth()/2,b.getCenterY()+b.getHeight()/2);
+            points[0] = new Point(b.centerX-b.width/2,b.centerY-b.height/2);
+            points[1] = new Point(b.centerX+b.width/2,b.centerY-b.height/2);
+            points[2] = new Point(b.centerX+b.width/2,b.centerY+b.height/2);
+            points[3] = new Point(b.centerX-b.width/2,b.centerY+b.height/2);
             rectangles[i] = new Rectangle(points);
         }
         return rectangles;

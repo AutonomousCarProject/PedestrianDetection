@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package autonomouscarfinalprogram;
+package com.looi.looi.utilities;
 
-import java.util.List;
+import java.io.Serializable;
 
 /**
  *
  * @author peter_000
  */
-public interface IBlobDetection
+public interface TwoInsOneOut <A,B,C> extends Serializable
 {
-    List<Blob> getBlobs(IImage image);
+    public C make(A a, B b);
 }
