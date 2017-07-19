@@ -15,7 +15,8 @@ public class Image implements IImage{
 	private FlyCamera flyCam = new FlyCamera();
 	
 	//307200
-	private byte[] camBytes = new byte[2457636];
+	//private byte[] camBytes = new byte[2457636];
+	private byte[] camBytes = new byte[height*width*4];
 	private IPixel[][] image = new Pixel[width][height];
 
 	
@@ -28,9 +29,10 @@ public class Image implements IImage{
 	public void readCam(){
 
 		flyCam.Connect(frameRate);
-		//System.out.println(flyCam.errn);
+		System.out.println("TILE: " + flyCam.tile);
+		System.out.println(flyCam.errn);
 		flyCam.NextFrame(camBytes);
-		//System.out.println(flyCam.errn);
+		System.out.println(flyCam.errn);
 		byteConvert();
 
 	}
@@ -47,15 +49,16 @@ public class Image implements IImage{
 
 		for(int i = 0 ; i < height ; i ++){
 
-			for(int j = 0 ; j < width; j ++){
+			for(int j = 0 ; j < width ; j ++){
 				
-				image[j][i] = new Pixel((short)(camBytes[pos]&255), (short)(camBytes[pos + 1]&255), (short)(camBytes[pos + 1 + width*2]&255));
-
+				image[j][i] = new Pixel((short)(camBytes[pos]&255), (short)(camBytes[pos + 1]&255), (short)(camBytes[pos + 1 + width * 2]&255));
 				pos += 2;
 
 			}
 
-			pos += width*2;
+
+			pos += width * 2;
+
 
 		}
 
