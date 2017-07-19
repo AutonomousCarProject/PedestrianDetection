@@ -5,7 +5,7 @@ import java.io.*;
 import group1.fly0cam.FlyCamera;
 
 //Defines image as an 2d array of pixels
-class Image implements IImage{
+public class Image implements IImage{
 	
 
 	public static final int height = 480;
@@ -51,7 +51,7 @@ class Image implements IImage{
 				
 				image[j/2][i/2] = new Pixel((short)(camBytes[pos]&255), (short)(camBytes[pos + 1]&255), (short)(camBytes[pos + 1 + width]&255));
 
-				pos += 1;
+				pos ++;
 
 			}
 
