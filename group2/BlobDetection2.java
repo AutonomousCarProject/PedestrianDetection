@@ -38,15 +38,19 @@ public class BlobDetection2 implements IBlobDetection
 
             IPixel pixel = pixels[row][col];
 
+            boolean blobRowSet = false;
+            boolean createdNewBlob = false;
+
             if (row > 0)
             {
                 // Up Look
                 IPixel up = pixels[row - 1][col];
-                if (pixel.getColor() == up.getColor() && pixel.getSaturation() == up.getSaturation())
+                if (pixel.getColor() == up.getColor())
                 {
                     Blob blob = blobRow[col];
                     if (blob == null)
                     {
+                        createdNewBlob = true;
                         blobRow[col] = getBlob(1, 2, col, row - 1, pixel);
                     }
                     else if (!blobContains(blob, col, row))
@@ -54,7 +58,7 @@ public class BlobDetection2 implements IBlobDetection
                         blob.height = blob.height + 1;
                     }
 
-                    // no change to blobRow needed
+                    blobRowSet = true;
                 }
             }
 
@@ -62,23 +66,31 @@ public class BlobDetection2 implements IBlobDetection
             {
                 // Left look
                 IPixel left = pixels[row][col - 1];
-                if (pixel.getColor() == left.getColor() && pixel.getSaturation() == left.getSaturation())
+                if (pixel.getColor() == left.getColor())
                 {
                     Blob blob = blobRow[col - 1];
                     if (blob == null)
                     {
+                        createdNewBlob = true;
                         blobRow[col] = getBlob(2, 1, col - 1, row, pixel);
+                        blobRow[col - 1] = blobRow[col];
                     }
                     else if (!blobContains(blob, col, row))
                     {
                         blob.width = blob.width + 1;
+                        blobRow[col] = blobRow[col - 1];
                     }
 
-                    blobRow[col] = blobRow[col - 1];
+                    blobRowSet = true;
                 }
             }
 
-            if (blobRow[col] != null)
+            if (!blobRowSet)
+            {
+                blobRow[col] = null;
+            }
+
+            if (createdNewBlob)
             {
                 blobs.add(blobRow[col]);
             }
@@ -95,25 +107,9 @@ public class BlobDetection2 implements IBlobDetection
             b.centerX = b.centerX + (b.width / 2f);
             b.centerY = b.centerY + (b.height / 2f);
         }
-
-        System.out.println(toRemove.size());
-
         blobs.removeAll(toRemove);
 
         return blobs;
-    }
-
-    private Blob findBlob(int x, int y, int color, int saturation)
-    {
-        for (Blob b : blobs)
-        {
-            if (blobContains(b, x, y) && (b.color.getColor() == color) && (b.color.getSaturation() == saturation))
-            {
-                return b;
-            }
-        }
-
-        return null;
     }
 
     private boolean blobContains(Blob b, int x, int y)
