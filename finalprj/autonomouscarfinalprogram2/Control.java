@@ -30,6 +30,8 @@ public class Control extends LooiObject
     private IImageBoxDrawer boxDrawer;
     private Image currentImage;
     private BufferedImage testBI = new BufferedImage(10,10,BufferedImage.TYPE_INT_ARGB);
+    
+    private int previousFrame;
     {
         for(int r = 0; r < testBI.getHeight(); r++)
         {
@@ -48,6 +50,8 @@ public class Control extends LooiObject
         currentImage = new Image();
         boxDrawer = new IImageBoxDrawer();
         boxDrawer.setUsingBasicColors(true);
+        
+        previousFrame = -1;
     }
     /**
      * This method runs 60 timer per sec
@@ -63,14 +67,15 @@ public class Control extends LooiObject
         List<MovingBlob> filteredBlobs = blobFilter.reduce(movingBlobs);
         boxDrawer.draw(currentImage,filteredBlobs);
         
-        System.out.println(currentImage.getFrameNo());
-        if(currentImage.getFrameNo() == 8){
+        previousFrame++;
+        
+        if(currentImage.getFrameNo()==previousFrame){
+        	previousFrame = -1;
         	currentImage.finish();
+            currentImage = new Image();
         	blobDetection = new BlobDetection();
             movingBlobDetection = new MovingBlobDetection();
             blobFilter = new BlobFilter();
-            currentImage = new Image();
-            boxDrawer = new IImageBoxDrawer();
             boxDrawer.setUsingBasicColors(true);
         }
         
