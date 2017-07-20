@@ -23,8 +23,8 @@ public class AutonomousCarFinalProgram2 {
     {
         mainWindow = new LooiWindow(60,true);
         mainWindow.fitWindow();
-        hotkeys = new Hotkeys();
         control = new Control();
+        hotkeys = new Hotkeys();
     }
     
 }

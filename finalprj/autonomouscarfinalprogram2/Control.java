@@ -30,8 +30,6 @@ public class Control extends LooiObject
     private IImageBoxDrawer boxDrawer;
     private Image currentImage;
     private BufferedImage testBI = new BufferedImage(10,10,BufferedImage.TYPE_INT_ARGB);
-    
-    private int previousFrame;
     {
         for(int r = 0; r < testBI.getHeight(); r++)
         {
@@ -42,6 +40,10 @@ public class Control extends LooiObject
             }
         }
     }
+    
+    private int previousFrame;
+    public static boolean keepGoing;
+    
     public Control()
     {
         blobDetection = new BlobDetection();
@@ -51,37 +53,43 @@ public class Control extends LooiObject
         boxDrawer = new IImageBoxDrawer();
         boxDrawer.setUsingBasicColors(true);
         
-        previousFrame = -1;
+        previousFrame = 0;
+        keepGoing = true;
     }
     /**
      * This method runs 60 timer per sec
      */
     protected void looiStep()
     {
-        currentImage.readCam();
-        
-        List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
-        
-        List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
-        //System.out.println(movingBlobs.size());
-        List<MovingBlob> filteredBlobs = blobFilter.reduce(movingBlobs);
-        boxDrawer.draw(currentImage,filteredBlobs);
-        
-        previousFrame++;
-        
-        if(currentImage.getFrameNo()==previousFrame){
-        	previousFrame = -1;
-        	currentImage.finish();
-            currentImage = new Image();
-        	blobDetection = new BlobDetection();
-            movingBlobDetection = new MovingBlobDetection();
-            blobFilter = new BlobFilter();
-            boxDrawer.setUsingBasicColors(true);
-        }
-        
-        
-        
+    	if(keepGoing){
+	        currentImage.readCam();
+	        
+	        previousFrame++;
+	        
+	        if(currentImage.getFrameNo()==previousFrame){
+	        	previousFrame = 0;
+	        	currentImage.finish();
+	            currentImage = new Image();
+	        	blobDetection = new BlobDetection();
+	            movingBlobDetection = new MovingBlobDetection();
+	            blobFilter = new BlobFilter();
+	            boxDrawer.setUsingBasicColors(true);
+	            currentImage.readCam();
+	        }
+	        
+	        List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
+	        
+	        List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
+	        //System.out.println(movingBlobs.size());
+	        List<MovingBlob> filteredBlobs = blobFilter.reduce(movingBlobs);
+	        boxDrawer.draw(currentImage,filteredBlobs);   
+    	}   
     }
+    
+    public static void pauseUnpause(){
+    	keepGoing = !keepGoing;
+    }
+    
     protected void looiPaint()
     {
         drawImage(boxDrawer.getCurrentImage(),0,0,getInternalWidth(),getInternalHeight());
