@@ -34,7 +34,7 @@ public class BlobDetectionRender extends Application
 
         IPixel[][] pixels = image.getImage();
 
-        final int scale = 3;
+        final int scale = 30;
 
         final int width = pixels[0].length;
         final int height = pixels.length;

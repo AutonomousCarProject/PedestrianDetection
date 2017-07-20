@@ -18,7 +18,7 @@ public class Pixel implements IPixel
     private final int blackMargin = 400;
     private final int whiteMargin = 700; // 0-765
 
-    Pixel(short red, short green, short blue)
+    public Pixel(short red, short green, short blue)
     {
         this.red = red;
         this.green = green;

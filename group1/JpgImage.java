@@ -50,6 +50,11 @@ public class JpgImage implements IImage
                 int b = rgb & bMask;
 
                 image[x][y] = new Pixel((short) r, (short) g, (short) b);
+
+                // if (x == 7 && y == 7)
+                // {
+                // image[x][y] = new Pixel((short) 255, (short) 0, (short) 0);
+                // }
             }
         }
     }

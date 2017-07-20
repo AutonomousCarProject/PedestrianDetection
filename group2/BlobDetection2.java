@@ -12,7 +12,7 @@ import group1.IPixel;
 public class BlobDetection2 implements IBlobDetection
 {
     private static Deque<Blob> unusedBlobs = new ArrayDeque<>();
-    private static List<Blob> blobs = new ArrayList<>();
+    private List<Blob> blobs = new ArrayList<>();
 
     private static Blob[] blobRow = null;
 
@@ -136,6 +136,7 @@ public class BlobDetection2 implements IBlobDetection
     private boolean blobContains(Blob b, int x, int y)
     {
         final float rx = x - b.x, ry = y - b.y;
+
         return (rx >= 0 && rx < b.width) && (ry >= 0 && ry < b.height);
     }
 
