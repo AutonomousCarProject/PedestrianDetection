@@ -3,7 +3,7 @@ package group1;
 //Defines basic implementation for pixel
 public class Pixel implements IPixel
 { // 0-765
-    // YUV
+  // YUV
     private short luma;
     private short saturation;
     private short color; // 0: red, 1: green, 2: blue, 3: grey, 4: black, 5:
@@ -18,7 +18,7 @@ public class Pixel implements IPixel
     private final int blackMargin = 400;
     private final int whiteMargin = 700; // 0-765
 
-    public Pixel(short red, short green, short blue)
+    Pixel(short red, short green, short blue)
     {
         this.red = red;
         this.green = green;
@@ -80,19 +80,19 @@ public class Pixel implements IPixel
         int rdiff = r - ave;
         if (rdiff < 0)
         {
-            rdiff = rdiff * -1;
+            rdiff = -rdiff;
         }
 
         int gdiff = g - ave;
         if (gdiff < 0)
         {
-            gdiff = gdiff * -1;
+            gdiff = -gdiff;
         }
 
         int bdiff = b - ave;
         if (bdiff < 0)
         {
-            bdiff = bdiff * -1;
+            bdiff = -bdiff;
         }
 
         if (rdiff < greyMargin && gdiff < greyMargin && bdiff < greyMargin)
@@ -104,12 +104,11 @@ public class Pixel implements IPixel
             else
                 color = 3;
         }
-        else if (rdiff > gdiff && rdiff > bdiff)
+        else if (r > g && r > b)
             color = 0;
-        else if (gdiff > rdiff && gdiff > bdiff)
+        else if (g > r && g > b)
             color = 1;
-        else if (bdiff > rdiff && bdiff > gdiff) color = 2;
-
+        else if (b > r && b > g) color = 2;
     }
 
     /*
