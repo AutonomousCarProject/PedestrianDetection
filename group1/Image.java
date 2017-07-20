@@ -44,6 +44,10 @@ public class Image implements IImage{
 		flyCam.Finish();
 
 	}
+	
+	public int getFrameNo(){
+		return flyCam.frameNo;
+	}
 
 	private void byteConvert(){
 

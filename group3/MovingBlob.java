@@ -1,5 +1,6 @@
 package group3;
 
+import group1.IPixel;
 import group2.Blob;
 
 public class MovingBlob extends Blob {
@@ -32,6 +33,58 @@ public class MovingBlob extends Blob {
 	}
 	
 	/**
+	 * Default constructor for MovingBlob. This primarily exists to make the creation of
+	 * UnifiedBlobs more simple. 
+	 */
+	public MovingBlob(){
+		super(0, 0, 0, 0, null);
+	}
+	
+	public MovingBlob(int width, int height, float centerX, float centerY,IPixel color,float velocityX,float velocityY){
+		super(width, height, centerX, centerY, color);
+		this.velocityX = velocityX;
+		this.velocityY = velocityY;
+		this.age = 15;
+		this.ageOffScreen = 0;
+		updatePredictedPosition();
+	}
+	
+	/**
+	 * This method is used to scale the X velocity of the MovingBlob. This is used to reduce
+	 * the effect of a pedestrian being far away from the camera and seeming to move more slowly
+	 * because of the distance. 
+	 * 
+	 * @return 	The X velocity of the MovingBlob scaled based on the MovingBlob's width
+	 * 			and height
+	 */
+	public float getScaledVelocityX(){
+		return this.velocityX/(this.width+this.height);
+	}
+	
+	/**
+	 * This method is used to scale the Y velocity of the MovingBlob. This is used to reduce
+	 * the effect of a pedestrian being far away from the camera and seeming to move more slowly
+	 * because of the distance. 
+	 * 
+	 * @return 	The Y velocity of the MovingBlob scaled based on the MovingBlob's width
+	 * 			and height
+	 */
+	public float getScaledVelocityY(){
+		return this.velocityY/(this.width+this.height);
+	}
+	
+	/**
+	 * Simple method to get the magnitude of the MovingBlob's velocity.
+	 * 
+	 * @return The magnitude of the scaled velocity of the MovingBlob
+	 */
+	public float getVelocityMagnitude(){
+		float scaledX = this.getScaledVelocityX();
+		float scaledY = this.getScaledVelocityY();
+		return (float)Math.sqrt(scaledX*scaledX + scaledY*scaledY);
+	}
+	
+	/**
 	 * Updates the predicted position of the MovingBlob based on its center and
 	 * velocity.
 	 */
@@ -41,6 +94,6 @@ public class MovingBlob extends Blob {
 	}
 	
 	public String toString(){
-		return "Moving blob: Color " + color.getColor() + " X: " + centerX + " Y: " + centerY;
+		return "Moving blob: Color " + /*color.getColor() + */ " X: " + centerX + " Y: " + centerY + " vX: " + velocityX+ " vY: " + velocityY;
 	}
 }
