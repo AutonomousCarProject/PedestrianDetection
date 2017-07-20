@@ -4,7 +4,7 @@ import java.util.List;
 
 import group1.IImage;
 import group1.IPixel;
-import group1.JpgImage;
+import group1.Image;
 import group1.Pixel;
 import group3.IMovingBlobDetection;
 import group3.MovingBlobDetection;
@@ -29,12 +29,13 @@ public class BlobDetectionRender extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        IImage image = new JpgImage("src/testImage3.png");
+        // IImage image = new JpgImage("src/testImage1.png");
+        IImage image = new Image();
         image.readCam();
 
         IPixel[][] pixels = image.getImage();
 
-        final int scale = 30;
+        final int scale = 3;
 
         final int width = pixels[0].length;
         final int height = pixels.length;
@@ -56,8 +57,8 @@ public class BlobDetectionRender extends Application
                 {
                     //@formatter:off
                     IPixel p = pixels[j][i];
-//                    Paint fill = Color.rgb(p.getRed(), p.getGreen(), p.getBlue());
-                     Paint fill = getPaint(p);
+                    Paint fill = Color.rgb(p.getRed(), p.getGreen(), p.getBlue());
+//                     Paint fill = getPaint(p);
                     gc.setFill(fill);
                     
                     //@formatter:on
@@ -67,7 +68,7 @@ public class BlobDetectionRender extends Application
             }
         }
 
-        IBlobDetection blobDetect = new BlobDetection2();
+        IBlobDetection blobDetect = new BlobDetection3();
         IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
         IMovingBlobReduction blobFilter = new BlobFilter();
 
@@ -115,7 +116,7 @@ public class BlobDetectionRender extends Application
             case 0:
                 return (Color.RED);
             case 1:
-                return (Color.GREEN);
+                return (Color.LIME);
             case 2:
                 return (Color.BLUE);
             case 3:

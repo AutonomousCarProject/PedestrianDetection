@@ -34,7 +34,6 @@ public class BlobDetection2 implements IBlobDetection
 
         for (int i = 0; i < size; i++)
         {
-
             final int row = i / width;
             final int col = i % width;
 
