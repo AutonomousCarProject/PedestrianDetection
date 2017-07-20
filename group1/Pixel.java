@@ -64,17 +64,17 @@ public class Pixel implements IPixel {	//0-765
 		
 		int rdiff = r - ave;
 		if(rdiff < 0){
-			rdiff = rdiff*-1;
+			rdiff = -rdiff;
 		}
 		
 		int gdiff = g - ave;
 		if(gdiff < 0){
-			gdiff = gdiff*-1;
+			gdiff = -gdiff;
 		}
 		
 		int bdiff = b - ave;
 		if(bdiff < 0){
-			bdiff = bdiff*-1;
+			bdiff = -bdiff;
 		}		
 		
 		if(rdiff < greyMargin && gdiff < greyMargin && bdiff < greyMargin){	//if its not a distinct color
@@ -82,10 +82,9 @@ public class Pixel implements IPixel {	//0-765
 			else if(r > whiteMargin && g > whiteMargin && b > whiteMargin) color = 5;	//white
 			else color = 3;
 		}
-		else if(rdiff > gdiff && rdiff > bdiff) color = 0;
-		else if(gdiff > rdiff && gdiff > bdiff) color = 1;
-		else if(bdiff > rdiff && bdiff > gdiff) color = 2;
-	
+		else if(r > g && r > b) color = 0;
+		else if(g > r && g > b) color = 1;
+		else if(b > r && b > g) color = 2;
 	}
 	
 	/*

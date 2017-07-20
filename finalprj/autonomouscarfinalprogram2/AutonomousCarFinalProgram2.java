@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package autonomouscarfinalprogram2;
+package finalprj.autonomouscarfinalprogram2;
 
 import com.looi.looi.LooiWindow;
 

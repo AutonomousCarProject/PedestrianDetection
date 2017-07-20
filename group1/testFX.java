@@ -13,97 +13,97 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Color.*;
 
 public class testFX extends Application{
-	
-
-	public double width = 1000.0;
-	public double height = 1000.0;
-	public Group rootNode = new Group();
-
-	public static void main(String args[]){
-		
-		launch(args);
-
-	}
-
-	public void start(Stage stage){
-
-		
-		stage.setTitle("JavaFX Window");
-
-   		Scene myScene = new Scene(rootNode, width, height);
-		stage.setScene(myScene);
-		//Canvas myCanvas = new Canvas(width, height);
 
 
-		Image image = new Image();
-		image.readCam();
+    public double width = 1000.0;
+    public double height = 1000.0;
+    public Group rootNode = new Group();
 
-		Rectangle pixel;
+    public static void main(String args[]){
 
-		
+        launch(args);
 
-		for(int i = 0 ; i < image.height ; i++){
-			
-			for(int j = 0 ; j < image.width ; j++){
+    }
 
-				pixel = new Rectangle((double)j, (double)i, 1, 1);
-
-				switch(image.getImage()[j][i].getColor())
-				{
-
-					case 0:
-						pixel.setFill(Color.RED);
-						break;
-
-					case 1:
-						pixel.setFill(Color.GREEN);
-						break;
-
-					case 2:
-						pixel.setFill(Color.BLUE);
-						break;
-
-					case 3:
-						pixel.setFill(Color.GRAY);
-						break;
-
-					case 4:
-						pixel.setFill(Color.BLACK);
-						break;
-
-					case 5:
-						pixel.setFill(Color.WHITE);
-						break;
-
-					default:
-						System.out.println("Something is broken...");
-						break;
-
-				}
-				rootNode.getChildren().add(pixel);
-
-			}
-
-		}
-
-		
-		
-		for(int i = 0 ; i < image.height ; i++){
-			
-			for(int j = 320 ; j < image.width + 320 ; j++){
-
-				pixel = new Rectangle((double)j, (double)i, 1, 1);
-				pixel.setFill(Color.color((double)image.getImage()[j - 320][i].getRed()/255.0, (double)image.getImage()[j - 320][i].getGreen()/255.0, (double)image.getImage()[j -320][i].getBlue()/255.0));
-				rootNode.getChildren().add(pixel);
-
-			}
-
-		}
+    public void start(Stage stage){
 
 
-		//rootNode.getChildren().add()
-		stage.show();
+        stage.setTitle("JavaFX Window");
 
-	}
+        Scene myScene = new Scene(rootNode, width, height);
+        stage.setScene(myScene);
+        //Canvas myCanvas = new Canvas(width, height);
+
+
+        Image image = new Image();
+        image.readCam();
+
+        Rectangle pixel;
+
+
+
+        for(int i = 0 ; i < image.height ; i++){
+
+            for(int j = 0 ; j < image.width ; j++){
+
+                pixel = new Rectangle((double)j, (double)i, 1, 1);
+
+                switch(image.getImage()[j][i].getColor())
+                {
+
+                    case 0:
+                        pixel.setFill(Color.RED);
+                        break;
+
+                    case 1:
+                        pixel.setFill(Color.GREEN);
+                        break;
+
+                    case 2:
+                        pixel.setFill(Color.BLUE);
+                        break;
+
+                    case 3:
+                        pixel.setFill(Color.GRAY);
+                        break;
+
+                    case 4:
+                        pixel.setFill(Color.BLACK);
+                        break;
+
+                    case 5:
+                        pixel.setFill(Color.WHITE);
+                        break;
+
+                    default:
+                        System.out.println("Something is broken...");
+                        break;
+
+                }
+                rootNode.getChildren().add(pixel);
+
+            }
+
+        }
+
+
+
+        for(int i = 0 ; i < image.height ; i++){
+
+            for(int j = 320 ; j < image.width + 320 ; j++){
+
+                pixel = new Rectangle((double)j, (double)i, 1, 1);
+                pixel.setFill(Color.color((double)image.getImage()[j - 320][i].getRed()/255.0, (double)image.getImage()[j - 320][i].getGreen()/255.0, (double)image.getImage()[j -320][i].getBlue()/255.0));
+                rootNode.getChildren().add(pixel);
+
+            }
+
+        }
+
+
+        //rootNode.getChildren().add()
+        stage.show();
+
+    }
 
 }
