@@ -31,20 +31,24 @@ public class UnifiedBlob extends MovingBlob {
 			float blobLeftSide = movingBlob.centerX - movingBlob.width/2;
 			if (blobLeftSide < left) left = blobLeftSide;
 			
-			float blobTop = movingBlob.centerY + movingBlob.height/2;
-			if (blobTop > top) top = blobTop;
+			float blobTop = movingBlob.centerY - movingBlob.height/2;
+			if (blobTop < top) top = blobTop;
 			
-			float blobBottom = movingBlob.centerY - movingBlob.height/2;
-			if (blobBottom < bottom) bottom = blobBottom;
+			float blobBottom = movingBlob.centerY + movingBlob.height/2;
+			if (blobBottom > bottom) bottom = blobBottom;
 		}
-		
+		System.out.println("top:" + top);
+		System.out.println("bottom:" + bottom);
+		System.out.println("left:" + left);
+		System.out.println("right:" + right);
+
 		this.velocityX = totalVelocityX/numBlobs;
 		this.velocityY = totalVelocityY/numBlobs;
 		this.centerX = totalCenterX/numBlobs;
 		this.centerY = totalCenterY/numBlobs;
 		
 		this.width = (int)(right-left);
-		this.height = (int)(top-bottom);
+		this.height = (int)(bottom-top);
 		
 		this.updatePredictedPosition();
 	}
