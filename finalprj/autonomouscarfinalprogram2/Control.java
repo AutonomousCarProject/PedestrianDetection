@@ -40,7 +40,13 @@ public class Control extends LooiObject
             }
         }
     }
-    public Control()
+    
+    private int previousFrame;
+    public static boolean keepGoing;
+    
+    private int frameDelayInMS;
+    
+    public Control(int frameDelay)
     {
         blobDetection = new BlobDetection();
         movingBlobDetection = new MovingBlobDetection();
@@ -54,18 +60,42 @@ public class Control extends LooiObject
      */
     protected void looiStep()
     {
-        currentImage.readCam();
-        
-        List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
-        
-        List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
-        //System.out.println(movingBlobs.size());
-        List<MovingBlob> filteredBlobs = blobFilter.reduce(movingBlobs);
-        boxDrawer.draw(currentImage,filteredBlobs);
-        
-        
-        
+    	if(keepGoing){
+	        currentImage.readCam();
+	        
+	        previousFrame++;
+	        
+	        if(currentImage.getFrameNo()==previousFrame){
+	        	previousFrame = 0;
+	        	currentImage.finish();
+	            currentImage = new Image();
+	        	blobDetection = new BlobDetection();
+	            movingBlobDetection = new MovingBlobDetection();
+	            blobFilter = new BlobFilter();
+	            boxDrawer.setUsingBasicColors(true);
+	            currentImage.readCam();
+	        }
+	        
+	        List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
+	        
+	        List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
+	        //System.out.println(movingBlobs.size());
+	        List<MovingBlob> filteredBlobs = blobFilter.reduce(movingBlobs);
+	        boxDrawer.draw(currentImage,filteredBlobs);   
+	        
+	        long time1 = System.currentTimeMillis();
+	        long time2 = System.currentTimeMillis();
+	        
+	        while(time2-time1 < frameDelayInMS){
+	        	time2 = System.currentTimeMillis();
+	        }
+    	}   
     }
+    
+    public static void pauseUnpause(){
+    	keepGoing = !keepGoing;
+    }
+    
     protected void looiPaint()
     {
         drawImage(boxDrawer.getCurrentImage(),0,0,getInternalWidth(),getInternalHeight());

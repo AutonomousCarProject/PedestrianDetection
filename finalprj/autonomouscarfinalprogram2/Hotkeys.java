@@ -25,5 +25,9 @@ public class Hotkeys extends LooiObject
         {
             MiscellaneousMethods.exitSystem();
         }
+        if(e.getKeyCode() == KeyEvent.VK_SPACE)
+        {
+        	Control.pauseUnpause();
+        }
     }
 }
