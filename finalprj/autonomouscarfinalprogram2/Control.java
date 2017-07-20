@@ -63,6 +63,17 @@ public class Control extends LooiObject
         List<MovingBlob> filteredBlobs = blobFilter.reduce(movingBlobs);
         boxDrawer.draw(currentImage,filteredBlobs);
         
+        System.out.println(currentImage.getFrameNo());
+        if(currentImage.getFrameNo() == 8){
+        	currentImage.finish();
+        	blobDetection = new BlobDetection();
+            movingBlobDetection = new MovingBlobDetection();
+            blobFilter = new BlobFilter();
+            currentImage = new Image();
+            boxDrawer = new IImageBoxDrawer();
+            boxDrawer.setUsingBasicColors(true);
+        }
+        
         
         
     }
