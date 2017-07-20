@@ -95,7 +95,7 @@ public class Control extends LooiObject
 
         final double box_size = 3;
         final int box_increment = 1;
-        final double thresh = 15.0;
+        final double thresh = 0.10;
 
         IPixel[][] image = currentImage.getImage();
         List<int[]> indexes = new LinkedList<>();
@@ -105,17 +105,33 @@ public class Control extends LooiObject
         for (int i = 0; i < image.length - box_size; i += box_increment){
             for (int j = 0; j < image[0].length - box_size; j += box_increment){
                 //calculate variance
-                double squaredTotal = 0;
-                double total = 0;
+                double rtotal = 0;
+                double gtotal = 0;
+                double btotal = 0;
+
                 for (int k = i; k < i + box_size; k++){
                     for (int l = j; l < j + box_size; l++){
-                        float hue = Color.RGBtoHSB(image[k][l].getRed(), image[k][l].getGreen(), image[k][l].getBlue(), null)[0] * 256;
-
-                        total += hue;
-                        squaredTotal += Math.pow(hue, 2);
+                        int total = image[k][l].getRed() + image[k][l].getGreen() + image[k][l].getBlue();
+                        rtotal += image[k][l].getRed() * 3 - total;
+                        gtotal += image[k][l].getGreen() * 3 - total;
+                        btotal += image[k][l].getBlue() * 3 - total;
                     }
                 }
-                double var = squaredTotal / (box_size * box_size) - Math.pow(total / (box_size * box_size), 2);
+
+                rtotal /= box_size * box_size * 3;
+                gtotal /= box_size * box_size * 3;
+                btotal /= box_size * box_size * 3;
+
+                double distTotal = 0;
+
+                for (int k = i; k < i + box_size; k++){
+                    for (int l = j; l < j + box_size; l++){
+                        int total = (image[k][l].getRed() + image[k][l].getGreen() + image[k][l].getBlue()) / 3;
+                        distTotal += Math.pow(rtotal - (image[k][l].getRed() - total), 2) + Math.pow(gtotal - (image[k][l].getGreen() - total), 2) + Math.pow(btotal - (image[k][l].getBlue() - total), 2);
+                    }
+                }
+
+                double var = distTotal / (box_size * box_size);
                 if(var < thresh) indexes.add(new int[] {i, j});
             }
         }
