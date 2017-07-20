@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package autonomouscarfinalprogram2;
+package finalprj.autonomouscarfinalprogram2;
 
 import com.looi.looi.LooiObject;
+import group1.IPixel;
 import group1.Image;
 import group2.Blob;
 import group2.BlobDetection;
@@ -16,6 +17,7 @@ import group5.IImageBoxDrawer;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -30,6 +32,18 @@ public class Control extends LooiObject
     private IImageBoxDrawer boxDrawer;
     private Image currentImage;
     private BufferedImage testBI = new BufferedImage(10,10,BufferedImage.TYPE_INT_ARGB);
+
+    private static class MovingBlobConstruct extends MovingBlob {
+        MovingBlobConstruct(int x, int y){
+            super();
+            this.centerX = x;
+            this.centerY = y;
+            this.width = 1;
+            this.height = 1;
+        }
+    }
+
+    private int previousFrame;
     {
         for(int r = 0; r < testBI.getHeight(); r++)
         {
@@ -40,65 +54,97 @@ public class Control extends LooiObject
             }
         }
     }
-    
-    private int previousFrame;
-    public static boolean keepGoing;
-    
-    private int frameDelayInMS;
-    
-    public Control(int frameDelay)
+
+    private static double calcHue(int r, int g, int b){
+        //staggering beauty
+        r /= 256.0;
+        g /= 256.0;
+        b /= 256.0;
+        int max = (r > g) ? ((r > b) ? r : b) : ((g > b) ? g : b);
+        int min = (r < g) ? ((r < b) ? r : b) : ((g < b) ? g : b);
+        if(r == max) return (g - b) / (max - min);
+        if(g == max) return 2.0 + (b - r) / (max - min);
+        else return 4.0 + (r - g) / (max - min);
+    }
+
+    public Control()
     {
-        blobDetection = new BlobDetection();
-        movingBlobDetection = new MovingBlobDetection();
-        blobFilter = new BlobFilter();
+        //blobDetection = new BlobDetection();
+        //movingBlobDetection = new MovingBlobDetection();
+        //blobFilter = new BlobFilter();
         currentImage = new Image();
         boxDrawer = new IImageBoxDrawer();
         boxDrawer.setUsingBasicColors(true);
         
         previousFrame = 0;
-        keepGoing = true;
-        
-        frameDelayInMS = frameDelay;
     }
     /**
      * This method runs 60 timer per sec
      */
     protected void looiStep()
     {
-    	if(keepGoing){
-	        currentImage.readCam();
-	        
-	        previousFrame++;
-	        
-	        if(currentImage.getFrameNo()==previousFrame){
-	        	previousFrame = 0;
-	        	currentImage.finish();
-	            currentImage = new Image();
-	        	blobDetection = new BlobDetection();
-	            movingBlobDetection = new MovingBlobDetection();
-	            blobFilter = new BlobFilter();
-	            boxDrawer.setUsingBasicColors(true);
-	            currentImage.readCam();
-	        }
-	        
-	        List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
-	        
-	        List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
-	        //System.out.println(movingBlobs.size());
-	        List<MovingBlob> filteredBlobs = blobFilter.reduce(movingBlobs);
-	        boxDrawer.draw(currentImage,filteredBlobs);   
-	        
-	        long time1 = System.currentTimeMillis();
-	        long time2 = System.currentTimeMillis();
-	        
-	        while(time2-time1 < frameDelayInMS){
-	        	time2 = System.currentTimeMillis();
-	        }
-    	}   
-    }
-    
-    public static void pauseUnpause(){
-    	keepGoing = !keepGoing;
+        currentImage.readCam();
+        
+        //List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
+        
+        //List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
+        //System.out.println(movingBlobs.size());
+        ///List<MovingBlob> filteredBlobs = blobFilter.reduce(movingBlobs);
+
+        //do our own thing
+
+        final double box_size = 3;
+        final int box_increment = 1;
+        final double thresh = 15.0;
+
+        IPixel[][] image = currentImage.getImage();
+        List<int[]> indexes = new LinkedList<>();
+
+        long start = System.currentTimeMillis();
+
+        for (int i = 0; i < image.length - box_size; i += box_increment){
+            for (int j = 0; j < image[0].length - box_size; j += box_increment){
+                //calculate variance
+                double squaredTotal = 0;
+                double total = 0;
+                for (int k = i; k < i + box_size; k++){
+                    for (int l = j; l < j + box_size; l++){
+                        float hue = Color.RGBtoHSB(image[k][l].getRed(), image[k][l].getGreen(), image[k][l].getBlue(), null)[0] * 256;
+
+                        total += hue;
+                        squaredTotal += Math.pow(hue, 2);
+                    }
+                }
+                double var = squaredTotal / (box_size * box_size) - Math.pow(total / (box_size * box_size), 2);
+                if(var < thresh) indexes.add(new int[] {i, j});
+            }
+        }
+
+        long end = System.currentTimeMillis();
+
+        System.out.println("Took: " + (end - start));
+
+        List<MovingBlob> ray = new LinkedList<MovingBlob>();
+        for(int i = 0; i < indexes.size(); i++){
+            int[] thing = indexes.get(i);
+            ray.add(new MovingBlobConstruct(thing[0], thing[1]));
+        }
+
+        boxDrawer.draw(currentImage, ray);
+        
+        previousFrame++;
+        
+        if(currentImage.getFrameNo()==previousFrame){
+        	previousFrame = -1;
+        	currentImage.finish();
+            currentImage = new Image();
+        	//blobDetection = new BlobDetection();
+            //movingBlobDetection = new MovingBlobDetection();
+            //blobFilter = new BlobFilter();
+            boxDrawer.setUsingBasicColors(false);
+        }
+        
+        
     }
     
     protected void looiPaint()
