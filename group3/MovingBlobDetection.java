@@ -17,9 +17,13 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	//maximum distance in pixels between blobs that can be matched
 	int distanceLimit = 30;
 	//maximum distance between edges to unify
-	int unifyDistanceLimit = 6;
+	int unifyDistanceLimitX = 6;
+	int unifyDistanceLimitY = 6;
+
 	//maximum difference in velocity to unify
-	int unifyVelocityLimit = 5;
+	int unifyVelocityLimitX = 6;
+	int unifyVelocityLimitY = 8;
+
 
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
@@ -36,8 +40,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 				float velocityDifferenceX = Math.abs(movingBlob1.velocityX-movingBlob2.velocityX);
 				float velocityDifferenceY = Math.abs(movingBlob1.velocityY-movingBlob2.velocityY);
 
-				if(distanceX<unifyDistanceLimit && distanceY<unifyDistanceLimit &&
-						velocityDifferenceX<unifyVelocityLimit && velocityDifferenceY<unifyVelocityLimit){
+				if(distanceX<unifyDistanceLimitX && distanceY<unifyDistanceLimitY &&
+						velocityDifferenceX<unifyVelocityLimitX && velocityDifferenceY<unifyVelocityLimitY){
 					pairs.add(new BlobPair(0, movingBlob1, movingBlob2));
 				}
 			}

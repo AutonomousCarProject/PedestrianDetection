@@ -1,5 +1,6 @@
 package group3;
 
+import group1.IPixel;
 import group2.Blob;
 
 public class MovingBlob extends Blob {
@@ -37,6 +38,15 @@ public class MovingBlob extends Blob {
 	 */
 	public MovingBlob(){
 		super(0, 0, 0, 0, null);
+	}
+	
+	public MovingBlob(int width, int height, float centerX, float centerY,IPixel color,float velocityX,float velocityY){
+		super(width, height, centerX, centerY, color);
+		this.velocityX = velocityX;
+		this.velocityY = velocityY;
+		this.age = 15;
+		this.ageOffScreen = 0;
+		updatePredictedPosition();
 	}
 	
 	/**
@@ -84,6 +94,6 @@ public class MovingBlob extends Blob {
 	}
 	
 	public String toString(){
-		return "Moving blob: Color " + color.getColor() + " X: " + centerX + " Y: " + centerY;
+		return "Moving blob: Color " + /*color.getColor() + */ " X: " + centerX + " Y: " + centerY + " vX: " + velocityX+ " vY: " + velocityY;
 	}
 }
