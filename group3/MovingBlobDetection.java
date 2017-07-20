@@ -33,9 +33,9 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		HashSet<BlobPair> pairs = new HashSet<>();
 		for(MovingBlob movingBlob1:movingBlobs){
 			for(MovingBlob movingBlob2:movingBlobs){
-				float distanceX = Math.abs(movingBlob1.centerX-movingBlob2.centerX)-
+				float distanceX = Math.abs(movingBlob1.x-movingBlob2.x)-
 						(movingBlob1.width+movingBlob2.width)/2;
-				float distanceY = Math.abs(movingBlob1.centerY-movingBlob2.centerY)-
+				float distanceY = Math.abs(movingBlob1.y-movingBlob2.y)-
 						(movingBlob1.height+movingBlob2.height)/2;	
 				float velocityDifferenceX = Math.abs(movingBlob1.velocityX-movingBlob2.velocityX);
 				float velocityDifferenceY = Math.abs(movingBlob1.velocityY-movingBlob2.velocityY);
@@ -142,8 +142,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			movingBlobs.remove(movingBlob);
 		} else {
 			//update position based on most recent velocity
-			movingBlob.centerX += movingBlob.velocityX;
-			movingBlob.centerY += movingBlob.velocityY;
+			movingBlob.x += movingBlob.velocityX;
+			movingBlob.y += movingBlob.velocityY;
 
       movingBlob.age++;
 			movingBlob.ageOffScreen++;

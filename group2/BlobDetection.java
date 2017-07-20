@@ -113,8 +113,8 @@ public class BlobDetection implements IBlobDetection
                 toRemove.add(b);
             }
 
-            b.x = b.x + (b.width / 2f);
-            b.y = b.y + (b.height / 2f);
+            // b.x = b.x + (b.width / 2f);
+            // b.y = b.y + (b.height / 2f);
         }
 
         blobs.removeAll(toRemove);
