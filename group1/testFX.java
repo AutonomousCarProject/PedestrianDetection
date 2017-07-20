@@ -36,7 +36,8 @@ public class testFX extends Application{
 
 
         Image image = new Image();
-        image.readCam();
+
+        for(int i = 0; i < 20; i++) image.readCam();
 
         Rectangle pixel;
 
