@@ -1,6 +1,7 @@
 package group2;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,7 +12,7 @@ import group1.IPixel;
 public class BlobDetection2 implements IBlobDetection
 {
     private static Deque<Blob> unusedBlobs = new ArrayDeque<>();
-    private static List<Blob> blobs = new LinkedList<>();
+    private static List<Blob> blobs = new ArrayList<>();
 
     private static Blob[] blobRow = null;
 
@@ -33,6 +34,7 @@ public class BlobDetection2 implements IBlobDetection
 
         for (int i = 0; i < size; i++)
         {
+
             final int row = i / width;
             final int col = i % width;
 
@@ -47,7 +49,6 @@ public class BlobDetection2 implements IBlobDetection
                 IPixel up = pixels[row - 1][col];
                 if (pixel.getColor() == up.getColor())
                 {
-                    System.out.println(pixel.getColor());
                     Blob blob = blobRow[col];
                     if (blob == null)
                     {
@@ -70,8 +71,10 @@ public class BlobDetection2 implements IBlobDetection
                 if (pixel.getColor() == left.getColor())
                 {
                     Blob upBlob = blobRowSet ? blobRow[col] : null;
+                    boolean upIsNew = createdNewBlob;
 
                     Blob blob = blobRow[col - 1];
+
                     if (blob == null)
                     {
                         createdNewBlob = true;
@@ -99,6 +102,7 @@ public class BlobDetection2 implements IBlobDetection
                             }
                         }
 
+                        createdNewBlob = upIsNew;
                     }
 
                     blobRowSet = true;
@@ -123,9 +127,6 @@ public class BlobDetection2 implements IBlobDetection
             {
                 toRemove.add(b);
             }
-
-            b.centerX = b.centerX + (b.width / 2f);
-            b.centerY = b.centerY + (b.height / 2f);
         }
         blobs.removeAll(toRemove);
 
@@ -134,32 +135,36 @@ public class BlobDetection2 implements IBlobDetection
 
     private boolean blobContains(Blob b, int x, int y)
     {
-        final float rx = x - b.centerX, ry = y - b.centerY;
+        final float rx = x - b.x, ry = y - b.y;
         return (rx >= 0 && rx < b.width) && (ry >= 0 && ry < b.height);
     }
 
-    private Blob getBlob(int width, int height, int centerX, int centerY, IPixel color)
+    private Blob getBlob(int width, int height, int x, int y, IPixel color)
     {
+        if (color.getColor() == 1)
+        {
+            System.out.println(Blob.currentId);
+        }
+
         if (unusedBlobs.isEmpty())
         {
-            return new Blob(width, height, centerX, centerY, color);
+            return new Blob(width, height, x, y, color);
         }
         else
         {
             Blob b = unusedBlobs.pop();
-            b.set(width, height, centerX, centerY, color);
+            b.set(width, height, x, y, color);
             return b;
         }
     }
 
-    private Blob combine(Blob b1, Blob b2)
+    private void combine(Blob b1, Blob b2)
     {
-        final int up = (int) Math.min(b1.centerY, b2.centerY), left = (int) Math.min(b1.centerX, b2.centerX);
-        final int down = (int) Math.max(b1.centerY + b1.height, b2.centerY + b2.height),
-                right = (int) Math.max(b1.centerX + b1.width, b2.centerX + b2.width);
+        final int up = Math.min(b1.y, b2.y), left = Math.min(b1.x, b2.x);
+        final int down = Math.max(b1.y + b1.height, b2.y + b2.height),
+                right = Math.max(b1.x + b1.width, b2.x + b2.width);
 
-        b1.set(right - left + 1, down - up + 1, up, left, b1.color);
-
-        return b1;
+        b1.set(right - left, down - up, up, left, b1.color);
+        b2.set(right - left, down - up, up, left, b2.color);
     }
 }

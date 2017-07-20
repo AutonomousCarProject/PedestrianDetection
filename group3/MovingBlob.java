@@ -23,7 +23,7 @@ public class MovingBlob extends Blob {
      * @param b The Blob that the MovingBlob will be created from.
      */
 	public MovingBlob(Blob b){
-		super(b.width, b.height, b.centerX, b.centerY, b.color);
+		super(b.width, b.height, b.x, b.y, b.color);
 		this.velocityX = 0;
 		this.velocityY = 0;
 		this.age = 15;
@@ -36,11 +36,11 @@ public class MovingBlob extends Blob {
 	 * velocity.
 	 */
 	public void updatePredictedPosition(){
-		predictedX = velocityX + centerX;
-		predictedY = velocityY + centerY;
+		predictedX = velocityX + x;
+		predictedY = velocityY + y;
 	}
 	
 	public String toString(){
-		return "Moving blob: Color " + color.getColor() + " X: " + centerX + " Y: " + centerY;
+		return "Moving blob: Color " + color.getColor() + " X: " + x + " Y: " + y;
 	}
 }

@@ -57,7 +57,7 @@ public class BlobDetection implements IBlobDetection
                             if (!blobContains(b, col, row))
                             {
                                 b.width = b.width + 1;
-                                b.centerX = col;
+                                b.x = col;
                             }
                         }
                     }
@@ -90,7 +90,7 @@ public class BlobDetection implements IBlobDetection
                             if (!blobContains(b, col, row))
                             {
                                 b.height = b.height + 1;
-                                b.centerY = row;
+                                b.y = row;
                             }
                         }
                     }
@@ -113,8 +113,8 @@ public class BlobDetection implements IBlobDetection
                 toRemove.add(b);
             }
 
-            b.centerX = b.centerX + (b.width / 2f);
-            b.centerY = b.centerY + (b.height / 2f);
+            b.x = b.x + (b.width / 2f);
+            b.y = b.y + (b.height / 2f);
         }
 
         blobs.removeAll(toRemove);
@@ -137,7 +137,7 @@ public class BlobDetection implements IBlobDetection
 
     private boolean blobContains(Blob b, int x, int y)
     {
-        final float rx = x - b.centerX, ry = y - b.centerY;
+        final float rx = x - b.x, ry = y - b.y;
         return (rx >= 0 && rx < b.width) && (ry >= 0 && ry < b.height);
     }
 

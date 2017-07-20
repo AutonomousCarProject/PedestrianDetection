@@ -36,8 +36,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			for(MovingBlob movingBlob:movingBlobs){
 				//creates pairs in queue of blobs & moving blobs with same color within 100 pixels
 				if(blob.color.getColor()==movingBlob.color.getColor()){
-					float distanceX = Math.abs(movingBlob.predictedX-blob.centerX);
-					float distanceY = Math.abs(movingBlob.predictedY-blob.centerY);
+					float distanceX = Math.abs(movingBlob.predictedX-blob.x);
+					float distanceY = Math.abs(movingBlob.predictedY-blob.y);
 					float distance = (float)Math.sqrt(distanceX*distanceX+distanceY*distanceY);
 					if(distance<distanceLimit){
 						queue.add(new BlobPair(distance, blob, movingBlob));
@@ -74,8 +74,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	private void matchBlob(MovingBlob movingBlob, Blob newBlob){		
 		//update information based on new position
 		calculateVelocity(movingBlob, newBlob);
-		movingBlob.centerX = newBlob.centerX;
-		movingBlob.centerY = newBlob.centerY;
+		movingBlob.x = newBlob.x;
+		movingBlob.y = newBlob.y;
 		movingBlob.age++;
 		movingBlob.ageOffScreen=0;
 		movingBlob.updatePredictedPosition();	
@@ -87,8 +87,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			movingBlobs.remove(movingBlob);
 		} else {
 			//update position based on velocity
-			movingBlob.centerX += movingBlob.velocityX;
-			movingBlob.centerY += movingBlob.velocityY;
+			movingBlob.x += movingBlob.velocityX;
+			movingBlob.y += movingBlob.velocityY;
 			movingBlob.age++;
 			movingBlob.ageOffScreen++;
 			movingBlob.updatePredictedPosition();
@@ -96,8 +96,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	}
 	
 	private void calculateVelocity(MovingBlob movingBlob, Blob newBlob){
-		float movementX = newBlob.centerX - movingBlob.centerX;
-		float movementY = newBlob.centerY - movingBlob.centerY;
+		float movementX = newBlob.x - movingBlob.x;
+		float movementY = newBlob.y - movingBlob.y;
 		//finds average of previous velocity and velocity between last and current frame
 		movingBlob.velocityX += movementX;
 		movingBlob.velocityX /= 2;
