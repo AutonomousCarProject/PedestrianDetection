@@ -44,7 +44,9 @@ public class Control extends LooiObject
     private int previousFrame;
     public static boolean keepGoing;
     
-    public Control()
+    private int frameDelayInMS;
+    
+    public Control(int frameDelay)
     {
         blobDetection = new BlobDetection();
         movingBlobDetection = new MovingBlobDetection();
@@ -55,6 +57,8 @@ public class Control extends LooiObject
         
         previousFrame = 0;
         keepGoing = true;
+        
+        frameDelayInMS = frameDelay;
     }
     /**
      * This method runs 60 timer per sec
@@ -83,6 +87,13 @@ public class Control extends LooiObject
 	        //System.out.println(movingBlobs.size());
 	        List<MovingBlob> filteredBlobs = blobFilter.reduce(movingBlobs);
 	        boxDrawer.draw(currentImage,filteredBlobs);   
+	        
+	        long time1 = System.currentTimeMillis();
+	        long time2 = System.currentTimeMillis();
+	        
+	        while(time2-time1 < frameDelayInMS){
+	        	time2 = System.currentTimeMillis();
+	        }
     	}   
     }
     
