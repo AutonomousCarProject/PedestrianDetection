@@ -54,11 +54,6 @@ public class Control extends LooiObject
         currentImage = new Image();
         boxDrawer = new IImageBoxDrawer();
         boxDrawer.setUsingBasicColors(true);
-        
-        previousFrame = 0;
-        keepGoing = true;
-        
-        frameDelayInMS = frameDelay;
     }
     /**
      * This method runs 60 timer per sec
