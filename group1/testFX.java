@@ -15,38 +15,35 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
 
 public class testFX extends Application{
-	
 
 	public double width = 1000.0;
 	public double height = 1000.0;
 	public Group rootNode = new Group();
 	public Image image = new Image();
-	private Rectangle pixel;
+	
+	
+    public static void main(String args[]){
 
-	public static void main(String args[]){
-		
-		launch(args);
+        launch(args);
 
-	}
+    }
 
-	public void start(Stage stage){
+    
+    public void start(Stage stage){
 
-		
-		stage.setTitle("JavaFX Window");
+    		stage.setTitle("JavaFX Window");
 
-   		Scene myScene = new Scene(rootNode, width, height);
-		stage.setScene(myScene);
-		//Canvas myCanvas = new Canvas(width, height);
+        Scene myScene = new Scene(rootNode, width, height);
+        stage.setScene(myScene);
 
-
-		image.readCam();
-		
+		image.readCam();	
 		
 		for(int i = 0; i < 20; i++) {	
 						
 			image.readCam();
 		
 		}
+		
 		print();
 		
 				
@@ -108,7 +105,7 @@ public class testFX extends Application{
 
 	private void print() {
 			
-		
+			Rectangle pixel;
 		
 			for(int i = 0 ; i < image.height ; i++){
 				
@@ -170,7 +167,6 @@ public class testFX extends Application{
 
 			}
 			
-		
 		
 	}
 

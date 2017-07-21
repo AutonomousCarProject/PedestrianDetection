@@ -3,7 +3,9 @@ package group4;
 import group3.MovingBlob;
 import group4.IMovingBlobReduction;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BlobFilter implements IMovingBlobReduction
 {
@@ -38,8 +40,7 @@ public class BlobFilter implements IMovingBlobReduction
 	 */
 	public List<MovingBlob> reduce(List<MovingBlob> blobs)
 	{
-		for (int i = blobs.size() - 1; i >= 0; i--) if (!isPedestrian(blobs.get(i))) blobs.remove(i);
-		return blobs;
+		return blobs.parallelStream().filter(p -> isPedestrian(p)).collect(Collectors.toList());
 	}
 	
 	/**
@@ -54,10 +55,10 @@ public class BlobFilter implements IMovingBlobReduction
 		//lol formatting wut
 		return  blob.width >= DIMENSION_MIN && blob.height >= DIMENSION_MIN
 				&& blob.width / blob.height <= WIDTH_HEIGHT_RATIO_MAX
-				&& (blob.age >= AGE_MIN || (blob.centerX >= CENTER_CHECK_WIDTH / 2
-											&& blob.centerX <= 640 - CENTER_CHECK_WIDTH / 2
-											&& blob.centerY >= CENTER_CHECK_HEIGHT / 2
-											&& blob.centerY <= 480 - CENTER_CHECK_HEIGHT / 2
+				&& (blob.age >= AGE_MIN || (blob.x >= CENTER_CHECK_WIDTH / 2
+											&& blob.x <= 640 - CENTER_CHECK_WIDTH / 2
+											&& blob.y >= CENTER_CHECK_HEIGHT / 2
+											&& blob.y <= 480 - CENTER_CHECK_HEIGHT / 2
 											&& blob.velocityX >= CENTER_X_VELOCITY_MIN))
 				&& Math.abs(blob.velocityX) <= X_VELOCITY_MAX
 				&& blob.predictedX >= PREDICTED_BORDER_DISTANCE_MIN && blob.predictedX <= (640 - PREDICTED_BORDER_DISTANCE_MIN)
