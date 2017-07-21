@@ -22,7 +22,7 @@ public class test{
 			System.out.println("x: "+i+" y: "+j+" luma: "+dummy.getImage()[i][j].getLuma()+" sat: "+dummy.getImage()[i][j].getSaturation()+" color: "+dummy.getImage()[i][j].getColor());
 		}*/
 
-		IImage image = new Image();
+		IImage image = new FileImage();
 		image.readCam();
 		int dummyHeight = image.getImage().length;
 		int dummyWidth = image.getImage()[0].length;

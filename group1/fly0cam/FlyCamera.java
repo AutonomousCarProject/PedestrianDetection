@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 public class FlyCamera {
   public static final int FrameRate_15 = 3, FrameRate_30 = 4;
 
+
 //  private final String fiName = "group1/fly0cam/FlyCapped.By8";  // --non IDE
 //  private final String fiName = "src/group1/fly0cam/FlyCapped.By8"; // -- IDE
   private final String fiName = "src/group1/fly0cam/BlueShirt.By8";
