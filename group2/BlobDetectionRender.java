@@ -25,7 +25,7 @@ public class BlobDetectionRender extends Application
 {
     final boolean drawBlobs = true;
     final boolean filter = true;
-    final boolean posterize = false;
+    final boolean posterize = true;
     
     public static void main(String... args)
     {
@@ -92,9 +92,10 @@ public class BlobDetectionRender extends Application
 		        IMovingBlobReduction blobFilter = new BlobFilter();
 		
 		        List<Blob> blobs = blobDetect.getBlobs(image);
-		         List<MovingBlob> movingBlobs =
-		         movingBlobDetect.getMovingBlobs(blobs);
-		         List<MovingBlob> filteredBlobs = blobFilter.reduce(movingBlobs);
+		        List<MovingBlob> movingBlobs =
+		       movingBlobDetect.getMovingBlobs(blobs);
+		         
+		         List<MovingBlob> filteredBlobs =   movingBlobDetect.getUnifiedBlobs(blobFilter.reduce(movingBlobs));
 		
 		        gc.setStroke(Color.DARKGOLDENROD);
 		        gc.setLineWidth(4);

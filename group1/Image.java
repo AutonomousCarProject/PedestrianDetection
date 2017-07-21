@@ -1,7 +1,7 @@
 package group1;
 
-//import fly2cam.FlyCamera;
-import group1.fly0cam.FlyCamera;
+import fly2cam.FlyCamera;
+//import group1.fly0cam.FlyCamera;
 
 //Defines image as an 2d array of pixels
 public class Image implements IImage
