@@ -98,10 +98,12 @@ public class IImageBoxDrawer implements IImageDrawing
         {
             MovingBlob b = iBlobs.get(i);
             Point[] points = new Point[4];
-            points[0] = new Point(b.centerX-b.width/2,b.centerY-b.height/2);
-            points[1] = new Point(b.centerX+b.width/2,b.centerY-b.height/2);
-            points[2] = new Point(b.centerX+b.width/2,b.centerY+b.height/2);
-            points[3] = new Point(b.centerX-b.width/2,b.centerY+b.height/2);
+
+            points[0] = new Point(b.x-b.width/2,b.y-b.height/2);
+            points[1] = new Point(b.x+b.width/2,b.y-b.height/2);
+            points[2] = new Point(b.x+b.width/2,b.y+b.height/2);
+            points[3] = new Point(b.x-b.width/2,b.y+b.height/2);
+            
             rectangles[i] = new Rectangle(points,b);
         }
         return rectangles;

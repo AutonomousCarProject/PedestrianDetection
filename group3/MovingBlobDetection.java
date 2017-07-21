@@ -33,9 +33,9 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		HashSet<BlobPair> pairs = new HashSet<>();
 		for(MovingBlob movingBlob1:movingBlobs){
 			for(MovingBlob movingBlob2:movingBlobs){
-				float distanceX = Math.abs(movingBlob1.centerX-movingBlob2.centerX)-
+				float distanceX = Math.abs(movingBlob1.x-movingBlob2.x)-
 						(movingBlob1.width+movingBlob2.width)/2;
-				float distanceY = Math.abs(movingBlob1.centerY-movingBlob2.centerY)-
+				float distanceY = Math.abs(movingBlob1.y-movingBlob2.y)-
 						(movingBlob1.height+movingBlob2.height)/2;	
 				float velocityDifferenceX = Math.abs(movingBlob1.velocityX-movingBlob2.velocityX);
 				float velocityDifferenceY = Math.abs(movingBlob1.velocityY-movingBlob2.velocityY);
@@ -90,8 +90,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			for(MovingBlob movingBlob:movingBlobs){
 				//creates pairs in queue of blobs & moving blobs with same color within 100 pixels
 				if(blob.color.getColor()==movingBlob.color.getColor()){
-					float distanceX = Math.abs(movingBlob.predictedX-blob.centerX);
-					float distanceY = Math.abs(movingBlob.predictedY-blob.centerY);
+					float distanceX = Math.abs(movingBlob.predictedX-blob.x);
+					float distanceY = Math.abs(movingBlob.predictedY-blob.y);
 					float distance = (float)Math.sqrt(distanceX*distanceX+distanceY*distanceY);
 					if(distance<distanceLimit){
 						queue.add(new BlobPair(distance, blob, movingBlob));
@@ -128,8 +128,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	private void matchBlob(MovingBlob movingBlob, Blob newBlob){		
 		//update information based on new position
 		calculateVelocity(movingBlob, newBlob);
-		movingBlob.centerX = newBlob.centerX;
-		movingBlob.centerY = newBlob.centerY;
+		movingBlob.x = newBlob.x;
+		movingBlob.y = newBlob.y;
 		movingBlob.age++;
 		movingBlob.ageOffScreen=0;
 		movingBlob.updatePredictedPosition();	
@@ -142,17 +142,18 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			movingBlobs.remove(movingBlob);
 		} else {
 			//update position based on most recent velocity
-			movingBlob.centerX += movingBlob.velocityX;
-			movingBlob.centerY += movingBlob.velocityY;
-			movingBlob.age++;
+			movingBlob.x += movingBlob.velocityX;
+			movingBlob.y += movingBlob.velocityY;
+
+      movingBlob.age++;
 			movingBlob.ageOffScreen++;
 			movingBlob.updatePredictedPosition();
 		}
 	}
 
 	private void calculateVelocity(MovingBlob movingBlob, Blob newBlob){
-		float movementX = newBlob.centerX - movingBlob.centerX;
-		float movementY = newBlob.centerY - movingBlob.centerY;
+		float movementX = newBlob.x - movingBlob.x;
+		float movementY = newBlob.y - movingBlob.y;
 		//finds average of previous velocity and velocity between last and current frame
 		movingBlob.velocityX += movementX;
 		movingBlob.velocityX /= 2;

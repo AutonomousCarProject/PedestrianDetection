@@ -5,20 +5,29 @@ import group1.IPixel;
 public class Blob
 {
     public int width, height;
-    public float centerX, centerY;
+    public int x, y;
     public IPixel color;
+    public int id;
 
-    public Blob(int width, int height, float centerX, float centerY, IPixel color)
+    public static int currentId = 0;
+
+    public Blob(int width, int height, int x, int y, IPixel color)
     {
-        set(width, height, centerX, centerY, color);
+        set(width, height, x, y, color);
     }
 
-    public void set(int width, int height, float centerX, float centerY, IPixel color)
+    public void set(int width, int height, int x, int y, IPixel color)
+    {
+        set(width, height, x, y, color, currentId++);
+    }
+
+    public void set(int width, int height, int x, int y, IPixel color, int id)
     {
         this.width = width;
         this.height = height;
-        this.centerX = centerX;
-        this.centerY = centerY;
+        this.x = x;
+        this.y = y;
         this.color = color;
+        this.id = id;
     }
 }
