@@ -6,6 +6,7 @@ import group1.IImage;
 import group1.IPixel;
 import group1.Image;
 import group1.Pixel;
+import group1.FileImage;
 import group3.IMovingBlobDetection;
 import group3.MovingBlobDetection;
 import group4.BlobFilter;
@@ -31,10 +32,10 @@ public class BlobDetectionRender extends Application
     public void start(Stage primaryStage) throws Exception
     {
         // IImage image = new JpgImage("src/testImage1.png");
-        IImage image = new Image();
+        IImage image = new FileImage();
         
         IPixel[][] pixels = image.getImage();
-        final int scale = 1;
+        final int scale = 3;
 
         final int width = pixels[0].length;
         final int height = pixels.length;
@@ -48,7 +49,6 @@ public class BlobDetectionRender extends Application
         	{
 		        image.readCam();
 		        IPixel[][] pixels = image.getImage();
-		        final int scale = 3;
 		
 		        final int width = pixels[0].length;
 		        final int height = pixels.length;
