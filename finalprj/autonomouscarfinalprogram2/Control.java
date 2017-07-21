@@ -67,21 +67,6 @@ public class Control extends LooiObject
         else return 4.0 + (r - g) / (max - min);
     }
 
-    //gets hue, saturation using some fancy ass formula I found online
-    private static double[] getFancyHS(double r, double g, double b){
-        //staggering beauty
-        double[] ret = new double[2];
-        final double upperFrac = r - 0.5 * g - 0.5 * b;
-        final double underFrac = Math.sqrt(r * r + g * g + b * b - r * g - r * b - b * g);
-        if(underFrac == 0 || upperFrac / underFrac <= -1 || upperFrac / underFrac >= 1) ret[0] = 0;
-        else if (upperFrac == 0) ret[0] = Math.acos(0.);
-        else ret[0] = Math.acos(upperFrac / underFrac);
-
-        if(b > g) ret[0] = 2 * Math.PI - ret[0];
-        ret[1] = Math.max(r, Math.max(g, b)) - Math.min(r, Math.min(g, b));
-        return ret;
-    }
-
     private static double getPhotoshopRGBVar(double rvar, double gvar, double bvar, double rmean, double gmean, double bmean){
     	return  (1.0 / 3.0) * (rvar + gvar + bvar)
 			    + (2.0 / 9.0) * (rmean * rmean + gmean * gmean + bmean * bmean)
@@ -92,10 +77,6 @@ public class Control extends LooiObject
     private static double getPhotoshopLumaVar(double rvar, double gvar, double bvar){
     	return 0.299 * 0.299 * rvar + 0.578 * 0.578 * gvar + 0.114 * 0.114 * bvar;
     	//seriously, this is almost too easy but how
-    }
-
-    private static double getStupidLumaVar(double rvar, double gvar, double bvar){
-        return rvar + gvar + bvar;
     }
 
     private static double getMagicVar(double rvar, double gvar, double bvar, double rmean, double gmean, double bmean){
@@ -132,7 +113,7 @@ public class Control extends LooiObject
 
         final double box_size = 3;
         final int box_increment = 1;
-        final double thresh = 0.5;
+        final double thresh = 15000;
 
         IPixel[][] image = currentImage.getImage();
         List<int[]> indexes = new LinkedList<>();
@@ -142,31 +123,41 @@ public class Control extends LooiObject
         for (int i = 0; i < image.length - box_size; i += box_increment){
             for (int j = 0; j < image[0].length - box_size; j += box_increment){
                 //calculate variance
-                double aSum = 0;
-                double bSum = 0;
-                double satSum = 0;
+                double rmean = 0;
+                double rvar = 0;
+                double gmean = 0;
+                double gvar = 0;
+                double bmean = 0;
+                double bvar= 0;
 
                 for (int k = i; k < i + box_size; k++){
                     for (int l = j; l < j + box_size; l++){
-                        double[] HS = getFancyHS(image[k][l].getRed(), image[k][l].getGreen(), image[k][l].getBlue());
-                        aSum += HS[1] * Math.cos(HS[0]);
-                        bSum += HS[1] * Math.sin(HS[0]);
-                        satSum += HS[1];
+                        rmean += image[k][l].getRed();
+                        rvar += image[k][l].getRed() * image[k][l].getRed();
+                        gmean += image[k][l].getGreen();
+                        gvar += image[k][l].getGreen() * image[k][l].getGreen();
+                        bmean += image[k][l].getBlue();
+                        bvar += image[k][l].getBlue() * image[k][l].getBlue();
                     }
                 }
 
+                //compute mean
+                rmean /= box_size * box_size;
+                gmean /= box_size * box_size;
+                bmean /= box_size * box_size;
+
                 //compute varience
-                double var = Math.sqrt(aSum * aSum + bSum * bSum) / satSum;
-                //double var = Math.sqrt(aSum * aSum + bSum * bSum) / box_size * box_size;
+                rvar = rvar / (box_size * box_size) - (rmean * rmean);
+                gvar = gvar / (box_size * box_size) - (gmean * gmean);
+                bvar = bvar / (box_size * box_size) - (bmean * bmean);
 
                 //System.out.println(rvar);
 
                 //magic formulas?
-	            //double var = Math.min(getStupidLumaVar(rvar, gvar, bvar), getPhotoshopLumaVar(rvar, gvar, bvar));
-                //double var = getPhotoshopRGBVar(rvar, gvar, bvar, rmean, gmean, bmean);
+	            double var = getPhotoshopRGBVar(rvar, gvar, bvar, rmean, gmean, bmean);
 	            //double var = getPhotoshopLumaVar(rvar, gvar, bvar);
 	            //double var = getMagicVar(rvar, gvar, bvar, rmean, bmean, gmean);
-				//System.out.println(var);
+
 	            if(Math.abs(var) < thresh) indexes.add(new int[] {i, j});
             }
         }
