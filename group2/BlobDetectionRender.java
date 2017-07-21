@@ -120,6 +120,7 @@ public class BlobDetectionRender extends Application
 	        }
         };
         
+        
         timer.start();
         
         primaryStage.setTitle("JavaFX Window");

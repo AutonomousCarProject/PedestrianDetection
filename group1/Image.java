@@ -29,7 +29,6 @@ public class Image implements IImage
         
         camBytes = new byte[height * width * 4];
         image = new Pixel[height][width];
-        
         tile = flyCam.PixTile();
         System.out.println("tile: "+tile+" width: "+width+" height: "+height);
     }
@@ -58,9 +57,11 @@ public class Image implements IImage
         flyCam.Finish();
   	}
     
+    /*
 	public int getFrameNo(){
 		return flyCam.frameNo;
 	}
+	*/
 	
     private void byteConvert()
     {
