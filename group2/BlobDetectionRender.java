@@ -8,6 +8,7 @@ import group1.Image;
 import group1.Pixel;
 import group1.FileImage;
 import group3.IMovingBlobDetection;
+import group3.MovingBlob;
 import group3.MovingBlobDetection;
 import group4.BlobFilter;
 import group4.IMovingBlobReduction;
@@ -23,6 +24,10 @@ import javafx.stage.Stage;
 
 public class BlobDetectionRender extends Application
 {
+    final boolean drawBlobs = true;
+    final boolean filter = true;
+    final boolean posterize = true;
+    
     public static void main(String... args)
     {
         launch(args);
@@ -34,9 +39,19 @@ public class BlobDetectionRender extends Application
         // IImage image = new JpgImage("src/testImage1.png");
         IImage image = new FileImage();
         
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            image.finish();
+        }));
+        
         IPixel[][] pixels = image.getImage();
         final int scale = 3;
 
+        if(pixels.length == 0)
+        {
+            System.err.println("Please plug in the camera.");
+            System.exit(1);
+        }
+        
         final int width = pixels[0].length;
         final int height = pixels.length;
 
@@ -68,7 +83,12 @@ public class BlobDetectionRender extends Application
 		                    //@formatter:off
 		                    IPixel p = pixels[j][i];
 		                    Paint fill = Color.rgb(p.getRed(), p.getGreen(), p.getBlue());
-		                    // Paint fill = getPaint(p);
+		                    
+		                    if(posterize)
+		                    {
+		                    	fill = getPaint(p);	
+		                    }
+		                    
 		                    gc.setFill(fill);
 		                    
 		                    //@formatter:on
@@ -83,35 +103,34 @@ public class BlobDetectionRender extends Application
 		        IMovingBlobReduction blobFilter = new BlobFilter();
 		
 		        List<Blob> blobs = blobDetect.getBlobs(image);
-		        // List<MovingBlob> movingBlobs =
-		        // movingBlobDetect.getMovingBlobs(blobs);
-		        // List<MovingBlob> filteredBlobs = blobFilter.reduce(movingBlobs);
+		        List<MovingBlob> movingBlobs =
+		       movingBlobDetect.getMovingBlobs(blobs);
+		         
+		         List<MovingBlob> filteredBlobs =   movingBlobDetect.getUnifiedBlobs(blobFilter.reduce(movingBlobs));
 		
 		        gc.setStroke(Color.DARKGOLDENROD);
 		        gc.setLineWidth(4);
-		
-		        for (Blob blob : blobs)
-		        {
-		            //@formatter:off
-		        	
-		        	if(Math.random() < 3) break;
-		            
-		            System.out.printf("BLOB%n\tSize: %dx%d%n\tTop-left: (%d,%d)%n\tColor: (%d, %d, %d)%n\tID: %d%n", blob.width,
-		                    blob.height, blob.x, blob.y, blob.color.getRed(), blob.color.getGreen(),
-		                    blob.color.getBlue(), blob.id);
-		            
-		            //@formatter:on
-		        }
 		        
-		        // System.out.println(blobs.size());
-		        for (Blob blob : blobs)
+		        if(drawBlobs)
 		        {
-		             if (Math.random() < 3) break;
-		
-		            gc.strokeRect(blob.x * scale, blob.y * scale, blob.width * scale, blob.height * scale);
+		        	if(filter)
+		        	{
+				        for (Blob blob : filteredBlobs)
+				        {
+				            gc.strokeRect(blob.x * scale, blob.y * scale, blob.width * scale, blob.height * scale);
+				        }
+		        	}
+		        	else
+		        	{
+				        for (Blob blob : blobs)
+				        {
+				            gc.strokeRect(blob.x * scale, blob.y * scale, blob.width * scale, blob.height * scale);
+				        }
+		        	}
 		        }
 	        }
         };
+        
         
         timer.start();
         

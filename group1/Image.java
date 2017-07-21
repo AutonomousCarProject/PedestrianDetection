@@ -6,11 +6,10 @@ import fly2cam.FlyCamera;
 //Defines image as an 2d array of pixels
 public class Image implements IImage
 {
-
     public int height;
     public int width;
 
-    private int frameRate = 2;
+    private int frameRate = 3;
     private FlyCamera flyCam = new FlyCamera();
     private final int greyRatio = 2;
     private final int blackRange = 100;
@@ -28,12 +27,11 @@ public class Image implements IImage
     {
         flyCam.Connect(frameRate);
         int res = flyCam.Dimz();
-        height = (res & 0xFFFF0000) >> 16;
+        height = res >> 16;
         width = res & 0x0000FFFF;
         
         camBytes = new byte[height * width * 4];
         image = new Pixel[height][width];
-        
         tile = flyCam.PixTile();
         System.out.println("tile: "+tile+" width: "+width+" height: "+height);
         autoColor();
@@ -115,6 +113,7 @@ public class Image implements IImage
 	public int getFrameNo(){
 		return flyCam.frameNo;
 	}*/
+
     private void byteConvert()
     {
 
