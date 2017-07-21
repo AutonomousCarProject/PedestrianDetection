@@ -35,7 +35,7 @@ public class testFX extends Application{
         //Canvas myCanvas = new Canvas(width, height);
 
 
-        Image image = new Image();
+        FileImage image = new FileImage();
 
         for(int i = 0; i < 20; i++) image.readCam();
 
