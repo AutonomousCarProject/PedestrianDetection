@@ -1,7 +1,5 @@
 package group1;
 
-import java.awt.MouseInfo;
-import java.awt.Point;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -113,7 +111,7 @@ public class testFX extends Application{
 
 					pixel = new Rectangle((double)j, (double)i, 1, 1);
 
-					switch(image.getImage()[j][i].getColor())
+					switch(image.getImage()[i][j].getColor())
 					{
 
 						case 0:
@@ -160,7 +158,7 @@ public class testFX extends Application{
 				for(int j = 320 ; j < image.width + 320 ; j++){
 
 					pixel = new Rectangle((double)j, (double)i, 1, 1);
-					pixel.setFill(Color.color((double)image.getImage()[j - 320][i].getRed()/255.0, (double)image.getImage()[j - 320][i].getGreen()/255.0, (double)image.getImage()[j -320][i].getBlue()/255.0));
+					pixel.setFill(Color.color((double)image.getImage()[i][j - 320].getRed()/255.0, (double)image.getImage()[i][j - 320].getGreen()/255.0, (double)image.getImage()[i][j - 320].getBlue()/255.0));
 					rootNode.getChildren().add(pixel);
 
 				}
