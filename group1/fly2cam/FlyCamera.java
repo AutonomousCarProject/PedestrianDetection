@@ -2,7 +2,7 @@
 
 //   You need both FlyCapture2_C.dll and FlyCapture2.dll in your Java project folder
 
-package fly2cam; // (same API as fly0cam)
+package group1.fly2cam; // (same API as fly0cam)
 
 public class FlyCamera {
   public static final int FrameRate_15 = 3, FrameRate_30 = 4;

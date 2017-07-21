@@ -82,9 +82,9 @@ public class Pixel implements IPixel {	//0-765
 			else if(r > whiteMargin && g > whiteMargin && b > whiteMargin) color = 5;	//white
 			else color = 3;
 		}
-		else if(rdiff > gdiff && rdiff > bdiff) color = 0;
-		else if(gdiff > rdiff && gdiff > bdiff) color = 1;
-		else if(bdiff > rdiff && bdiff > gdiff) color = 2;
+		else if(r > g && r > b) color = 0;
+		else if(g > r && g > b) color = 1;
+		else if(b > r && b > g) color = 2;
 	
 	}
 	
