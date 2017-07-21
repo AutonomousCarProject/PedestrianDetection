@@ -22,19 +22,19 @@ public class UnifiedBlob extends MovingBlob {
 		for(MovingBlob movingBlob: movingBlobs){
 			totalVelocityX += movingBlob.velocityX;
 			totalVelocityY += movingBlob.velocityY;
-			totalCenterX += movingBlob.centerX;
-			totalCenterY += movingBlob.centerY;
+			totalCenterX += movingBlob.x;
+			totalCenterY += movingBlob.y;
 			
-			float blobRightSide = movingBlob.centerX + movingBlob.width/2;
+			float blobRightSide = movingBlob.x + movingBlob.width/2;
 			if (blobRightSide > right) right = blobRightSide;
 			
-			float blobLeftSide = movingBlob.centerX - movingBlob.width/2;
+			float blobLeftSide = movingBlob.x - movingBlob.width/2;
 			if (blobLeftSide < left) left = blobLeftSide;
 			
-			float blobTop = movingBlob.centerY - movingBlob.height/2;
+			float blobTop = movingBlob.y - movingBlob.height/2;
 			if (blobTop < top) top = blobTop;
 			
-			float blobBottom = movingBlob.centerY + movingBlob.height/2;
+			float blobBottom = movingBlob.y + movingBlob.height/2;
 			if (blobBottom > bottom) bottom = blobBottom;
 		}
 		System.out.println("top:" + top);
@@ -44,8 +44,8 @@ public class UnifiedBlob extends MovingBlob {
 
 		this.velocityX = totalVelocityX/numBlobs;
 		this.velocityY = totalVelocityY/numBlobs;
-		this.centerX = totalCenterX/numBlobs;
-		this.centerY = totalCenterY/numBlobs;
+		this.x = (int) Math.round(totalCenterX/numBlobs);
+		this.y = (int) Math.round(totalCenterY/numBlobs);
 		
 		this.width = (int)(right-left);
 		this.height = (int)(bottom-top);

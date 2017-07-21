@@ -26,7 +26,7 @@ public class BlobDetectionDummyMain
             //@formatter:off
             
             System.out.printf("BLOB%n\tSize: %dx%d%n\tCenter: (%f,%f)%n\tColor: (%d, %d, %d)%n", blob.width,
-                    blob.height, blob.centerX, blob.centerY, blob.color.getRed(), blob.color.getGreen(),
+                    blob.height, blob.x, blob.y, blob.color.getRed(), blob.color.getGreen(),
                     blob.color.getBlue());
             
             //@formatter:on
