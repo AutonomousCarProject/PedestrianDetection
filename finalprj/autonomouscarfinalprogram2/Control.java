@@ -113,7 +113,8 @@ public class Control extends LooiObject
 
         final double box_size = 3;
         final int box_increment = 1;
-        final double thresh = 0.0001;
+        final double thresh = -1000;
+        final double threshHigh = -10;
 
         IPixel[][] image = currentImage.getImage();
         List<int[]> indexes = new LinkedList<>();
@@ -150,7 +151,8 @@ public class Control extends LooiObject
 
 
                 //compute varience
-				final double var = distTotal / (box_size * box_size);
+                //double var = 1 - Math.sqrt(aSum * aSum + bSum * bSum) / satSum;
+                double var = 1 - Math.sqrt(aSum * aSum + bSum * bSum) / box_size * box_size;
 
                 //System.out.println(rvar);
 
@@ -158,9 +160,7 @@ public class Control extends LooiObject
 	            //double var = getPhotoshopRGBVar(rvar, gvar, bvar, rmean, gmean, bmean);
 	            //double var = getPhotoshopLumaVar(rvar, gvar, bvar);
 	            //double var = getMagicVar(rvar, gvar, bvar, rmean, bmean, gmean);
-
-	            //System.out.println(var);
-
+				//System.out.println(var);
 	            if(var < thresh) indexes.add(new int[] {i, j});
             }
         }
