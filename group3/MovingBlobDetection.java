@@ -68,8 +68,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			}
 		}
 		HashSet<UnifiedBlob> unifiedBlobSet = new HashSet<>();
-		for(MovingBlob blob:movingBlobs){
-			unifiedBlobSet.add(map.get(blob));
+		for(MovingBlob blob:map.values()){
+			unifiedBlobSet.add((UnifiedBlob) blob);
 		}
 		return new LinkedList<>(unifiedBlobSet);
 	}
