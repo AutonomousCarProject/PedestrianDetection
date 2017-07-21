@@ -10,7 +10,7 @@ public class Image implements IImage
     public int height;
     public int width;
 
-    private int frameRate = 2;
+    private int frameRate = 3;
     private FlyCamera flyCam = new FlyCamera();
     
     private int tile;
@@ -24,7 +24,7 @@ public class Image implements IImage
     {
         flyCam.Connect(frameRate);
         int res = flyCam.Dimz();
-        height = (res & 0xFFFF0000) >> 16;
+        height = res >> 16;
         width = res & 0x0000FFFF;
         
         camBytes = new byte[height * width * 4];
