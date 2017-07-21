@@ -34,6 +34,7 @@ public class testFX extends Application{
         Scene myScene = new Scene(rootNode, width, height);
         stage.setScene(myScene);
 
+
 		image.readCam();	
 		
 		for(int i = 0; i < 20; i++) {	
