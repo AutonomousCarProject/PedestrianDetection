@@ -17,7 +17,7 @@ public class testFX extends Application{
 	public double width = 1000.0;
 	public double height = 1000.0;
 	public Group rootNode = new Group();
-	public Image image = new Image();
+	public FileImage image = new FileImage();
 
 
     public static void main(String args[]){
