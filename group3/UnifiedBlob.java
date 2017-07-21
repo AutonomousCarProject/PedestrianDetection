@@ -21,13 +21,13 @@ public class UnifiedBlob extends MovingBlob {
 			totalVelocityX += movingBlob.velocityX;
 			totalVelocityY += movingBlob.velocityY;
 			
-			float blobRightSide = movingBlob.x + movingBlob.width/2;
+			float blobRightSide = movingBlob.x + movingBlob.width;
 			if (blobRightSide > right) right = blobRightSide;
 			
-			float blobLeftSide = movingBlob.x - movingBlob.width/2;
+			float blobLeftSide = movingBlob.x;
 			if (blobLeftSide < left) left = blobLeftSide;
 			
-			float blobTop = movingBlob.y - movingBlob.height/2;
+			float blobTop = movingBlob.y;
 			if (blobTop < top) top = blobTop;
 			
 			float blobBottom = movingBlob.y + movingBlob.height/2;
@@ -40,8 +40,8 @@ public class UnifiedBlob extends MovingBlob {
 
 		this.velocityX = totalVelocityX/numBlobs;
 		this.velocityY = totalVelocityY/numBlobs;
-		this.x = (int) (left+right)/2;
-		this.y = (int) (bottom+top)/2;
+		this.x = (int) (left);
+		this.y = (int) (top);
 		
 		this.width = (int)(right-left);
 		this.height = (int)(bottom-top);
