@@ -59,4 +59,5 @@ public class JpgImage implements IImage
         }
     }
 
+    public void autoColor(){};
 }

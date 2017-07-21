@@ -38,9 +38,10 @@ public class UnifiedBlob extends MovingBlob {
 			float blobBottom = movingBlob.y + movingBlob.height;
 			if (blobBottom > bottom) bottom = blobBottom;
 		}
-		
+
 		this.age = maxAge;
 		this.ageOffScreen = minAgeOffScreen;
+
 
 		this.velocityX = totalVelocityX/numBlobs;
 		this.velocityY = totalVelocityY/numBlobs;
