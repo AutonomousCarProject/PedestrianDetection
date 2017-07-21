@@ -67,6 +67,24 @@ public class Control extends LooiObject
         else return 4.0 + (r - g) / (max - min);
     }
 
+    private static double getPhotoshopRGBVar(double rvar, double gvar, double bvar, double rmean, double gmean, double bmean){
+    	return  (1.0 / 3.0) * (rvar + gvar + bvar)
+			    + (2.0 / 9.0) * (rmean * rmean + gmean * gmean + bmean * bmean)
+			    + (2.0 / 9.0) * (rmean * gmean + rmean * bmean + gmean * bmean);
+    	//what the actual fuck
+    }
+
+    private static double getPhotoshopLumaVar(double rvar, double gvar, double bvar){
+    	return 0.299 * 0.299 * rvar + 0.578 * 0.578 * gvar + 0.114 * 0.114 * bvar;
+    	//seriously, this is almost too easy but how
+    }
+
+    private static double getMagicVar(double rvar, double gvar, double bvar, double rmean, double gmean, double bmean){
+    	return  0.299 * rvar + 0.587 * gvar + 0.114 * bvar
+			    + (2.0 / 3.0) * (0.299 * rmean * rmean + 0.587 * gmean * gmean + 0.114 * bmean * bmean)
+			    - (2.0 / 3.0) * (0.486 * rmean * gmean + 0.214 * rmean * bmean + 0.300 * gmean * bmean);
+    }
+
     public Control()
     {
         //blobDetection = new BlobDetection();
@@ -95,7 +113,7 @@ public class Control extends LooiObject
 
         final double box_size = 3;
         final int box_increment = 1;
-        final double thresh = 0.10;
+        final double thresh = 15000;
 
         IPixel[][] image = currentImage.getImage();
         List<int[]> indexes = new LinkedList<>();
@@ -105,34 +123,42 @@ public class Control extends LooiObject
         for (int i = 0; i < image.length - box_size; i += box_increment){
             for (int j = 0; j < image[0].length - box_size; j += box_increment){
                 //calculate variance
-                double rtotal = 0;
-                double gtotal = 0;
-                double btotal = 0;
+                double rmean = 0;
+                double rvar = 0;
+                double gmean = 0;
+                double gvar = 0;
+                double bmean = 0;
+                double bvar= 0;
 
                 for (int k = i; k < i + box_size; k++){
                     for (int l = j; l < j + box_size; l++){
-                        int total = image[k][l].getRed() + image[k][l].getGreen() + image[k][l].getBlue();
-                        rtotal += image[k][l].getRed() * 3 - total;
-                        gtotal += image[k][l].getGreen() * 3 - total;
-                        btotal += image[k][l].getBlue() * 3 - total;
+                        rmean += image[k][l].getRed();
+                        rvar += image[k][l].getRed() * image[k][l].getRed();
+                        gmean += image[k][l].getGreen();
+                        gvar += image[k][l].getGreen() * image[k][l].getGreen();
+                        bmean += image[k][l].getBlue();
+                        bvar += image[k][l].getBlue() * image[k][l].getBlue();
                     }
                 }
 
-                rtotal /= box_size * box_size * 3;
-                gtotal /= box_size * box_size * 3;
-                btotal /= box_size * box_size * 3;
+                //compute mean
+                rmean /= box_size * box_size;
+                gmean /= box_size * box_size;
+                bmean /= box_size * box_size;
 
-                double distTotal = 0;
+                //compute varience
+                rvar = rvar / (box_size * box_size) - (rmean * rmean);
+                gvar = gvar / (box_size * box_size) - (gmean * gmean);
+                bvar = bvar / (box_size * box_size) - (bmean * bmean);
 
-                for (int k = i; k < i + box_size; k++){
-                    for (int l = j; l < j + box_size; l++){
-                        int total = (image[k][l].getRed() + image[k][l].getGreen() + image[k][l].getBlue()) / 3;
-                        distTotal += Math.pow(rtotal - (image[k][l].getRed() - total), 2) + Math.pow(gtotal - (image[k][l].getGreen() - total), 2) + Math.pow(btotal - (image[k][l].getBlue() - total), 2);
-                    }
-                }
+                //System.out.println(rvar);
 
-                double var = distTotal / (box_size * box_size);
-                if(var < thresh) indexes.add(new int[] {i, j});
+                //magic formulas?
+	            double var = getPhotoshopRGBVar(rvar, gvar, bvar, rmean, gmean, bmean);
+	            //double var = getPhotoshopLumaVar(rvar, gvar, bvar);
+	            //double var = getMagicVar(rvar, gvar, bvar, rmean, bmean, gmean);
+
+	            if(Math.abs(var) < thresh) indexes.add(new int[] {i, j});
             }
         }
 
