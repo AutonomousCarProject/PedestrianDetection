@@ -113,7 +113,7 @@ public class Control extends LooiObject
 
         final double box_size = 3;
         final int box_increment = 1;
-        final double thresh = 15000;
+        final double thresh = 0.0001;
 
         IPixel[][] image = currentImage.getImage();
         List<int[]> indexes = new LinkedList<>();
@@ -124,20 +124,14 @@ public class Control extends LooiObject
             for (int j = 0; j < image[0].length - box_size; j += box_increment){
                 //calculate variance
                 double rmean = 0;
-                double rvar = 0;
                 double gmean = 0;
-                double gvar = 0;
                 double bmean = 0;
-                double bvar= 0;
 
                 for (int k = i; k < i + box_size; k++){
                     for (int l = j; l < j + box_size; l++){
-                        rmean += image[k][l].getRed();
-                        rvar += image[k][l].getRed() * image[k][l].getRed();
-                        gmean += image[k][l].getGreen();
-                        gvar += image[k][l].getGreen() * image[k][l].getGreen();
-                        bmean += image[k][l].getBlue();
-                        bvar += image[k][l].getBlue() * image[k][l].getBlue();
+                        rmean += Math.cbrt(image[k][l].getRed());
+                        gmean += Math.cbrt(image[k][l].getGreen());
+                        bmean += Math.cbrt(image[k][l].getBlue());
                     }
                 }
 
@@ -146,19 +140,28 @@ public class Control extends LooiObject
                 gmean /= box_size * box_size;
                 bmean /= box_size * box_size;
 
+                double distTotal = 0;
+
+	            for (int k = i; k < i + box_size; k++){
+		            for (int l = j; l < j + box_size; l++){
+			            distTotal += Math.pow(Math.cbrt(image[k][l].getRed()) - rmean, 2) + Math.pow(Math.cbrt(image[k][l].getGreen()) - gmean, 2) + Math.pow(Math.cbrt(image[k][l].getBlue()) - bmean, 2);
+		            }
+	            }
+
+
                 //compute varience
-                rvar = rvar / (box_size * box_size) - (rmean * rmean);
-                gvar = gvar / (box_size * box_size) - (gmean * gmean);
-                bvar = bvar / (box_size * box_size) - (bmean * bmean);
+				final double var = distTotal / (box_size * box_size);
 
                 //System.out.println(rvar);
 
                 //magic formulas?
-	            double var = getPhotoshopRGBVar(rvar, gvar, bvar, rmean, gmean, bmean);
+	            //double var = getPhotoshopRGBVar(rvar, gvar, bvar, rmean, gmean, bmean);
 	            //double var = getPhotoshopLumaVar(rvar, gvar, bvar);
 	            //double var = getMagicVar(rvar, gvar, bvar, rmean, bmean, gmean);
 
-	            if(Math.abs(var) < thresh) indexes.add(new int[] {i, j});
+	            //System.out.println(var);
+
+	            if(var < thresh) indexes.add(new int[] {i, j});
             }
         }
 
