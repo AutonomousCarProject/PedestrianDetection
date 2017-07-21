@@ -6,7 +6,6 @@ import fly2cam.FlyCamera;
 //Defines image as an 2d array of pixels
 public class Image implements IImage
 {
-
     public int height;
     public int width;
 
@@ -57,6 +56,7 @@ public class Image implements IImage
         flyCam.Finish();
   	}
     
+
     /*
 	public int getFrameNo(){
 		return flyCam.frameNo;

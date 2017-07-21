@@ -38,9 +38,19 @@ public class BlobDetectionRender extends Application
         // IImage image = new JpgImage("src/testImage1.png");
         IImage image = new Image();
         
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            image.finish();
+        }));
+        
         IPixel[][] pixels = image.getImage();
         final int scale = 1;
 
+        if(pixels.length == 0)
+        {
+            System.err.println("Please plug in the camera.");
+            System.exit(1);
+        }
+        
         final int width = pixels[0].length;
         final int height = pixels.length;
 
