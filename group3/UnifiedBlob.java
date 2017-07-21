@@ -30,7 +30,7 @@ public class UnifiedBlob extends MovingBlob {
 			float blobTop = movingBlob.y;
 			if (blobTop < top) top = blobTop;
 			
-			float blobBottom = movingBlob.y + movingBlob.height/2;
+			float blobBottom = movingBlob.y + movingBlob.height;
 			if (blobBottom > bottom) bottom = blobBottom;
 		}
 		System.out.println("top:" + top);
