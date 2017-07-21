@@ -21,7 +21,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	int unifyDistanceLimitY = 6;
 
 	//maximum difference in velocity to unify
-	int unifyVelocityLimitX = 6;
+	int unifyVelocityLimitX = 8;
 	int unifyVelocityLimitY = 8;
 
 
@@ -29,7 +29,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		movingBlobs = new LinkedList<>();
 	}
 
-	public List<UnifiedBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
+	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
 		HashSet<BlobPair> pairs = new HashSet<>();
 		for(MovingBlob movingBlob1:movingBlobs){
 			for(MovingBlob movingBlob2:movingBlobs){
