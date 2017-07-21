@@ -1,7 +1,7 @@
 package group1;
 
-import fly2cam.FlyCamera;
 //import group1.fly0cam.FlyCamera;
+import fly2cam.FlyCamera;
 
 //Defines image as an 2d array of pixels
 public class Image implements IImage
@@ -11,7 +11,11 @@ public class Image implements IImage
 
     private int frameRate = 3;
     private FlyCamera flyCam = new FlyCamera();
-    
+    private final int greyRatio = 2;
+    private final int blackRange = 100;
+    private final int whiteRange = 200;
+
+
     private int tile;
 
     // 307200
@@ -30,6 +34,7 @@ public class Image implements IImage
         image = new Pixel[height][width];
         tile = flyCam.PixTile();
         System.out.println("tile: "+tile+" width: "+width+" height: "+height);
+        autoColor();
     }
 
     @Override
@@ -55,14 +60,60 @@ public class Image implements IImage
     {
         flyCam.Finish();
   	}
-    
 
-    /*
+    public void autoColor(){
+        readCam();
+        int average = 0;
+        int variation = 0;
+        final int divisor = (width*height);
+
+        for (int i = 0; i < height; i++)
+        {
+            for (int j = 0; j < width; j++) {
+
+                IPixel temp = image[i][j];
+                average += temp.getRed() + temp.getGreen()+ temp.getBlue();
+            }
+
+        }
+        average = average / (divisor*3);
+
+        for (int i = 0; i < height; i++)
+        {
+            for (int j = 0; j < width; j++) {
+
+                IPixel temp = image[i][j];
+                int rVar = temp.getRed()-average;
+                if(rVar < 0){
+                    rVar = -rVar;
+                }
+
+                int gVar = temp.getGreen()-average;
+                if(gVar < 0){
+                    gVar = -rVar;
+                }
+
+                int bVar = temp.getBlue()-average;
+                if(bVar < 0) {
+                    bVar = -bVar;
+                }
+
+                variation += rVar + gVar + bVar;
+            }
+
+        }
+        average = average * 3;
+        variation = variation / divisor;
+        Pixel.greyMargin = variation / greyRatio;
+        Pixel.blackMargin = average - blackRange;
+        Pixel.whiteMargin = average + whiteRange;
+        System.out.println("greyMargin: " + Pixel.greyMargin + " blackMargin: " + Pixel.blackMargin + " whiteMargin: " + Pixel.whiteMargin);
+    }
+	/*
 	public int getFrameNo(){
 		return flyCam.frameNo;
-	}
-	*/
-	
+	}*/
+
     private void byteConvert()
     {
 
