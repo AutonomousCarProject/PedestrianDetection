@@ -13,16 +13,16 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	//list of all moving blobs that have been recently tracked
 	private List<MovingBlob> movingBlobs;
 	//maximum time before unmatched MovingBlob is deleted
-	int maxTimeOffScreen = 40;
+	int maxTimeOffScreen = 25;
 	//maximum distance in pixels between blobs that can be matched
 	int distanceLimit = 30;
 	//maximum distance between edges to unify
 	int unifyDistanceLimitX = 25;
-	int unifyDistanceLimitY = 60;
+	int unifyDistanceLimitY = 30;
 
 	//maximum difference in velocity to unify
 	int unifyVelocityLimitX = 20;
-	int unifyVelocityLimitY = 40;
+	int unifyVelocityLimitY = 30;
 
 
 	public MovingBlobDetection() {

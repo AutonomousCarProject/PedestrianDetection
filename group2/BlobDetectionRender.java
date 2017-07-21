@@ -2,11 +2,11 @@ package group2;
 
 import java.util.List;
 
+import group1.FileImage;
 import group1.IImage;
 import group1.IPixel;
 import group1.Image;
 import group1.Pixel;
-import group1.FileImage;
 import group3.IMovingBlobDetection;
 import group3.MovingBlob;
 import group3.MovingBlobDetection;
@@ -14,19 +14,26 @@ import group4.BlobFilter;
 import group4.IMovingBlobReduction;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 public class BlobDetectionRender extends Application
 {
-    final boolean drawBlobs = true;
-    final boolean filter = true;
-    final boolean posterize = true;
+    boolean drawBlobs = true;
+    boolean filter = true;
+    boolean posterize = true;
+    
+    final long calTime = 2_000_000_000L;
+    long lastTime = -1;
+    long cumulativeTime = 0;
+    
     
     public static void main(String... args)
     {
@@ -44,7 +51,7 @@ public class BlobDetectionRender extends Application
         }));
         
         IPixel[][] pixels = image.getImage();
-        final int scale = 3;
+        final int scale = 1;
 
         if(pixels.length == 0)
         {
@@ -62,6 +69,19 @@ public class BlobDetectionRender extends Application
         	@Override
         	public void handle(long time)
         	{
+        		if(lastTime != -1)
+        		{
+        			cumulativeTime += (time - lastTime);
+        		}
+        		
+        		lastTime = time;
+        		
+        		if(cumulativeTime >= calTime)
+        		{
+        			cumulativeTime = 0;
+        			image.autoColor();
+        		}
+        		
 		        image.readCam();
 		        IPixel[][] pixels = image.getImage();
 		
@@ -104,9 +124,9 @@ public class BlobDetectionRender extends Application
 		
 		        List<Blob> blobs = blobDetect.getBlobs(image);
 		        List<MovingBlob> movingBlobs =
-		       movingBlobDetect.getMovingBlobs(blobs);
+		        		movingBlobDetect.getMovingBlobs(blobs);
 		         
-		         List<MovingBlob> filteredBlobs =   movingBlobDetect.getUnifiedBlobs(blobFilter.reduce(movingBlobs));
+		         List<MovingBlob> filteredBlobs =   blobFilter.reduce(movingBlobDetect.getUnifiedBlobs(blobFilter.reduce(movingBlobs)));
 		
 		        gc.setStroke(Color.DARKGOLDENROD);
 		        gc.setLineWidth(4);
@@ -142,6 +162,25 @@ public class BlobDetectionRender extends Application
         Scene myScene = new Scene(rootNode, width * scale, height * scale);
         primaryStage.setScene(myScene);
 
+        primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent arg0) {
+				switch(arg0.getCode())
+				{
+				case P:
+					posterize = !posterize;
+					break;
+				case B:
+					drawBlobs = !drawBlobs;
+					break;
+				case F:
+					filter = !filter;
+					break;
+				default:
+					break;
+				}
+			}
+        });
         primaryStage.show();
     }
 
