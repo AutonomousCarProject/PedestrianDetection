@@ -61,7 +61,7 @@ public class IImageBoxDrawer implements IImageDrawing
     public void draw(IImage image, List<MovingBlob> iBlobs)
     {
         Rectangle[] rectangles = findRectangles(image,iBlobs);
-        BufferedImage b = new BufferedImage(image.getImage().length,image.getImage()[0].length,BufferedImage.TYPE_INT_ARGB);
+        BufferedImage b = new BufferedImage(image.getImage()[0].length,image.getImage().length,BufferedImage.TYPE_INT_ARGB);
         setPixels(b,image.getImage());
         
         
@@ -94,17 +94,18 @@ public class IImageBoxDrawer implements IImageDrawing
     {
         //...
         Rectangle[] rectangles = new Rectangle[iBlobs.size()];
-        for(int i = 0; i < iBlobs.size(); i++)
+        int i = 0;
+        for(MovingBlob b:iBlobs)
         {
-            MovingBlob b = iBlobs.get(i);
             Point[] points = new Point[4];
 
-            points[0] = new Point(b.x-b.width/2,b.y-b.height/2);
-            points[1] = new Point(b.x+b.width/2,b.y-b.height/2);
-            points[2] = new Point(b.x+b.width/2,b.y+b.height/2);
-            points[3] = new Point(b.x-b.width/2,b.y+b.height/2);
+            points[0] = new Point(b.x,b.y);
+            points[1] = new Point(b.x+b.width,b.y);
+            points[2] = new Point(b.x+b.width,b.y+b.height);
+            points[3] = new Point(b.x,b.y+b.height);
             
             rectangles[i] = new Rectangle(points,b);
+            i++;
         }
         return rectangles;
     }
@@ -112,17 +113,17 @@ public class IImageBoxDrawer implements IImageDrawing
     {
         //int[] pixelColors1D = new int[pixels.length * pixels[0].length];
         //int i = 0;
-        for(int r = 0; r < pixels.length; r++)
+        for(int r = 0; r < pixels[0].length; r++)
         {
             if(useBasicColors)
             {
-                for(int c = 0; c < pixels[0].length; c++)
+                for(int c = 0; c < pixels.length; c++)
                 {
 
                     try
                     {
 
-                        int colorNumber = pixels[r][c].getColor();
+                        int colorNumber = pixels[c][r].getColor();
                         Color theColor;
                         if(colorNumber == 0)
                         {
@@ -174,16 +175,16 @@ public class IImageBoxDrawer implements IImageDrawing
             }
             else
             {
-                for(int c = 0; c < pixels[0].length; c++)
+                for(int c = 0; c < pixels.length; c++)
                 {
 
                     try
                     {
 
 
-                        short red = pixels[r][c].getRed();
-                        short green = pixels[r][c].getGreen();
-                        short blue = pixels[r][c].getBlue();
+                        short red = pixels[c][r].getRed();
+                        short green = pixels[c][r].getGreen();
+                        short blue = pixels[c][r].getBlue();
 
 
 
