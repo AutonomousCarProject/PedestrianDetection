@@ -4,7 +4,6 @@ import java.util.List;
 
 import group1.IImage;
 import group1.IPixel;
-import group1.Image;
 import group1.Pixel;
 import group1.FileImage;
 import group3.IMovingBlobDetection;
@@ -18,16 +17,20 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 public class BlobDetectionRender extends Application
 {
-    final boolean drawBlobs = true;
-    final boolean filter = true;
-    final boolean posterize = true;
+    private boolean drawBlobs = true;
+    private boolean filter = true;
+    private boolean posterize = true;
     
+    private static final long autoColorTime = 5_000_000_000L; // nsecs
+    private long cumulativeTime = 0, previousTime = -1;
+
     public static void main(String... args)
     {
         launch(args);
@@ -38,49 +41,62 @@ public class BlobDetectionRender extends Application
     {
         // IImage image = new JpgImage("src/testImage1.png");
         IImage image = new FileImage();
-        
+
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             image.finish();
         }));
-        
+
         IPixel[][] pixels = image.getImage();
         final int scale = 3;
 
-        if(pixels.length == 0)
+        if (pixels.length == 0)
         {
             System.err.println("Please plug in the camera.");
             System.exit(1);
         }
-        
+
         final int width = pixels[0].length;
         final int height = pixels.length;
 
         Canvas canvas = new Canvas(width * scale, height * scale);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        
-        AnimationTimer timer = new AnimationTimer() {
-        	@Override
-        	public void handle(long time)
-        	{
-		        image.readCam();
-		        IPixel[][] pixels = image.getImage();
-		
-		        final int width = pixels[0].length;
-		        final int height = pixels.length;
-		
-		        final float blockedOutArea = (0);
-		        for (int i = 0; i < width; i++)
-		        {
-		            for (int j = 0; j < height; j++)
-		            {
-		                if (j < (height * blockedOutArea))
-		                {
-		                    gc.setFill(Color.RED);
-		                    pixels[j][i] = new Pixel((short) 255, (short) 0, (short) 0);
-		                }
-		                else
-		                {
-		                    //@formatter:off
+
+        AnimationTimer timer = new AnimationTimer()
+        {
+            @Override
+            public void handle(long time)
+            {
+                image.readCam();
+                IPixel[][] pixels = image.getImage();
+
+                if(previousTime != -1)
+                {
+                    cumulativeTime += (time - previousTime);
+                }
+                previousTime = time;
+                
+                if(cumulativeTime >= autoColorTime)
+                {
+                    cumulativeTime = 0;
+                    image.autoColor();
+                }
+                
+                final int width = pixels[0].length;
+                final int height = pixels.length;
+
+                final float blockedOutArea = (0);
+                for (int i = 0; i < width; i++)
+                {
+                    for (int j = 0; j < height; j++)
+                    {
+                        if (j < (height * blockedOutArea))
+                        {
+                            gc.setFill(Color.RED);
+                            pixels[j][i] = new Pixel((short) 255, (short) 0, (short) 0);
+                        }
+                        else
+                        {
+                            //@formatter:off
 		                    IPixel p = pixels[j][i];
 		                    Paint fill = Color.rgb(p.getRed(), p.getGreen(), p.getBlue());
 		                    
@@ -92,50 +108,65 @@ public class BlobDetectionRender extends Application
 		                    gc.setFill(fill);
 		                    
 		                    //@formatter:on
-		                }
-		
-		                gc.fillRect(i * scale, j * scale, scale, scale);
-		            }
-		        }
-		
-		        IBlobDetection blobDetect = new BlobDetection3();
-		        IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
-		        IMovingBlobReduction blobFilter = new BlobFilter();
-		
-		        List<Blob> blobs = blobDetect.getBlobs(image);
-		        List<MovingBlob> movingBlobs =
-		       movingBlobDetect.getMovingBlobs(blobs);
-		         
-		         List<MovingBlob> filteredBlobs =   movingBlobDetect.getUnifiedBlobs(blobFilter.reduce(movingBlobs));
-		
-		        gc.setStroke(Color.DARKGOLDENROD);
-		        gc.setLineWidth(4);
-		        
-		        if(drawBlobs)
-		        {
-		        	if(filter)
-		        	{
-				        for (Blob blob : filteredBlobs)
-				        {
-				            gc.strokeRect(blob.x * scale, blob.y * scale, blob.width * scale, blob.height * scale);
-				        }
-		        	}
-		        	else
-		        	{
-				        for (Blob blob : blobs)
-				        {
-				            gc.strokeRect(blob.x * scale, blob.y * scale, blob.width * scale, blob.height * scale);
-				        }
-		        	}
-		        }
-	        }
+                        }
+
+                        gc.fillRect(i * scale, j * scale, scale, scale);
+                    }
+                }
+
+                IBlobDetection blobDetect = new BlobDetection3();
+                IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
+                IMovingBlobReduction blobFilter = new BlobFilter();
+
+                List<Blob> blobs = blobDetect.getBlobs(image);
+                List<MovingBlob> movingBlobs = movingBlobDetect.getMovingBlobs(blobs);
+
+                List<MovingBlob> filteredBlobs = movingBlobDetect.getUnifiedBlobs(blobFilter.reduce(movingBlobs));
+
+                gc.setStroke(Color.DARKGOLDENROD);
+                gc.setLineWidth(4);
+
+                if (drawBlobs)
+                {
+                    if (filter)
+                    {
+                        for (Blob blob : filteredBlobs)
+                        {
+                            gc.strokeRect(blob.x * scale, blob.y * scale, blob.width * scale, blob.height * scale);
+                        }
+                    }
+                    else
+                    {
+                        for (Blob blob : blobs)
+                        {
+                            gc.strokeRect(blob.x * scale, blob.y * scale, blob.width * scale, blob.height * scale);
+                        }
+                    }
+                }
+            }
         };
-        
-        
+
         timer.start();
         
-        primaryStage.setTitle("JavaFX Window");
-
+        primaryStage.setTitle("Pedestrian Detection");
+        primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            switch(event.getCode())
+            {
+                case B:
+                    drawBlobs = !drawBlobs;
+                    break;
+                case F:
+                    filter = !filter;
+                    break;
+                case P:
+                    posterize = !posterize;
+                    break;
+                    
+                default:
+                    break;
+            }
+        });
+        
         Group rootNode = new Group();
         rootNode.getChildren().addAll(canvas);
 
