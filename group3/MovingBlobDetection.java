@@ -13,33 +13,42 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	//list of all moving blobs that have been recently tracked
 	private List<MovingBlob> movingBlobs;
 	//maximum time before unmatched MovingBlob is deleted
-	int maxTimeOffScreen = 10;
+	int maxTimeOffScreen = 40;
 	//maximum distance in pixels between blobs that can be matched
 	int distanceLimit = 30;
 	//maximum distance between edges to unify
-	int unifyDistanceLimitX = 6;
-	int unifyDistanceLimitY = 6;
+	int unifyDistanceLimitX = 25;
+	int unifyDistanceLimitY = 60;
 
 	//maximum difference in velocity to unify
-	int unifyVelocityLimitX = 6;
-	int unifyVelocityLimitY = 8;
+	int unifyVelocityLimitX = 20;
+	int unifyVelocityLimitY = 40;
 
 
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
 	}
 
-	public List<UnifiedBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
+	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
+		//pairs that should be unified
 		HashSet<BlobPair> pairs = new HashSet<>();
 		for(MovingBlob movingBlob1:movingBlobs){
 			for(MovingBlob movingBlob2:movingBlobs){
-				float distanceX = Math.abs(movingBlob1.x-movingBlob2.x)-
-						(movingBlob1.width+movingBlob2.width)/2;
-				float distanceY = Math.abs(movingBlob1.y-movingBlob2.y)-
-						(movingBlob1.height+movingBlob2.height)/2;	
+				float distanceX;
+				float distanceY;
+				if(movingBlob1.x>movingBlob2.x){
+					distanceX = movingBlob1.x-(movingBlob2.x+movingBlob2.width);
+				} else {
+					distanceX = movingBlob2.x-(movingBlob1.x+movingBlob1.width);
+				}
+				if(movingBlob1.y>movingBlob2.y){
+					distanceY = movingBlob1.y-(movingBlob2.y+movingBlob2.height);
+				} else {
+					distanceY = movingBlob2.y-(movingBlob1.y+movingBlob1.height);
+				}
 				float velocityDifferenceX = Math.abs(movingBlob1.velocityX-movingBlob2.velocityX);
 				float velocityDifferenceY = Math.abs(movingBlob1.velocityY-movingBlob2.velocityY);
-
+				//checks if distance and velocity differences are under thresholds
 				if(distanceX<unifyDistanceLimitX && distanceY<unifyDistanceLimitY &&
 						velocityDifferenceX<unifyVelocityLimitX && velocityDifferenceY<unifyVelocityLimitY){
 					pairs.add(new BlobPair(0, movingBlob1, movingBlob2));
@@ -58,6 +67,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			if(unifiedBlob2==null){
 				unifiedBlob2 = blob2;
 			}
+			//unifies the current top level unification of each blob in pair
 			if(unifiedBlob1!=unifiedBlob2){
 				HashSet<MovingBlob> blobSet = new HashSet<>();
 				blobSet.add(unifiedBlob1);
@@ -152,8 +162,12 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	}
 
 	private void calculateVelocity(MovingBlob movingBlob, Blob newBlob){
-		float movementX = newBlob.x - movingBlob.x;
-		float movementY = newBlob.y - movingBlob.y;
+		float centerXOld = movingBlob.x + movingBlob.width/2;
+		float centerYOld = movingBlob.y + movingBlob.height/2;
+		float centerXNew = newBlob.x + newBlob.width/2;
+		float centerYNew = newBlob.y + newBlob.width/2;
+		float movementX = centerXNew - centerXOld;
+		float movementY = centerYNew - centerYOld;
 		//finds average of previous velocity and velocity between last and current frame
 		movingBlob.velocityX += movementX;
 		movingBlob.velocityX /= 2;
