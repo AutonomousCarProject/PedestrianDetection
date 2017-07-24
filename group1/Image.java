@@ -34,7 +34,7 @@ public class Image implements IImage
         image = new Pixel[height][width];
         tile = flyCam.PixTile();
         System.out.println("tile: "+tile+" width: "+width+" height: "+height);
-        autoColor();
+        //autoColor();
     }
 
     @Override
