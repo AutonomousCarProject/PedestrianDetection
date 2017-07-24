@@ -61,7 +61,7 @@ public class IImageBoxDrawer implements IImageDrawing
     public void draw(IImage image, List<MovingBlob> iBlobs)
     {
         Rectangle[] rectangles = findRectangles(image,iBlobs);
-        BufferedImage b = new BufferedImage(image.getImage().length,image.getImage()[0].length,BufferedImage.TYPE_INT_ARGB);
+        BufferedImage b = new BufferedImage(image.getImage()[0].length,image.getImage().length,BufferedImage.TYPE_INT_ARGB);
         setPixels(b,image.getImage());
         
         
@@ -162,7 +162,7 @@ public class IImageBoxDrawer implements IImageDrawing
 
 
                         int p = (255/*alpha*/ << 24) | (theColor.getRed() << 16) | (theColor.getGreen() << 8) | theColor.getBlue();
-                        b.setRGB(r,c,p);
+                        b.setRGB(c,r,p);
                     }
                     catch(ArrayIndexOutOfBoundsException e)
                     {
