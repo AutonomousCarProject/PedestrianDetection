@@ -112,6 +112,8 @@ public class IImageBoxDrawer implements IImageDrawing
     {
         //int[] pixelColors1D = new int[pixels.length * pixels[0].length];
         //int i = 0;
+        //System.out.println("rows: " + pixels.length + " cols: " + pixels[0].length);
+        //System.out.println("BI: rows: " + b.getHeight() + );
         for(int r = 0; r < pixels.length; r++)
         {
             if(useBasicColors)
@@ -188,7 +190,7 @@ public class IImageBoxDrawer implements IImageDrawing
 
 
                         int p = (255/*alpha*/ << 24) | (red << 16) | (green << 8) | blue;
-                        b.setRGB(r,c,p);
+                        b.setRGB(c,r,p);
                     }
                     catch(ArrayIndexOutOfBoundsException e)
                     {
