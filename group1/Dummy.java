@@ -26,5 +26,7 @@ public class Dummy implements IImage{
 	public IPixel[][] getImage(){
 		return image;
 	}
+
+	public void autoColor(){};
 	
 }

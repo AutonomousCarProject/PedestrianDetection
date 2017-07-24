@@ -2,7 +2,10 @@ package group3;
 import group2.Blob;
 import group2.TestBlobDetection;
 import group2.TestPixel;
+import group4.BlobFilter;
 import group2.IBlobDetection;
+
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,21 +19,28 @@ public class MovingBlobDetectionTest implements IMovingBlobDetection {
 	public static void main(String[] args){
 		TestBlobDetection test = new TestBlobDetection();
 		MovingBlobDetection movingTest = new MovingBlobDetection();
+		BlobFilter filter= new BlobFilter();
 
 		final long startTime = System.currentTimeMillis();
 		List<MovingBlob> list = new LinkedList<>();
-		list.add(new MovingBlob(10, 10, 20, 20, null, 25, 27));
-		list.add(new MovingBlob(10, 10, 35, 35, null, 20, 20));
-		MovingBlob movingBlob = movingTest.getUnifiedBlobs(list).get(0);
-		List<MovingBlob> list2 = new LinkedList<>();
-		System.out.println(movingBlob);
-		System.out.println(movingBlob.width);
-		System.out.println(movingBlob.height);
-
-		list2.add(movingBlob);
-		list2.add(new MovingBlob(2, 2, 45, 27, null, 19, 20));
-		System.out.println(movingTest.getUnifiedBlobs(list2).get(0));
+		list.add(new MovingBlob(10, 10, 20, 20,  25, 27,15));
+		list.add(new MovingBlob(11, 11, 200, 200, 0, 0,15));
+		List<MovingBlob> unifiedBlobs = new LinkedList<>();
 		
+		for(MovingBlob blob: list){
+			HashSet<MovingBlob> set = new HashSet<MovingBlob>();
+			set.add(blob);
+			unifiedBlobs.add(new UnifiedBlob(set));
+		}
+		System.out.println(list.get(1));
+		System.out.println(unifiedBlobs.get(1));
+		List<MovingBlob> filterList1 = filter.reduce(list);
+		List<MovingBlob> filterList2 = filter.reduce(unifiedBlobs);
+		System.out.println(filterList1.get(0));
+		System.out.println(list.size());
+		System.out.println(unifiedBlobs.size());
+		System.out.println(filterList1.size());
+		System.out.println(filterList2.size());
 
 		final long endTime = System.currentTimeMillis();
 

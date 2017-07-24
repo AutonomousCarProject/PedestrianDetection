@@ -10,6 +10,8 @@ public class UnifiedBlob extends MovingBlob {
 	public UnifiedBlob(Set<MovingBlob> movingBlobs) {
 		super();
 		int numBlobs = movingBlobs.size();
+		int minAgeOffScreen = 100000;
+		int maxAge = 0;
 		float totalVelocityX = 0;
 		float totalVelocityY = 0;
 		float top = 1000000;
@@ -18,6 +20,9 @@ public class UnifiedBlob extends MovingBlob {
 		float right = 0;
 		//find averages and other values
 		for(MovingBlob movingBlob: movingBlobs){
+			minAgeOffScreen = Math.min(minAgeOffScreen, movingBlob.ageOffScreen);
+			maxAge = Math.max(age, movingBlob.age);
+			
 			totalVelocityX += movingBlob.velocityX;
 			totalVelocityY += movingBlob.velocityY;
 			
@@ -33,10 +38,10 @@ public class UnifiedBlob extends MovingBlob {
 			float blobBottom = movingBlob.y + movingBlob.height;
 			if (blobBottom > bottom) bottom = blobBottom;
 		}
-		System.out.println("top:" + top);
-		System.out.println("bottom:" + bottom);
-		System.out.println("left:" + left);
-		System.out.println("right:" + right);
+
+		this.age = maxAge;
+		this.ageOffScreen = minAgeOffScreen;
+
 
 		this.velocityX = totalVelocityX/numBlobs;
 		this.velocityY = totalVelocityY/numBlobs;
