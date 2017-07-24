@@ -35,4 +35,6 @@ public class Dummy3 implements IImage
     }
 
     public void autoColor(){};
+
+    public void finish(){}
 }
