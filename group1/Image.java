@@ -11,7 +11,7 @@ public class Image implements IImage
 
     private int frameRate = 3;
     private FlyCamera flyCam = new FlyCamera();
-    private final float greyRatio = 1.5f;
+    private final float greyRatio = 1.1f;
     private final int blackRange = 100;
     private final int whiteRange = 200;
 
