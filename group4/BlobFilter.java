@@ -10,25 +10,6 @@ import java.util.stream.Collectors;
 public class BlobFilter implements IMovingBlobReduction
 {
 	/**
-	 * Constant thresholds which do all the magic
-	 * All inclusive thresholds
-	 */
-
-	//the maximum ratio of w/h the blob can be to be considered valid
-	private static final double WIDTH_HEIGHT_RATIO_MAX = 1;
-	//minimum dimensions size for the blob
-	private static final int DIMENSION_MIN = 10;
-	//the minimum age (in frames) the blob must be to be considered valid
-	//OR
-	//the minimum velocity for an object in the center
-	private static final float CENTER_X_VELOCITY_MIN = (int)(1.0f / 15.0f * 32.0f);
-	//and the width and height of the box to check that velocity
-	private static final int CENTER_CHECK_WIDTH = 200;
-	private static final int CENTER_CHECK_HEIGHT = 100;
-	//the maximum X velocity the blob can have to be considered valid (6 m/s converted to px/frame)
-	//the minimum distance from the top, left, or right border the predicted position of the blob must be in order to be considered (in px)
-	private static final short PREDICTED_BORDER_DISTANCE_MIN = 20;
-	
 	/*
 	 * Moving Blob filters
 	 */

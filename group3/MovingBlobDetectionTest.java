@@ -54,4 +54,6 @@ public class MovingBlobDetectionTest implements IMovingBlobDetection {
 		}
 		return movingBlobs;
 	}
+
+	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> blobs) {return blobs;}
 }
