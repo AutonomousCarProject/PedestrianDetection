@@ -46,12 +46,12 @@ public class BlobDetectionRender extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        IBlobDetection blobDetect = new BlobDetection3();
+        IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
+        IMovingBlobReduction blobFilter = new BlobFilter();
+        
         // IImage image = new JpgImage("src/testImage1.png");
         IImage image = new Image();
-        
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            image.finish();
-        }));
         
         IPixel[][] pixels = image.getImage();
         final int scale = 2;
@@ -79,7 +79,7 @@ public class BlobDetectionRender extends Application
         		
         		lastTime = time;
         		
-        		if(++currentFrame != framesPerCall)
+        		if(++currentFrame != framesPerCall && image instanceof FileImage)
         		{
         		    return;
         		}
@@ -128,15 +128,18 @@ public class BlobDetectionRender extends Application
 		            }
 		        }
 		
-		        IBlobDetection blobDetect = new BlobDetection3();
-		        IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
-		        IMovingBlobReduction blobFilter = new BlobFilter();
-		
 		        List<Blob> blobs = blobDetect.getBlobs(image);
 		        List<MovingBlob> movingBlobs =
-		        		movingBlobDetect.getMovingBlobs(blobs);
-		        List<MovingBlob> filteredBlobs = movingBlobDetect.getUnifiedBlobs(blobFilter.reduce(movingBlobs));
-		       
+		                movingBlobDetect.getMovingBlobs(blobs);
+		        
+		        List<MovingBlob> unifiedBlobs = movingBlobDetect.getUnifiedBlobs(movingBlobs);
+		        /*
+		        for(MovingBlob b : movingBlobs)
+		        {
+		            System.out.println(b);
+		        }*/
+		        List<MovingBlob> filteredBlobs = blobFilter.reduce(unifiedBlobs);
+		        		       
 		        gc.setStroke(Color.DARKGOLDENROD);
 		        gc.setLineWidth(4);
 		        
@@ -151,7 +154,7 @@ public class BlobDetectionRender extends Application
 		        	}
 		        	else
 		        	{
-				        for (Blob blob : blobs)
+				        for (Blob blob : unifiedBlobs)
 				        {
 				            gc.strokeRect(blob.x * scale, blob.y * scale, blob.width * scale, blob.height * scale);
 				        }
@@ -185,6 +188,10 @@ public class BlobDetectionRender extends Application
 				case F:
 					filter = !filter;
 					break;
+				case ESCAPE:
+				    image.finish();
+				    System.exit(0);
+				    break;
 				    
 				default:
 					break;
