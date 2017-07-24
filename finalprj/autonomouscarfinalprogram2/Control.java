@@ -6,6 +6,8 @@
 package autonomouscarfinalprogram2;
 
 import com.looi.looi.LooiObject;
+import com.looi.looi.gui_essentials.Background;
+import com.looi.looi.gui_essentials.Slider;
 import group1.FileImage;
 import group2.Blob;
 import group2.BlobDetection;
@@ -13,10 +15,9 @@ import group3.MovingBlob;
 import group3.MovingBlobDetection;
 import group4.BlobFilter;
 import group5.IImageBoxDrawer;
-import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
+import java.awt.Color;
 
 /**
  *
@@ -29,6 +30,7 @@ public class Control extends LooiObject
     private BlobFilter blobFilter;
     private IImageBoxDrawer boxDrawer;
     private FileImage currentImage;
+    private Slider slider;
     private BufferedImage testBI = new BufferedImage(10,10,BufferedImage.TYPE_INT_ARGB);
     {
         for(int r = 0; r < testBI.getHeight(); r++)
@@ -54,12 +56,15 @@ public class Control extends LooiObject
         currentImage = new FileImage();
         boxDrawer = new IImageBoxDrawer();
         boxDrawer.setUsingBasicColors(true);
+        slider = new Slider(10,10,300,30,new Background(Color.WHITE));
+        
     }
     /**
      * This method runs 60 timer per sec
      */
     protected void looiStep()
     {
+        BlobFilter.WIDTH_HEIGHT_RATIO_MAX = slider.getPercentage();
     	if(keepGoing){
 	        currentImage.readCam();
 	        
