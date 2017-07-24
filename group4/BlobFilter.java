@@ -19,7 +19,6 @@ public class BlobFilter implements IMovingBlobReduction
 	//minimum dimensions size for the blob
 	private static final int DIMENSION_MIN = 10;
 	//the minimum age (in frames) the blob must be to be considered valid
-	private static final short AGE_MIN = 10;
 	//OR
 	//the minimum velocity for an object in the center
 	private static final float CENTER_X_VELOCITY_MIN = (int)(1.0f / 15.0f * 32.0f);
@@ -27,9 +26,22 @@ public class BlobFilter implements IMovingBlobReduction
 	private static final int CENTER_CHECK_WIDTH = 200;
 	private static final int CENTER_CHECK_HEIGHT = 100;
 	//the maximum X velocity the blob can have to be considered valid (6 m/s converted to px/frame)
-	private static final short X_VELOCITY_MAX = (int)(6.0f / 15.0f * 32.0f);
 	//the minimum distance from the top, left, or right border the predicted position of the blob must be in order to be considered (in px)
 	private static final short PREDICTED_BORDER_DISTANCE_MIN = 20;
+	
+	/*
+	 * Moving Blob filters
+	 */
+	//Minimum age to not be filtered
+	private static final short AGE_MIN = 10;
+	//Maximum 
+	private static final short VELOCITY_X_MAX = 30;
+	
+	private static final short VELOCITY_Y_MAX = 10;
+	
+	/*
+	 * Unified Blob filters
+	 */
 	
 	/**
 	 * Checks the list of potential pedestrian blobs to distinguish pedestrians from non-pedestrians.
@@ -64,4 +76,39 @@ public class BlobFilter implements IMovingBlobReduction
 				&& blob.predictedX >= PREDICTED_BORDER_DISTANCE_MIN && blob.predictedX <= (640 - PREDICTED_BORDER_DISTANCE_MIN)
 				&& blob.predictedY >= PREDICTED_BORDER_DISTANCE_MIN && blob.predictedY <= (480 - PREDICTED_BORDER_DISTANCE_MIN);
 	}
+	
+	public List<MovingBlob> filterMovingBlobs(List<MovingBlob> blobs){
+		List<MovingBlob> ret = new LinkedList<>();
+		for(MovingBlob blob : blobs){
+			if(!filterMovingBlob(blob)) ret.add(blob);
+		}
+		return ret;
+	}
+	
+	//returns true if blob should be filtered
+	private boolean filterMovingBlob(MovingBlob blob){
+		boolean passes = true;
+		//age filter
+		if(blob.age<=AGE_MIN){
+			passes = false;
+		}
+		if(blob.velocityY>=VELOCITY_Y_MAX){
+			passes = false;
+		}
+		if(blob.velocityX>=VELOCITY_Y_MAX){
+			passes = false;
+		}
+	}
+	
+	public List<MovingBlob> filterUnifiedBlobs(List<MovingBlob> blobs){
+		List<MovingBlob> ret = new LinkedList<>();
+		for(MovingBlob blob : blobs){
+			if(!filterUnifiedBlobs(blob)) ret.add(blob);
+		}
+	}
+	
+	private boolean filterMovingBlob(MovingBlob blob){
+		
+	}
+	
 }
