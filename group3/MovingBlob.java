@@ -30,7 +30,7 @@ public class MovingBlob extends Blob
         super(b.width, b.height, b.x, b.y, b.color);
         this.velocityX = 0;
         this.velocityY = 0;
-        this.age = 15;
+        this.age = 0;
         this.ageOffScreen = 0;
         updatePredictedPosition();
     }
@@ -49,7 +49,17 @@ public class MovingBlob extends Blob
         super(width, height, x, y, color);
         this.velocityX = velocityX;
         this.velocityY = velocityY;
-        this.age = 15;
+        this.age = 0;
+        this.ageOffScreen = 0;
+        updatePredictedPosition();
+    }
+    //for testing only
+    public MovingBlob(int width, int height, int x, int y, float velocityX, float velocityY,int age)
+    {
+        super(width, height, x, y,null);
+        this.velocityX = velocityX;
+        this.velocityY = velocityY;
+        this.age = age;
         this.ageOffScreen = 0;
         updatePredictedPosition();
     }
@@ -105,7 +115,8 @@ public class MovingBlob extends Blob
     @Override
     public String toString()
     {
-        return "Moving blob: Color " + /* color.getColor() + */ " X: " + x + " Y: " + y + " vX: " + velocityX + " vY: "
-                + velocityY;
+        return "Moving blob: Color " + /* color.getColor() + */ " X: " + x + " Y: " + y + " vX: " + velocityX +
+        		" vY: " + velocityY + " pX: " + predictedX + " pY: " + predictedY + " w: " + width + " h: " + height
+        		+ " age: " + age + " ageoff: " + ageOffScreen;
     }
 }
