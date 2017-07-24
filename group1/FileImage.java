@@ -11,7 +11,7 @@ public class FileImage implements IImage
 
     private int frameRate = 3;
     private FlyCamera flyCam = new FlyCamera();
-    private final int greyRatio = 2;
+    private final float greyRatio = 0.5f;
     private final int blackRange = 100;
     private final int whiteRange = 200;
 
@@ -34,7 +34,7 @@ public class FileImage implements IImage
 
         tile = flyCam.PixTile();
         System.out.println("tile: "+tile+" width: "+width+" height: "+height);
-        autoColor();
+        //autoColor();
     }
 
     @Override
@@ -99,9 +99,10 @@ public class FileImage implements IImage
         }
         average = average * 3;
         variation = variation / divisor;
-        Pixel.greyMargin = variation / greyRatio;
+        Pixel.greyMargin = (int)(variation * greyRatio);
         Pixel.blackMargin = average - blackRange;
         Pixel.whiteMargin = average + whiteRange;
+        System.out.println("Variation: "+variation+" greyRatio: "+greyRatio);
         System.out.println("greyMargin: " + Pixel.greyMargin + " blackMargin: " + Pixel.blackMargin + " whiteMargin: " + Pixel.whiteMargin);
     }
 
