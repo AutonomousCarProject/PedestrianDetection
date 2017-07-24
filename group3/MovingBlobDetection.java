@@ -13,7 +13,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	//list of all moving blobs that have been recently tracked
 	private List<MovingBlob> movingBlobs;
 	//maximum time before unmatched MovingBlob is deleted
-	int maxTimeOffScreen = 25;
+	int maxTimeOffScreen = 0;
 	//maximum distance in pixels between blobs that can be matched
 	int distanceLimit = 30;
 	//maximum distance between edges to unify
@@ -154,7 +154,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 
 	private void updateUnmatched(MovingBlob movingBlob){
 
-		if(movingBlob.ageOffScreen>maxTimeOffScreen){
+		if(movingBlob.ageOffScreen>=maxTimeOffScreen){
 			//removes blob if it has been gone too long
 			movingBlobs.remove(movingBlob);
 		} else {
