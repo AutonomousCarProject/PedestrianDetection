@@ -54,7 +54,7 @@ public class BlobFilter implements IMovingBlobReduction
 	{
 		//lol formatting wut
 		return  blob.width >= DIMENSION_MIN && blob.height >= DIMENSION_MIN
-				&& blob.width / blob.height <= WIDTH_HEIGHT_RATIO_MAX
+				&& (float)blob.width / (float)blob.height <= WIDTH_HEIGHT_RATIO_MAX
 				&& (blob.age >= AGE_MIN || (blob.x + blob.width/2 >= CENTER_CHECK_WIDTH / 2
 											&& blob.x + blob.width/2 <= 640 - CENTER_CHECK_WIDTH / 2
 											&& blob.y + blob.height/2 >= CENTER_CHECK_HEIGHT / 2
