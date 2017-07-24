@@ -17,8 +17,10 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	//maximum distance in pixels between blobs that can be matched
 	int distanceLimit = 30;
 	//maximum distance between edges to unify
-	int unifyDistanceLimitX = 25;
-	int unifyDistanceLimitY = 30;
+	int xEdgeDistanceLimit = 25;
+	int yEdgeDistanceLimit = 30;
+	float xOverlapPercent = 0.4f;
+	float yOverlapPercent = 0.4f;
 
 	//maximum difference in velocity to unify
 	int unifyVelocityLimitX = 20;
@@ -50,7 +52,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 				float velocityDifferenceX = Math.abs(movingBlob1.velocityX-movingBlob2.velocityX);
 				float velocityDifferenceY = Math.abs(movingBlob1.velocityY-movingBlob2.velocityY);
 				//checks if distance and velocity differences are under thresholds
-				if(distanceX<unifyDistanceLimitX && distanceY<unifyDistanceLimitY &&
+				if(((distanceX<xEdgeDistanceLimit && distanceY<-yOverlapPercent*Math.min(movingBlob1.height, movingBlob2.height)) 
+						|| (distanceY<yEdgeDistanceLimit && distanceX<-xOverlapPercent*Math.min(movingBlob1.height, movingBlob2.height)))&&
 						velocityDifferenceX<unifyVelocityLimitX+
 						velocityLimitIncreaseX*Math.max(movingBlob1.velocityX, movingBlob2.velocityX) &&
 						velocityDifferenceY<unifyVelocityLimitY+
@@ -159,7 +162,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			movingBlob.x += movingBlob.velocityX;
 			movingBlob.y += movingBlob.velocityY;
 
-      movingBlob.age++;
+			movingBlob.age++;
 			movingBlob.ageOffScreen++;
 			movingBlob.updatePredictedPosition();
 		}
