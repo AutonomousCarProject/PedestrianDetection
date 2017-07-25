@@ -13,16 +13,27 @@ public class BlobFilter implements IMovingBlobReduction
 	/*
 	 * Moving Blob filters
 	 */
-	//Minimum age to not be filtered
-	private static final short AGE_MIN = 10;
-	//Maximum 
-	private static final short VELOCITY_X_MAX = 30;
-	
-	private static final short VELOCITY_Y_MAX = 10;
+	//Minimum age 
+	private static final short AGE_MIN = 5;
+	//Maximum X velocity
+	private static final short MAX_VELOCITY_X = 30;
+	//Maximum Y velocity
+	private static final short MAX_VELOCITY_Y = 10;
 	
 	/*
 	 * Unified Blob filters
 	 */
+	//Maximum width to height ratio
+	private static final float MAX_WIDTH_HEIGHT_RATIO = 1;
+	//Maximum width
+	private static final int MAX_WIDTH = 200;
+	//Maximum height
+	private static final int MAX_HEIGHT = 400;
+	//Maximum scaled x velocity
+	private static final float MAX_SCALED_VELOCITY_X = 30;
+	//Maximum scaled x velocity
+	private static final float MAX_SCALED_VELOCITY_Y = 10;
+
 	
 	/**
 	 * Checks the list of potential pedestrian blobs to distinguish pedestrians from non-pedestrians.
@@ -61,35 +72,34 @@ public class BlobFilter implements IMovingBlobReduction
 	public List<MovingBlob> filterMovingBlobs(List<MovingBlob> blobs){
 		List<MovingBlob> ret = new LinkedList<>();
 		for(MovingBlob blob : blobs){
-			if(!filterMovingBlob(blob)) ret.add(blob);
+			if(filterMovingBlob(blob)) ret.add(blob);
 		}
 		return ret;
 	}
 	
-	//returns true if blob should be filtered
+	//returns true if blob passes through filter
 	private boolean filterMovingBlob(MovingBlob blob){
-		boolean passes = true;
-		//age filter
-		if(blob.age<=AGE_MIN){
-			passes = false;
-		}
-		if(blob.velocityY>=VELOCITY_Y_MAX){
-			passes = false;
-		}
-		if(blob.velocityX>=VELOCITY_Y_MAX){
-			passes = false;
-		}
+		if(blob.age<=AGE_MIN) return false;
+		if(blob.velocityX>=MAX_VELOCITY_X) return false;
+		if(blob.velocityY>=MAX_VELOCITY_Y) return false;
+		return true;
 	}
 	
 	public List<MovingBlob> filterUnifiedBlobs(List<MovingBlob> blobs){
 		List<MovingBlob> ret = new LinkedList<>();
 		for(MovingBlob blob : blobs){
-			if(!filterUnifiedBlobs(blob)) ret.add(blob);
+			if(!filterUnifiedBlob(blob)) ret.add(blob);
 		}
+		return ret;
 	}
 	
-	private boolean filterMovingBlob(MovingBlob blob){
-		
+	private boolean filterUnifiedBlob(MovingBlob blob){
+		if((float)blob.width/(float)blob.height>=MAX_WIDTH_HEIGHT_RATIO) return false;
+		if(blob.width>=MAX_WIDTH) return false;
+		if(blob.height>=MAX_HEIGHT) return false;
+		if(blob.getScaledVelocityX()>=MAX_SCALED_VELOCITY_X) return false;
+		if(blob.getScaledVelocityY()>=MAX_SCALED_VELOCITY_Y) return false;
+		return true;
 	}
 	
 }
