@@ -9,6 +9,8 @@ public class MovingBlob extends Blob
     // The X and Y components of the MovingBlob's velocity.
     public float velocityX, velocityY;
 
+    public float velocityChangeX, velocityChangeY;
+
     // The predicted X and Y coordinates of the MovingBlob in the next frame.
     public float predictedX, predictedY;
 

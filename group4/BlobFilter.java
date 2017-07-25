@@ -14,15 +14,30 @@ public class BlobFilter implements IMovingBlobReduction
 	 * Moving Blob filters
 	 */
 	//Minimum age to not be filtered
-	private static final short AGE_MIN = 10;
+	private static final short AGE_MIN = 3;
 	//Maximum 
-	private static final short VELOCITY_X_MAX = 30;
+	private static final short VELOCITY_X_MAX = 20;
 	
-	private static final short VELOCITY_Y_MAX = 20;
+	private static final short VELOCITY_Y_MAX = 10;
+
+	private static final float MAX_VELOCITY_CHANGE_X = 3;
+
+	private static final float MAX_VELOCITY_CHANGE_Y = 2;
+
 	
 	/*
 	 * Unified Blob filters
 	 */
+
+	private static final short MAX_WIDTH_HEIGHT_RATIO = 1;
+
+	private static final short MAX_WIDTH = 100;
+
+	private static final short MAX_HEIGHT = 200;
+
+	private static final short MAX_SCALED_VELOCITY_X = 10;
+
+	private static final short MAX_SCALED_VELOCITY_Y = 10;
 	
 	/**
 	 * Checks the list of potential pedestrian blobs to distinguish pedestrians from non-pedestrians.
@@ -58,7 +73,9 @@ public class BlobFilter implements IMovingBlobReduction
 				&& blob.predictedY >= PREDICTED_BORDER_DISTANCE_MIN && blob.predictedY <= (480 - PREDICTED_BORDER_DISTANCE_MIN);
 	}*/
 
-	public List<MovingBlob> reduce(List<MovingBlob> blobs){return null;}
+	public List<MovingBlob> reduce(List<MovingBlob> blobs){
+		return filterUnifiedBlobs(blobs);
+	}
 
 	public List<MovingBlob> filterMovingBlobs(List<MovingBlob> blobs){
 		List<MovingBlob> ret = new LinkedList<>();
@@ -70,31 +87,27 @@ public class BlobFilter implements IMovingBlobReduction
 	
 	//returns false if blob should be filtered
 	private boolean filterMovingBlob(MovingBlob blob){
-		boolean passes = true;
-		//age filter
-		if(blob.age<=AGE_MIN){
-			passes = false;
-		}
-		if(blob.velocityY>=VELOCITY_Y_MAX){
-			passes = false;
-		}
-		if(blob.velocityX>=VELOCITY_Y_MAX){
-			passes = false;
-		}
-
-		return passes;
+		return blob.age > AGE_MIN &&
+				Math.abs(blob.velocityY) < VELOCITY_Y_MAX &&
+				Math.abs(blob.velocityX) < VELOCITY_X_MAX &&
+				blob.velocityChangeX < MAX_VELOCITY_CHANGE_X &&
+				blob.velocityChangeY < MAX_VELOCITY_CHANGE_Y;
 	}
 	
 	public List<MovingBlob> filterUnifiedBlobs(List<MovingBlob> blobs){
 		List<MovingBlob> ret = new LinkedList<>();
 		for(MovingBlob blob : blobs){
-			//if(!filterUnifiedBlob(blob)) ret.add(blob);
+			if(filterUnifiedBlob(blob)) ret.add(blob);
 		}
 		return ret;
 	}
 	
-	/*private boolean filterMovingBlob(MovingBlob blob){
-
-	}*/
+	private boolean filterUnifiedBlob(MovingBlob blob){
+		return (float)blob.width / (float)blob.height < MAX_WIDTH_HEIGHT_RATIO &&
+				blob.width < MAX_WIDTH &&
+				blob.height < MAX_HEIGHT &&
+				blob.getScaledVelocityX() < MAX_SCALED_VELOCITY_X &&
+				blob.getScaledVelocityY() < MAX_SCALED_VELOCITY_Y;
+	}
 	
 }
