@@ -8,25 +8,28 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
+import global.CONSTANTS;
 
 public class MovingBlobDetection implements IMovingBlobDetection {
+	CONSTANTS c = new CONSTANTS();
+	
 	//list of all moving blobs that have been recently tracked
 	private List<MovingBlob> movingBlobs;
 	//maximum time before unmatched MovingBlob is deleted
-	int maxTimeOffScreen = 2;
+	int maxTimeOffScreen = c.MAX_TIME_OFF_SCREEN;
 	//maximum distance in pixels between blobs that can be matched
-	int distanceLimit = 20;
+	int distanceLimit = c.DISTANCE_LIMIT;
 	//maximum distance between edges to unify
-	int xEdgeDistanceLimit = 25;
-	int yEdgeDistanceLimit = 30;
-	float xOverlapPercent = 0.4f;
-	float yOverlapPercent = 0.4f;
+	int xEdgeDistanceLimit = c.X_EDGE_DISTANCE_LIMIT;
+	int yEdgeDistanceLimit = c.Y_EDGE_DISTANCE_LIMIT;
+	float xOverlapPercent = c.X_OVERLAP_PERCENT;
+	float yOverlapPercent = c.Y_OVERLAP_PERCENT;
 
 	//maximum difference in velocity to unify
-	int unifyVelocityLimitX = 20;
-	int unifyVelocityLimitY = 30;
-	float velocityLimitIncreaseX = 0.5f;
-	float velocityLimitIncreaseY = 0.5f;
+	int unifyVelocityLimitX = c.UNIFY_VELOCITY_LIMIT_X;
+	int unifyVelocityLimitY = c.UNIFY_VELOCITY_LIMIT_Y;
+	float velocityLimitIncreaseX = c.VELOCITY_LIMIT_INCREASE_X;
+	float velocityLimitIncreaseY = c.VELOCITY_LIMIT_INCREASE_Y;
 
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();

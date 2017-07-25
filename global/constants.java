@@ -1,6 +1,7 @@
 package global;
 
-public class constants {
+public class CONSTANTS {
+	
 	//maximum time before unmatched MovingBlob is deleted
 	public static final int MAX_TIME_OFF_SCREEN = 2;
 	
