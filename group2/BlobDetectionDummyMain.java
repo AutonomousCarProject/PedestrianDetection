@@ -11,7 +11,7 @@ public class BlobDetectionDummyMain
     {
         IImage image = new Image();
         image.readCam();
-        IBlobDetection blobDetect = new BlobDetection2();
+        IBlobDetection blobDetect = new BlobDetection();
 
         // Runs once to pre-allocate blobs (simulating first frame startup
         // costs)

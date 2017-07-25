@@ -32,7 +32,10 @@ public class BlobDetectionRender extends Application
     
     final long calTime = 2_000_000_000L;
     long lastTime = -1;
-    long cumulativeTime = 0;
+    long cumulativeTime = calTime;
+    
+    int framesPerCall = 6;
+    int currentFrame = 0;
     
     
     public static void main(String... args)
@@ -43,15 +46,15 @@ public class BlobDetectionRender extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        // IImage image = new JpgImage("src/testImage1.png");
-        IImage image = new FileImage();
+        IBlobDetection blobDetect = new BlobDetection();
+        IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
+        IMovingBlobReduction blobFilter = new BlobFilter();
         
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            image.finish();
-        }));
+        // IImage image = new JpgImage("src/testImage1.png");
+        IImage image = new Image();
         
         IPixel[][] pixels = image.getImage();
-        final int scale = 1;
+        final int scale = 2;
 
         if(pixels.length == 0)
         {
@@ -75,6 +78,13 @@ public class BlobDetectionRender extends Application
         		}
         		
         		lastTime = time;
+        		
+        		if(++currentFrame != framesPerCall && image instanceof FileImage)
+        		{
+        		    return;
+        		}
+        		
+        		currentFrame = 0;
         		
         		if(cumulativeTime >= calTime)
         		{
@@ -118,16 +128,18 @@ public class BlobDetectionRender extends Application
 		            }
 		        }
 		
-		        IBlobDetection blobDetect = new BlobDetection3();
-		        IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
-		        IMovingBlobReduction blobFilter = new BlobFilter();
-		
 		        List<Blob> blobs = blobDetect.getBlobs(image);
 		        List<MovingBlob> movingBlobs =
-		        		movingBlobDetect.getMovingBlobs(blobs);
-		         
-		         List<MovingBlob> filteredBlobs =   blobFilter.reduce(movingBlobDetect.getUnifiedBlobs(blobFilter.reduce(movingBlobs)));
-		
+		                movingBlobDetect.getMovingBlobs(blobs);
+		        
+		        List<MovingBlob> unifiedBlobs = movingBlobDetect.getUnifiedBlobs(movingBlobs);
+		        /*
+		        for(MovingBlob b : movingBlobs)
+		        {
+		            System.out.println(b);
+		        }*/
+		        List<MovingBlob> filteredBlobs = blobFilter.reduce(unifiedBlobs);
+		        		       
 		        gc.setStroke(Color.DARKGOLDENROD);
 		        gc.setLineWidth(4);
 		        
@@ -142,7 +154,7 @@ public class BlobDetectionRender extends Application
 		        	}
 		        	else
 		        	{
-				        for (Blob blob : blobs)
+				        for (Blob blob : unifiedBlobs)
 				        {
 				            gc.strokeRect(blob.x * scale, blob.y * scale, blob.width * scale, blob.height * scale);
 				        }
@@ -176,6 +188,11 @@ public class BlobDetectionRender extends Application
 				case F:
 					filter = !filter;
 					break;
+				case ESCAPE:
+				    image.finish();
+				    System.exit(0);
+				    break;
+				    
 				default:
 					break;
 				}
