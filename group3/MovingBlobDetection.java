@@ -1,17 +1,16 @@
 package group3;
 import group2.Blob;
-import group2.TestBlobDetection;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Set;
-import global.CONSTANTS;
+
+import global.Constant;
 
 public class MovingBlobDetection implements IMovingBlobDetection {
-	CONSTANTS c = new CONSTANTS();
+	Constant c = new Constant();
 	
 	//list of all moving blobs that have been recently tracked
 	private List<MovingBlob> movingBlobs;
