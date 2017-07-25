@@ -10,7 +10,7 @@ import com.looi.looi.gui_essentials.Background;
 import com.looi.looi.gui_essentials.Slider;
 import group1.FileImage;
 import group2.Blob;
-import group2.BlobDetection;
+import group2.BlobDetection3;
 import group3.MovingBlob;
 import group3.MovingBlobDetection;
 import group4.BlobFilter;
@@ -25,7 +25,7 @@ import java.awt.Color;
  */
 public class Control extends LooiObject
 {
-    private BlobDetection blobDetection;
+    private BlobDetection3 blobDetection;
     private MovingBlobDetection movingBlobDetection;
     private BlobFilter blobFilter;
     private IImageBoxDrawer boxDrawer;
@@ -50,7 +50,7 @@ public class Control extends LooiObject
     
     public Control(int frameDelay)
     {
-        blobDetection = new BlobDetection();
+        blobDetection = new BlobDetection3();
         movingBlobDetection = new MovingBlobDetection();
         blobFilter = new BlobFilter();
         currentImage = new FileImage();
@@ -64,7 +64,7 @@ public class Control extends LooiObject
      */
     protected void looiStep()
     {
-        BlobFilter.WIDTH_HEIGHT_RATIO_MAX = slider.getPercentage();
+        //BlobFilter.WIDTH_HEIGHT_RATIO_MAX = slider.getPercentage();
     	if(keepGoing){
 	        currentImage.readCam();
 	        
@@ -74,7 +74,7 @@ public class Control extends LooiObject
 	        	previousFrame = 0;
 	        	currentImage.finish();
 	            currentImage = new FileImage();
-	        	blobDetection = new BlobDetection();
+	        	blobDetection = new BlobDetection3();
 	            movingBlobDetection = new MovingBlobDetection();
 	            blobFilter = new BlobFilter();
 	            boxDrawer.setUsingBasicColors(true);
@@ -86,7 +86,7 @@ public class Control extends LooiObject
 	        List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
 	        //System.out.println(movingBlobs.size());
 	        List<MovingBlob> filteredBlobs = blobFilter.reduce(movingBlobs);
-	        boxDrawer.draw(currentImage,filteredBlobs);   
+	        boxDrawer.draw(currentImage,movingBlobs);   
 	        
 	        long time1 = System.currentTimeMillis();
 	        long time2 = System.currentTimeMillis();
