@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class IImageBoxDrawer implements IImageDrawing
 {
-    public static final int DEFAULT_LINE_THICKNESS = 3;
+    public static final int DEFAULT_LINE_THICKNESS = 1;
     public static final Color DEFAULT_STILL_COLOR = Color.BLACK;
     public static final Color DEFAULT_FAST_COLOR = Color.RED;
     public static final double DEFAULT_MAX_VELOCITY = 5;

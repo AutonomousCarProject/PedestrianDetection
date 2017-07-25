@@ -10,7 +10,6 @@ import com.looi.looi.gui_essentials.Background;
 import com.looi.looi.gui_essentials.Slider;
 import group1.FileImage;
 import group2.Blob;
-import group2.BlobDetection;
 import group2.BlobDetection3;
 import group3.MovingBlob;
 import group3.MovingBlobDetection;
@@ -65,7 +64,6 @@ public class Control extends LooiObject
      */
     protected void looiStep()
     {
-       // BlobFilter.WIDTH_HEIGHT_RATIO_MAX = slider.getPercentage();
     	if(keepGoing){
 	        currentImage.readCam();
 	        
