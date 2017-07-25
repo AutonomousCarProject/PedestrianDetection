@@ -3,10 +3,10 @@ package global;
 public class CONSTANTS {
 	
 	//maximum time before unmatched MovingBlob is deleted
-	public static final int MAX_TIME_OFF_SCREEN = 2;
+	public static final int MAX_TIME_OFF_SCREEN = 0;
 	
 	//maximum distance in pixels between blobs that can be matched
-	public static final int DISTANCE_LIMIT = 20;
+	public static final int DISTANCE_LIMIT = 15;
 	
 	//maximum distance between edges to unify
 	public static final int X_EDGE_DISTANCE_LIMIT = 25;
