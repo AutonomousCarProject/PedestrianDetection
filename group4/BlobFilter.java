@@ -1,5 +1,7 @@
 package group4;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+import global.Constant;
 import group3.MovingBlob;
 import group4.IMovingBlobReduction;
 
@@ -13,31 +15,6 @@ public class BlobFilter implements IMovingBlobReduction
 	/*
 	 * Moving Blob filters
 	 */
-	//Minimum age to not be filtered
-	public short AGE_MIN = 0;
-	//Maximum 
-	public short VELOCITY_X_MAX = 100;
-	
-	public short VELOCITY_Y_MAX = 20;
-
-	public float MAX_VELOCITY_CHANGE_X = 100;
-
-	public float MAX_VELOCITY_CHANGE_Y = 100;
-
-	
-	/*
-	 * Unified Blob filters
-	 */
-
-	public short MAX_WIDTH_HEIGHT_RATIO = 1;
-
-	public short MAX_WIDTH = 100;
-
-	public short MAX_HEIGHT = 200;
-
-	public short MAX_SCALED_VELOCITY_X = 10;
-
-	public short MAX_SCALED_VELOCITY_Y = 10;
 	
 	/**
 	 * Checks the list of potential pedestrian blobs to distinguish pedestrians from non-pedestrians.
@@ -87,11 +64,11 @@ public class BlobFilter implements IMovingBlobReduction
 	
 	//returns false if blob should be filtered
 	private boolean filterMovingBlob(MovingBlob blob){
-		return blob.age >= AGE_MIN &&
-				Math.abs(blob.velocityY) < VELOCITY_Y_MAX &&
-				Math.abs(blob.velocityX) < VELOCITY_X_MAX &&
-				blob.velocityChangeX < MAX_VELOCITY_CHANGE_X &&
-				blob.velocityChangeY < MAX_VELOCITY_CHANGE_Y;
+		return blob.age >= Constant.AGE_MIN &&
+				Math.abs(blob.velocityY) < Constant.VELOCITY_Y_MAX &&
+				Math.abs(blob.velocityX) < Constant.VELOCITY_X_MAX &&
+				blob.velocityChangeX < Constant.MAX_VELOCITY_CHANGE_X &&
+				blob.velocityChangeY < Constant.MAX_VELOCITY_CHANGE_Y;
 	}
 	
 	public List<MovingBlob> filterUnifiedBlobs(List<MovingBlob> blobs){
@@ -103,11 +80,11 @@ public class BlobFilter implements IMovingBlobReduction
 	}
 	
 	private boolean filterUnifiedBlob(MovingBlob blob){
-		return (float)blob.width / (float)blob.height < MAX_WIDTH_HEIGHT_RATIO &&
-				blob.width < MAX_WIDTH &&
-				blob.height < MAX_HEIGHT &&
-				blob.getScaledVelocityX() < MAX_SCALED_VELOCITY_X &&
-				blob.getScaledVelocityY() < MAX_SCALED_VELOCITY_Y;
+		return (float)blob.width / (float)blob.height < Constant.MAX_WIDTH_HEIGHT_RATIO &&
+				blob.width < Constant.MAX_WIDTH &&
+				blob.height < Constant.MAX_HEIGHT &&
+				blob.getScaledVelocityX() < Constant.MAX_SCALED_VELOCITY_X &&
+				blob.getScaledVelocityY() < Constant.MAX_SCALED_VELOCITY_Y;
 	}
 	
 }

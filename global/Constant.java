@@ -1,7 +1,10 @@
 package global;
 
 public class Constant {
-	
+	/**
+	 * MovingBlobDetection
+	 */
+
 	//maximum time before unmatched MovingBlob is deleted
 	public static final int MAX_TIME_OFF_SCREEN = 0;
 	
@@ -19,17 +22,25 @@ public class Constant {
 	public static final int UNIFY_VELOCITY_LIMIT_Y = 30;
 	public static final float VELOCITY_LIMIT_INCREASE_X = 0.5f;
 	public static final float VELOCITY_LIMIT_INCREASE_Y = 0.5f;
-	
+
+	/**
+	 * BlobFilter
+	 */
+
+	//regular filters
+
 	//Minimum age to not be filtered
-	public static final short AGE_MIN = 3;
+	public static final short AGE_MIN = 0;
 	
 	//Maximum 
-	public static final short VELOCITY_X_MAX = 20;
-	public static final short VELOCITY_Y_MAX = 10;
-	public static final float MAX_VELOCITY_CHANGE_X = 3;
-	public static final float MAX_VELOCITY_CHANGE_Y = 2;
+	public static final short VELOCITY_X_MAX = 100;
+	public static final short VELOCITY_Y_MAX = 20;
+	public static final float MAX_VELOCITY_CHANGE_X = 100;
+	public static final float MAX_VELOCITY_CHANGE_Y = 100;
 	
 	//Unified Blob filters
+
+	//stuff
 	public static final short MAX_WIDTH_HEIGHT_RATIO = 1;
 	public static final short MAX_WIDTH = 100;
 	public static final short MAX_HEIGHT = 200;
