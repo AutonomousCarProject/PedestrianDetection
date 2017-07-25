@@ -14,30 +14,30 @@ public class BlobFilter implements IMovingBlobReduction
 	 * Moving Blob filters
 	 */
 	//Minimum age to not be filtered
-	private static final short AGE_MIN = 3;
+	public short AGE_MIN = 0;
 	//Maximum 
-	private static final short VELOCITY_X_MAX = 20;
+	public short VELOCITY_X_MAX = 100;
 	
-	private static final short VELOCITY_Y_MAX = 10;
+	public short VELOCITY_Y_MAX = 20;
 
-	private static final float MAX_VELOCITY_CHANGE_X = 3;
+	public float MAX_VELOCITY_CHANGE_X = 100;
 
-	private static final float MAX_VELOCITY_CHANGE_Y = 2;
+	public float MAX_VELOCITY_CHANGE_Y = 100;
 
 	
 	/*
 	 * Unified Blob filters
 	 */
 
-	private static final short MAX_WIDTH_HEIGHT_RATIO = 1;
+	public short MAX_WIDTH_HEIGHT_RATIO = 1;
 
-	private static final short MAX_WIDTH = 100;
+	public short MAX_WIDTH = 100;
 
-	private static final short MAX_HEIGHT = 200;
+	public short MAX_HEIGHT = 200;
 
-	private static final short MAX_SCALED_VELOCITY_X = 10;
+	public short MAX_SCALED_VELOCITY_X = 10;
 
-	private static final short MAX_SCALED_VELOCITY_Y = 10;
+	public short MAX_SCALED_VELOCITY_Y = 10;
 	
 	/**
 	 * Checks the list of potential pedestrian blobs to distinguish pedestrians from non-pedestrians.
@@ -87,7 +87,7 @@ public class BlobFilter implements IMovingBlobReduction
 	
 	//returns false if blob should be filtered
 	private boolean filterMovingBlob(MovingBlob blob){
-		return blob.age > AGE_MIN &&
+		return blob.age >= AGE_MIN &&
 				Math.abs(blob.velocityY) < VELOCITY_Y_MAX &&
 				Math.abs(blob.velocityX) < VELOCITY_X_MAX &&
 				blob.velocityChangeX < MAX_VELOCITY_CHANGE_X &&
