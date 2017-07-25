@@ -13,9 +13,9 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	//list of all moving blobs that have been recently tracked
 	private List<MovingBlob> movingBlobs;
 	//maximum time before unmatched MovingBlob is deleted
-	int maxTimeOffScreen = 0;
+	int maxTimeOffScreen = 2;
 	//maximum distance in pixels between blobs that can be matched
-	int distanceLimit = 30;
+	int distanceLimit = 20;
 	//maximum distance between edges to unify
 	int xEdgeDistanceLimit = 25;
 	int yEdgeDistanceLimit = 30;
@@ -147,6 +147,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		calculateVelocity(movingBlob, newBlob);
 		movingBlob.x = newBlob.x;
 		movingBlob.y = newBlob.y;
+		movingBlob.width = newBlob.width;
+		movingBlob.height = newBlob.height;
 		movingBlob.age++;
 		movingBlob.ageOffScreen=0;
 		movingBlob.updatePredictedPosition();	
@@ -175,10 +177,24 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		float centerYNew = newBlob.y + newBlob.width/2;
 		float movementX = centerXNew - centerXOld;
 		float movementY = centerYNew - centerYOld;
+
+		float tempVelX = movingBlob.velocityX;
+		float tempVelY = movingBlob.velocityY;
 		//finds average of previous velocity and velocity between last and current frame
+
 		movingBlob.velocityX += movementX;
 		movingBlob.velocityX /= 2;
+		movingBlob.velocityChangeX = Math.abs(tempVelX-movingBlob.velocityX);
+
+
+		//System.out.println("Velocity change x: " + movingBlob.velocityChangeX);
+
+
 		movingBlob.velocityY += movementY;
 		movingBlob.velocityY /= 2;
+		movingBlob.velocityChangeY = Math.abs(tempVelY-movingBlob.velocityY);
+		//System.out.println("Velocity change y: " + movingBlob.velocityChangeY);
+		//System.out.println("new velY: " + movingBlob.velocityY);
+
 	}
 }
