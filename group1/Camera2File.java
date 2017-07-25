@@ -159,7 +159,7 @@ public class Camera2File extends JFrame implements MouseListener {
     if (camBytes != null) if (myVid != null) if (IzFile == 1) {
       IzFile = -1;
       myVid.Finish();
-      if (myVid.Connect(CamFPS)) if (CamSize(myVid)) didit = myVid.NextFrame(camBytes);}
+      if (myVid.Connect(CamFPS, 0)) if (CamSize(myVid)) didit = myVid.NextFrame(camBytes);}
     return didit;} //~RestartCam
 
   public boolean GetCameraImg() { // -> thePixels, true if OK
@@ -343,7 +343,7 @@ public class Camera2File extends JFrame implements MouseListener {
     titok = TickTock;
     myVid = theVideo;
     try {
-      if (myVid.Connect(CamFPS)) didit = CamSize(myVid);
+      if (myVid.Connect(CamFPS, 0)) didit = CamSize(myVid);
     } catch (Exception ex) {didit = false;}
     if (!didit) {
       System.out.println("Connect failed");

@@ -23,9 +23,11 @@ public class Image implements IImage
     private byte[] camBytes;
     private IPixel[][] image;
 
-    public Image()
+    public Image(int exposure)
     {
-        flyCam.Connect(frameRate);
+        flyCam.Connect(frameRate, 4);
+        
+        
         int res = flyCam.Dimz();
         height = res >> 16;
         width = res & 0x0000FFFF;

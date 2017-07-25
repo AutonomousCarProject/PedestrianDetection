@@ -12,8 +12,10 @@ public class FlyCamera {
       tile, // see FlyCapture2Defs.fc2BayerTileFormat
       errn; // returns an error number, see ErrorNumberText()
   private long stuff; // used for error reporting, or not at all
+  
+  private int exp;
 
-  public native boolean Connect(int frameRate); // required at start, sets rose,colz,tile
+  public native boolean Connect(int frameRate, int exposure); // required at start, sets rose,colz,tile
   public native boolean NextFrame(byte[] pixels); // fills pixels, false if can't
   public native void Finish(); // required at end to prevent memory leaks
 
@@ -64,7 +66,7 @@ public class FlyCamera {
     int tall = 0, wide = 0, pix = -1;
     byte[] buff;
     FlyCamera hello = new FlyCamera();
-    if (hello.Connect(0)) tall = hello.Dimz();
+    if (hello.Connect(0, 0)) tall = hello.Dimz();
     wide = tall&0xFFFF;
     tall = tall>>16;
     if (tall>0) if (wide>0) { // we got reasonable image size, get one image..
