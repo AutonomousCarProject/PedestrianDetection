@@ -90,6 +90,9 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		for(MovingBlob blob:map.values()){
 			unifiedBlobSet.add((UnifiedBlob) blob);
 		}
+		for(MovingBlob blob:movingBlobs){
+			if(map.get(blob)==null) unifiedBlobSet.add((UnifiedBlob) blob);
+		}
 		return new LinkedList<>(unifiedBlobSet);
 	}
 
