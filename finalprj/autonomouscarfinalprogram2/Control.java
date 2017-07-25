@@ -10,7 +10,7 @@ import com.looi.looi.gui_essentials.Background;
 import com.looi.looi.gui_essentials.Slider;
 import group1.FileImage;
 import group2.Blob;
-import group2.BlobDetection3;
+import group2.BlobDetection;
 import group3.MovingBlob;
 import group3.MovingBlobDetection;
 import group4.BlobFilter;
@@ -25,7 +25,7 @@ import java.awt.Color;
  */
 public class Control extends LooiObject
 {
-    private BlobDetection3 blobDetection;
+    private BlobDetection blobDetection;
     private MovingBlobDetection movingBlobDetection;
     private BlobFilter blobFilter;
     private IImageBoxDrawer boxDrawer;
@@ -50,7 +50,7 @@ public class Control extends LooiObject
     
     public Control(int frameDelay)
     {
-        blobDetection = new BlobDetection3();
+        blobDetection = new BlobDetection();
         movingBlobDetection = new MovingBlobDetection();
         blobFilter = new BlobFilter();
         currentImage = new FileImage();
@@ -73,7 +73,7 @@ public class Control extends LooiObject
 	        	previousFrame = 0;
 	        	currentImage.finish();
 	            currentImage = new FileImage();
-	        	blobDetection = new BlobDetection3();
+	        	blobDetection = new BlobDetection();
 	            movingBlobDetection = new MovingBlobDetection();
 	            blobFilter = new BlobFilter();
 	            boxDrawer.setUsingBasicColors(true);
@@ -84,9 +84,9 @@ public class Control extends LooiObject
 	        
 	        List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
 	        List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
-	        //System.out.println(movingBlobs.size());
+	        List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
 	        //List<MovingBlob> filteredBlobs = blobFilter.reduce(movingBlobDetection.getUnifiedBlobs(blobFilter.filterMovingBlobs(movingBlobs)));
-	        boxDrawer.draw(currentImage,fmovingBlobs);
+	        boxDrawer.draw(currentImage,unifiedBlobs);
 	        
 	        long time1 = System.currentTimeMillis();
 	        long time2 = System.currentTimeMillis();
