@@ -35,6 +35,12 @@ public class Pixel implements IPixel
         simpleConvert();
     }
 
+    public void setMargins(int greyMargin, int blackMargin, int whiteMargin){
+        this.greyMargin = greyMargin;
+        this.blackMargin = blackMargin;
+        this.whiteMargin = whiteMargin;
+    }
+
     @Override
     public short getLuma()
     {
