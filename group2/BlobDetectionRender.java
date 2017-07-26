@@ -26,13 +26,10 @@ import javafx.stage.Stage;
 
 public class BlobDetectionRender extends Application
 {
-    boolean drawBlobs = true;
-    boolean filter = true;
-    boolean posterize = false;
-
-    final long calTime = 2_000_000_000L;
-    long lastTime = -1;
-    long cumulativeTime = 0;
+    boolean drawBlobs = true; // boolean for whether or not we draw blobs in the render class
+    boolean filter = true; // enables or disables the blob filter
+    boolean posterize = false; // enables or disables posterization
+ 
 
     public static void main(String... args)
     {
@@ -42,15 +39,11 @@ public class BlobDetectionRender extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        // IImage image = new JpgImage("src/testImage1.png");
-        IImage image = new Image(1023);
-
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            image.finish();
-        }));
+//         IImage -image = new JpgImage("src/testImage1.png");
+        IImage image = new Image(0, 50, 0);
 
         IPixel[][] pixels = image.getImage();
-        final int scale = 1;
+        final int scale = 2;
 
         if (pixels.length == 0)
         {
@@ -64,24 +57,13 @@ public class BlobDetectionRender extends Application
         Canvas canvas = new Canvas(width * scale, height * scale);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
+        image.setAutoFreq(15);
+        
         AnimationTimer timer = new AnimationTimer()
         {
             @Override
             public void handle(long time)
             {
-                if (lastTime != -1)
-                {
-                    cumulativeTime += (time - lastTime);
-                }
-
-                lastTime = time;
-
-                if (cumulativeTime >= calTime)
-                {
-                    cumulativeTime = 0;
-                    image.autoColor();
-                }
-
                 image.readCam();
                 IPixel[][] pixels = image.getImage();
 
@@ -177,11 +159,23 @@ public class BlobDetectionRender extends Application
                     case F:
                         filter = !filter;
                         break;
+                    case ESCAPE:
+                        image.finish();
+                        System.out.println("image finished");
+                        System.exit(0);
+                        break;
                     default:
                         break;
                 }
             }
         });
+        
+        primaryStage.setOnCloseRequest(event -> 
+        {
+            image.finish();
+            System.out.println("image finished");
+        });
+        
         primaryStage.show();
     }
 
