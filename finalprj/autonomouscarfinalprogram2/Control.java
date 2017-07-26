@@ -125,8 +125,8 @@ public class Control extends LooiObject
         scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Max Scaled Velocity X")));
         scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,40,(a)->{Constant.MAX_SCALED_VELOCITY_Y = (short)(double)a;})));
         scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Max_Scaled_Velocity_Y")));
-        //scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,10,(a)->{Constant.MAX_TIME_OFF_SCREEN = (int)(double)a;})));
-        //scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Max Time Off Screen")));
+        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,10,(a)->{Constant.MAX_TIME_OFF_SCREEN = (int)(double)a;})));
+        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Max Time Off Screen")));
         scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,30,(a)->{Constant.MAX_VELOCITY_CHANGE_X = (float)(double)a;})));
         scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Max Velocity Change X")));
         scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,30,(a)->{Constant.MAX_VELOCITY_CHANGE_Y = (float)(double)a;})));
@@ -153,7 +153,7 @@ public class Control extends LooiObject
         scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Y Edge Distance Limit")));
         scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,1,(a)->{Constant.Y_OVERLAP_PERCENT = (float)(double)a;})));
         scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Y Overlap Percent")));
-
+        scrollBox.add(scrollBox.new ScrollBoxObject(new SaveButton(10,yPos(),150,100,"Save",new Color(150,200,40)))); 
     }
     
     protected int yPos(){
@@ -196,9 +196,8 @@ public class Control extends LooiObject
         List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
         List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
         List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
-        List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
         
-        boxDrawer.draw2(currentImage,fmovingBlobs,unifiedBlobs);
+        boxDrawer.draw2(currentImage,movingBlobs,fmovingBlobs);
         
         IPixel[][] image = currentImage.getImage();
         IPixel[][] copy = new IPixel[image.length][image[0].length];
@@ -221,8 +220,7 @@ public class Control extends LooiObject
 		List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
         List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
         List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
-        List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
-		boxDrawer.draw2(currentImage,fmovingBlobs, unifiedBlobs);
+		boxDrawer.draw2(currentImage,movingBlobs, fmovingBlobs);
 
 	        
     }   
