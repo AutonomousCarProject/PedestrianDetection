@@ -11,9 +11,9 @@ public class Image implements IImage
 
     private final int frameRate = 3;
     public FlyCamera flyCam = new FlyCamera(); //FIXME
-    private final float greyRatio = 1.1f;
+    private final float greyRatio = 1.5f;
     private final int blackRange = 100;
-    private final int whiteRange = 200;
+    private final int whiteRange = 100;
 
     private final int neighborhood = 4; //2^n = actual neighborhood size
 
@@ -25,18 +25,18 @@ public class Image implements IImage
     // 307200
     // private byte[] camBytes = new byte[2457636];
     private byte[] camBytes;
-    private static IPixel[][] image;
+    private static IPixel[][] image = null;
 
     public Image(int exposure, int shutter, int gain)
     {
         flyCam.Connect(frameRate, exposure, shutter, gain);
-
+        
         int res = flyCam.Dimz();
         height = res >> 16;
         width = res & 0x0000FFFF;
 
         camBytes = new byte[height * width * 4];
-        image = new LocalPixel[height][width];
+        if(image == null) image = new IPixel[height][width];
 
         tile = flyCam.PixTile();
         System.out.println("tile: "+tile+" width: "+width+" height: "+height);
@@ -65,8 +65,10 @@ public class Image implements IImage
         // System.out.println(flyCam.errn);
 
 
-        if(autoCount > autoFreq && autoFreq > -1) {
+        if(autoCount > autoFreq && autoFreq > -1)//localAutoConvert();
+ {
             localAutoConvert();
+            //autoConvert();
             autoCount = 0;
         }
         else{
@@ -146,8 +148,8 @@ public class Image implements IImage
                 for (int j = 0; j < width; j++)
                 {
 
-                    image[i][j] = new LocalPixel((short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255),
-                            (short) (camBytes[pos + 1 + width * 2] & 255));
+                    if(image[i][j] == null) image[i][j] = new LocalPixel((short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255), (short) (camBytes[pos + 1 + width * 2] & 255));
+                    else image[i][j].setRGB((short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255), (short) (camBytes[pos + 1 + width * 2] & 255));
                     pos += 2;
 
                 }
@@ -162,8 +164,9 @@ public class Image implements IImage
 
                 for (int j = 0; j < width; j++)
                 {
-
-                    image[i][j] = new LocalPixel((short) (camBytes[pos +  width * 2] & 255) , (short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255));
+                        
+                    if(image[i][j] == null) image[i][j] = new LocalPixel((short) (camBytes[pos +  width * 2] & 255) , (short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255));
+                    else image[i][j].setRGB((short) (camBytes[pos +  width * 2] & 255) , (short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255));
                     pos += 2;
 
                 }
@@ -285,7 +288,15 @@ public class Image implements IImage
                     int xCor = i+x;
                     int yCor = j+y;
 
-                    IPixel temp = new LocalPixel((short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255), (short) (camBytes[pos + 1 + width * 2] & 255));
+                    IPixel temp;
+                    
+                    if(image[xCor][yCor] == null) temp = new LocalPixel((short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255), (short) (camBytes[pos + 1 + width * 2] & 255));
+                    else 
+                    {
+                        temp = image[xCor][yCor];
+                        temp.setRGB((short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255), (short) (camBytes[pos + 1 + width * 2] & 255));
+                    }
+                    
                     image[xCor][yCor] = temp;
 
                     pos += 2;
@@ -306,7 +317,14 @@ public class Image implements IImage
                     int xCor = i+x;
                     int yCor = j+y;
 
-                    IPixel temp = new LocalPixel((short) (camBytes[pos +  width * 2] & 255) , (short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255));
+                    IPixel temp;
+                    if(image[xCor][yCor] == null) temp = new LocalPixel((short) (camBytes[pos +  width * 2] & 255) , (short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255));
+                    else
+                    {
+                        temp = image[xCor][yCor];
+                        temp.setRGB((short) (camBytes[pos +  width * 2] & 255) , (short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255));
+                    }
+                    
                     image[xCor][yCor] = temp;
 
                     pos += 2;
@@ -357,7 +375,7 @@ public class Image implements IImage
             }
         }
 
-        //System.out.println("Variation: "+variation+" average: "+average2);
+        System.out.println("GreyMargin: "+variation*greyRatio+" average: "+average2);
     }
 
 }
