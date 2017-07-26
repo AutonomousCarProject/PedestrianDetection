@@ -1,4 +1,4 @@
-package group1;                                         // 2017 February 27
+package fly2cam;                                         // 2017 February 27
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,8 +16,6 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import fly2cam.FlyCamera; // (import instead fly0cam.FlyCamera for off-cam dev't)
-
 public class Camera2File extends JFrame implements MouseListener {
   private static final long serialVersionUID = 1L; // don't need it but Java insists {
 
@@ -27,7 +25,9 @@ public class Camera2File extends JFrame implements MouseListener {
       ImHi = 240*BigCam, ImWi = 320*BigCam, nPixels = ImHi*ImWi,
       Lin2 = ImWi*2, Lin6 = Lin2*6, CornerBox = 32;
   private BufferedImage theImag = null; // (needed in myAction)..
-  private static JFrame theWindow = null;   // bottom-up right-to-left = Little-Endian..
+  private static JFrame theWindow = null;   // bottom-up right-to-left = Little-Endian
+  
+ boolean autoShutter = true;
 
   public static class RunSoon implements Runnable { @Override
     public void run() {starting();}} //~RunSoon
@@ -159,7 +159,7 @@ public class Camera2File extends JFrame implements MouseListener {
     if (camBytes != null) if (myVid != null) if (IzFile == 1) {
       IzFile = -1;
       myVid.Finish();
-      if (myVid.Connect(CamFPS)) if (CamSize(myVid)) didit = myVid.NextFrame(camBytes);}
+      if (myVid.Connect(CamFPS, 0, autoShutter ? 0 : 50, 0)) if (CamSize(myVid)) didit = myVid.NextFrame(camBytes);}
     return didit;} //~RestartCam
 
   public boolean GetCameraImg() { // -> thePixels, true if OK
@@ -343,7 +343,7 @@ public class Camera2File extends JFrame implements MouseListener {
     titok = TickTock;
     myVid = theVideo;
     try {
-      if (myVid.Connect(CamFPS)) didit = CamSize(myVid);
+      if (myVid.Connect(CamFPS, 0, autoShutter ? 0 : 50, 0)) didit = CamSize(myVid);
     } catch (Exception ex) {didit = false;}
     if (!didit) {
       System.out.println("Connect failed");

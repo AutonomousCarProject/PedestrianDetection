@@ -1,6 +1,5 @@
 package group4;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import global.Constant;
 import group3.MovingBlob;
 import group4.IMovingBlobReduction;
