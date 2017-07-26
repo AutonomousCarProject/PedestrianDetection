@@ -26,7 +26,7 @@ public class AutonomousCarFinalProgram2 {
         
         // parameter in this constructor is the delay (in milliseconds) between frames
         control = new Control(100);
-        hotkeys = new Hotkeys();
+        hotkeys = new Hotkeys(control);
     }
     
 }

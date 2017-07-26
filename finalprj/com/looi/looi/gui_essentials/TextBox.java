@@ -21,6 +21,7 @@ public class TextBox extends Rectangle
     public static final double DEFAULT_CURSOR_WIDTH = 3;
     public static final double DEFAULT_SPAM_DELAY = .2;//in seconds
     
+    
     private boolean editable;
     private String defaultText;
     private String text;
@@ -35,39 +36,178 @@ public class TextBox extends Rectangle
     
     private ArrayList<String> lines = new ArrayList<>();
     
-    private int row;
-    private int indexInLine; //cursor is between indexInLine and indexInLine+1
+    //private int row;
+    //private int indexInLine; //cursor is between indexInLine and indexInLine+1
+    private int cursorIndex = 0;
     private boolean selected = false;
     private Cursor cursor;
     private double cursorWidth;
     private boolean lastMouseClickValid = false;
     
+    private Graphics graphics;
+    private boolean resetDisplayRequired = false;
+    
+    private int[] lowercaseCharacterWidthsAToZ = new int[26];
+    private int[] uppercaseCharacterWidthsAToZ = new int[26];
+    private int spaceCharacterWidth;
     
     public TextBox(double x, double y, double width, double height, Background background, String text, Font font, boolean editable, Color textColor, double horizontalMargin, double verticalMargin, double lineSpacing, double cursorWidth, double spamDelay)
     {
         super(x,y,width,height,background);
         setDefaultText(text);
-        setText(text);
         setEditable(editable);
         setTextColor(textColor);
         setFont(font);
+        setText(text);
         setHorizontalMargin(horizontalMargin);
         setVerticalMargin(verticalMargin);
         setLineSpacing(lineSpacing);
         setCursorWidth(cursorWidth);
         setSpamDelay(spamDelay);
+        
         cursor = newCursor();
         cursor.setLayer(getLayer() - 1);
+        
+        
     }
     public TextBox(double x, double y, double width, double height, Background background, String text, Font font, boolean editable, Color textColor, double horizontalMargin, double verticalMargin, double lineSpacing)
     {
         this(x,y,width,height,background,text,font,editable,textColor,horizontalMargin,verticalMargin,lineSpacing,DEFAULT_CURSOR_WIDTH,DEFAULT_SPAM_DELAY);
     }
-    public synchronized void setText(String text){this.text = text;}
+    public int getCursorIndex()
+    {
+        return cursorIndex;
+    }
+    public synchronized void setText(String text)
+    {
+        
+        TextBox.this.text = text;
+        if(graphics == null)
+        {
+            resetDisplayRequired = true;
+            return;
+        }
+        Font scaledFont = new Font(getFont().getName(),getFont().getStyle(),scaleW(getFont().getSize()));
+
+
+        //double minY = getY() + getVerticalMargin();
+        //double maxY = getY() + getHeight() - getVerticalMargin();
+        double minX = getX() + getHorizontalMargin();
+        double maxX = getX() + getWidth() - getHorizontalMargin();
+        lines.clear(); 
+
+
+        StringBuffer restOfText = new StringBuffer(getText());
+        String row = "";
+
+        while(restOfText.length() > 0)
+        {
+            int nextSpace = restOfText.indexOf(" ");
+            String nextWord;
+            if(nextSpace != -1)// if there is a next space at all, 
+            {
+                nextWord = restOfText.substring(0,nextSpace+1);//gets the word and the next space, and tries to see if it will fit in one line with the row as well
+                //restOfText = restOfText.substring(nextSpace+1);
+                restOfText.delete(0,nextSpace+1);
+            } 
+            else//if there is no space
+            {
+                //nextWord = restOfText;
+                //restOfText = "";
+                nextWord = restOfText.toString();
+                restOfText.delete(0,restOfText.length());
+            }
+
+            if(stringWidth(row + nextWord,scaledFont) <= scaleW(maxX - minX))
+            {
+                row += nextWord;//yes, it fits in one line. Add it, and then get rid of it from the rest of the text
+            }
+            else//No. It goes over. 
+            {
+                if(stringWidth(nextWord,scaledFont) > scaleW(maxX - minX))//if the next word alone, when pushed down, will still be greater than the length
+                {
+                    String greatestPossibleLine = row + nextWord;// find the greatest possible text for this line
+
+                    for(int index = greatestPossibleLine.length(); index >= 0; index--)
+                    {
+                        String partToTest = greatestPossibleLine.substring(0,index);
+                        if(stringWidth(partToTest,scaledFont) <= scaleW(maxX - minX))//find where the word can break
+                        {
+                            row = partToTest;//chop it off
+                            lines.add(row);
+                            row = "";
+                            String remainderOfGreatesPossibleLine = greatestPossibleLine.substring(partToTest.length());
+                            //restOfText = remainderOfGreatesPossibleLine + restOfText;
+                            restOfText.insert(0,remainderOfGreatesPossibleLine);
+                            break;
+                        }
+                    }
+                }
+                else //if the next word can indeed be pushed down
+                {
+                    lines.add(row);
+                    row = "";
+                    //restOfText = nextWord + restOfText;
+                    restOfText.insert(0,nextWord);
+                }
+            }
+
+        }
+        lines.add(row);//dont forget to add the last row, as rows are only added when stuff goes over the line
+    }
+    
+    protected int stringWidth(String s, Font scaledFont)
+    {
+        graphics.setFont(scaledFont);
+        //return graphics.getFontMetrics().stringWidth(s);
+        int width = 0;
+        for(int i = 0; i < s.length(); i++)
+        {
+            char c = s.charAt(i);
+            if(c >= 65 && c <= 90)
+            {
+                width += this.uppercaseCharacterWidthsAToZ[c-65];
+            }
+            else if(c >= 97 && c <= 122)
+            {
+                width += this.lowercaseCharacterWidthsAToZ[c-97];
+            }
+            else if(c == ' ')
+            {
+                width += this.spaceCharacterWidth;
+            }
+            else
+            {
+                width += graphics.getFontMetrics().stringWidth(c+"");
+            }
+        }
+        return width;
+    }
     public String getText(){return text;}
     public void setDefaultText(String defaultText){this.defaultText = defaultText;}
     public String getDefaultText(){return defaultText;}
-    public void setFont(Font f){font = f;}
+    public void setFont(Font f)
+    {
+        font = f;
+        if(graphics == null)
+        {
+            return;
+        }
+        
+        Font scaledFont = new Font(getFont().getName(),getFont().getStyle(),scaleW(getFont().getSize()));
+        
+        Graphics g = graphics.create();
+        g.setFont(scaledFont); 
+        for(int i = 0; i < 26; i++)
+        {
+            uppercaseCharacterWidthsAToZ[i] = g.getFontMetrics().stringWidth(((char)(i+65))+"");
+        }
+        for(int i = 0; i < 26; i++)
+        {
+            lowercaseCharacterWidthsAToZ[i] = g.getFontMetrics().stringWidth(((char)(i+97))+"");
+        }
+        spaceCharacterWidth = g.getFontMetrics().stringWidth(" ");
+    }
     public Font getFont(){return font;}
     public Color getTextColor(){return textColor;}
     public void setTextColor(Color textColor){this.textColor = textColor;}
@@ -87,62 +227,20 @@ public class TextBox extends Rectangle
     
     protected void savePaintInformation()
     {
-        if(getGraphics()!=null)
-        {
-            
-        }
+        
         
     }
     protected void looiPaint()
     {
+        super.setFont(new Font("",Font.PLAIN,50));
+        
         super.looiPaint();
-        
-        
-
-        
-        
+        this.graphics = getGraphics().create();
+        setColor(getTextColor());
         synchronized(this)//so that looistep doesn't also edit it at the same time
         {
-            Font scaledFont = new Font(getFont().getName(),getFont().getStyle(),scaleW(getFont().getSize()));
-            super.setFont(scaledFont);//MUST be SUPER.setFont(...) because setFont(...) is overridden
-            double minY = getY() + getVerticalMargin();
-            double maxY = getY() + getHeight() - getVerticalMargin();
-            double minX = getX() + getHorizontalMargin();
-            double maxX = getX() + getWidth() - getHorizontalMargin();
-            lines.clear(); 
-            lines.add(getText());
-            //System.out.println("Start. Size: " + lines.size());
-            while(getGraphics().getFontMetrics().stringWidth(lines.get(lines.size() - 1)) >= scaleW(maxX - minX))
-            {
-
-                String currentLast = lines.remove(lines.size() - 1);//LAST ONE REMOVED AT THIS LINE!!!!!!
-                String newLast = "";
-                while(getGraphics().getFontMetrics().stringWidth(currentLast) >= scaleW(maxX - minX))
-                {
-                    newLast = currentLast.substring(currentLast.length() - 1) + newLast;
-                    currentLast = currentLast.substring(0,currentLast.length() - 1);
-                }
-                lines.add(currentLast);
-                lines.add(newLast);
-            }
-        
-            if(lines.isEmpty())
-            {
-                lines.add("");
-            }
-        
-            setColor(getTextColor());
-
             for(int i = 0; i < lines.size(); i++)
             {
-
-                /*super.setFont(getFont());//MUST be SUPER.setFont(...) because setFont(...) is overridden
-                double offsetDueToNotBeingTheFirstLine = i * (scaleH(getFont().getSize()) + getLineSpacing());
-
-                if(!(offsetDueToNotBeingTheFirstLine + getY() + 2*scaleH(getFont().getSize()) + getVerticalMargin() > getY() + getHeight() - getVerticalMargin()))
-                {
-                    drawString(lines.get(i),getX() + getHorizontalMargin(),offsetDueToNotBeingTheFirstLine + getY() + scaleH(getFont().getSize()) + getVerticalMargin());
-                }*/
                 super.setFont(getFont());//MUST be SUPER.setFont(...) because setFont(...) is overridden
                 double offsetDueToNotBeingTheFirstLine = i * (getFont().getSize() + getLineSpacing());
 
@@ -150,13 +248,18 @@ public class TextBox extends Rectangle
                 {
                     drawString(lines.get(i),getX() + getHorizontalMargin(),offsetDueToNotBeingTheFirstLine + getY() + getFont().getSize() + getVerticalMargin());
                 }
-
             }
-            //System.out.println("end. Size: " + lines.size() + " ScaledFont size: " + scaledFont.getSize() + " Font size: " + getGraphics().getFont().getSize());
         }
     }
     protected void looiStep()
     {
+        if(resetDisplayRequired && graphics != null)
+        {
+            
+            setFont(getFont());
+            setText(getText());
+            resetDisplayRequired = false;
+        }
         spamTimer += 1.0/thisWindow().getUPS();
         
         if(isEditable())
@@ -206,6 +309,7 @@ public class TextBox extends Rectangle
     }
     protected String insert(char c, int index, String s)
     {
+        
         String first = s.substring(0,index);
         String last = s.substring(index);
         return first + c + last;
@@ -222,6 +326,8 @@ public class TextBox extends Rectangle
         String last = s.substring(index);
         if(last.length() > 1)
             last = last.substring(1);
+        else
+            last = "";
         return first + last;
     }
     protected void keyPressed(KeyEvent e)
@@ -240,53 +346,29 @@ public class TextBox extends Rectangle
             type(e);
         }
     }
-    protected void type(KeyEvent e)
+    protected synchronized void type(KeyEvent e)
     {
         if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE)
         {
-            this.setText(remove(calculateIndexInEntireText()-1,getText()));
-            indexInLine--;
-            if(indexInLine < 0)
-            {
-                row--;
-                if(row == -1)
-                {
-                    row = 0;
-                    indexInLine = 0;
-                }
-                else
-                {
-                    indexInLine = lines.get(row).length();
-                }
-
-            }
+            this.setText(remove(cursorIndex-1,getText()));
+            cursorIndex--;
+            if(cursorIndex < 0)
+                cursorIndex = 0;
         }
         else
         {
-            this.setText(insert(e.getKeyChar(),calculateIndexInEntireText(),getText()));
-            indexInLine++;
-            double minX = getX() + getHorizontalMargin();
-            double maxX = getX() + getWidth() - getHorizontalMargin();
-            if(getGraphics().getFontMetrics().stringWidth(lines.get(row)) >= scaleW(maxX - minX))
-            {
-                indexInLine = 0;
-                row++;
-            }
+            this.setText(insert(e.getKeyChar(),cursorIndex,getText()));
+            cursorIndex++;
+            
         }
     }
-    protected int calculateIndexInEntireText()
-    {
-        int index = 0;
-        for(int i = 0; i < row; i++)
-        {
-            index += lines.get(i).length();
-        }
-        index += indexInLine;
-        return index;
-    }
+    
     protected synchronized void whenPressed()
     {
-        
+        if(!editable)
+            return;
+        int row;
+        int indexInLine = 0;
         row = 0;
         boolean set = false;
         for(int i = 0; i < lines.size(); i++)
@@ -314,7 +396,6 @@ public class TextBox extends Rectangle
         g.setFont(scaledFont);
         for(int i = 0; i <= line.length(); i++)
         {
-            //System.out.println("Try: " + getInternalMouseX() +" < "+ (getX() + getHorizontalMargin() + scaleW(g.getFontMetrics().stringWidth(line.substring(0,i)))));
             double centerOfCharacter;
             if(i != 0)
             {
@@ -335,9 +416,14 @@ public class TextBox extends Rectangle
         {
             indexInLine = line.length();
         }
+        int totalIndex = 0;
+        for(int i = 0; i < row; i++)
+        {
+            totalIndex += lines.get(i).length();
+        }
+        totalIndex += indexInLine;
+        cursorIndex = totalIndex;
         select();
-        
-        
     }
     public void select()
     {
@@ -348,6 +434,37 @@ public class TextBox extends Rectangle
     {
         return new Cursor();
     }
+    protected int getIndexInLine()
+    {
+        int rowStartIndex = 0;
+        String theRow = "";
+        for(String s : lines)
+        {
+            theRow = s;
+            rowStartIndex += s.length();
+            if(rowStartIndex >= cursorIndex)
+            {
+                rowStartIndex -= s.length();
+                
+                break;
+            }
+        }
+        return cursorIndex - rowStartIndex;
+        
+    }
+    protected int getRow()
+    {
+        int totalIndex = 0;
+        for(int r = 0; r < lines.size(); r++)
+        {
+            totalIndex += lines.get(r).length();
+            if(cursorIndex <= totalIndex)
+            {
+                return r;
+            }
+        }
+        return 0;
+    }
     public class Cursor extends Rectangle
     {
         public Cursor()
@@ -356,8 +473,8 @@ public class TextBox extends Rectangle
         }
         protected void looiPaint()
         {
-            drawString(indexInLine,700,700);
             super.looiPaint();
+            
             super.setDimensions(getCursorWidth(),TextBox.this.getFont().getSize()); 
             synchronized(TextBox.this)
             {
@@ -365,17 +482,15 @@ public class TextBox extends Rectangle
                 {
                     Font scaledFont = new Font(getFont().getName(),getFont().getStyle(),scaleW(getFont().getSize()));
                     Cursor.this.setFont(scaledFont);
-                    double offsetDueToNotBeingTheFirstLine = row * (getFont().getSize() + getLineSpacing());
+                    double offsetDueToNotBeingTheFirstLine = getRow() * (getFont().getSize() + getLineSpacing());
                     try
                     {
-                        super.setPosition(TextBox.this.getX() + TextBox.this.getHorizontalMargin() + Cursor.this.getGraphics().getFontMetrics().stringWidth(lines.get(row).substring(0,indexInLine))/getViewOverInternalWidth(),offsetDueToNotBeingTheFirstLine + TextBox.this.getY() + getVerticalMargin());
+                        super.setPosition(TextBox.this.getX() + TextBox.this.getHorizontalMargin() + Cursor.this.getGraphics().getFontMetrics().stringWidth(lines.get(getRow()).substring(0,getIndexInLine()))/getViewOverInternalWidth(),offsetDueToNotBeingTheFirstLine + TextBox.this.getY() + getVerticalMargin());
                     }
                     catch(java.lang.IndexOutOfBoundsException e)
                     {
                         
                     }
-                    
-                    //System.out.println(indexInLine + " from Cursor");
                 }
                 
             }
