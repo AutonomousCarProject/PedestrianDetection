@@ -76,7 +76,7 @@ public class IImageBoxDrawer implements IImageDrawing
          setPixels(b,image.getImage());
          
          
-         drawLines(rectangles,b,Color.BLACK,Color.RED,DEFAULT_LINE_THICKNESS);
+         drawLines(rectangles,b,Color.RED,Color.RED,DEFAULT_LINE_THICKNESS);
          drawLines(rectangles2, b, Color.GREEN, Color.GREEN, DEFAULT_LINE_THICKNESS);
          currentImage = b;
     }

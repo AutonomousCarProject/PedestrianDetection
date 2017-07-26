@@ -28,7 +28,6 @@ public class Hotkeys extends LooiObject
         }
         if(e.getKeyCode() == KeyEvent.VK_SPACE)
         {
-        	System.out.println("yep");
         	control.pauseUnpause();
         }
         if(e.getKeyCode() == KeyEvent.VK_RIGHT)
