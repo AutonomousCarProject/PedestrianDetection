@@ -31,7 +31,11 @@ public class VariableSlider extends Slider
         setter.set(super.getPercentage()/100.0 * (max - min) + min);
     }
             
-            
+    protected void looiPaint()
+    {
+    	super.looiPaint();
+    	drawString(super.getPercentage()/100.0 * (max - min) + min,getX() + getWidth()/2,getY() -20);
+    }
             
     public static interface Setter<E>
     {
