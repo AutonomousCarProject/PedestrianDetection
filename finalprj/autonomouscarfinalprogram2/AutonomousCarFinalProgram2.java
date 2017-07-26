@@ -21,7 +21,7 @@ public class AutonomousCarFinalProgram2 {
      */
     public static void main(String[] args) 
     {
-        mainWindow = new LooiWindow(60,true);
+        mainWindow = new LooiWindow(10,true);
         mainWindow.fitWindow();
         
         // parameter in this constructor is the delay (in milliseconds) between frames

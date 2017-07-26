@@ -15,9 +15,9 @@ public class Pixel implements IPixel
     private short blue;
 
 
-    private final int greyMargin = 145;
-    private final int blackMargin = 400;
-    private final int whiteMargin = 700; // 0-765
+    static int greyMargin = 145;
+    static int blackMargin = 400;
+    static int whiteMargin = 700; // 0-765
 
     public Pixel(short red, short green, short blue)
     {
