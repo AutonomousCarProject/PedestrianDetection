@@ -9,7 +9,12 @@ public class Constant {
 	public static final int MAX_TIME_OFF_SCREEN = 0;
 	
 	//maximum distance in pixels between blobs that can be matched
-	public static final int DISTANCE_LIMIT = 15;
+	public static final int DISTANCE_LIMIT_X = 10;
+	public static final int DISTANCE_LIMIT_Y = 100;
+	
+	//maximum size difference in pixels between blobs that can be matched
+	public static final int MAX_CHANGE_WIDTH = 100;
+	public static final int MAX_CHANGE_HEIGHT = 100;
 	
 	//maximum distance between edges to unify
 	public static final int X_EDGE_DISTANCE_LIMIT = 25;
@@ -30,7 +35,7 @@ public class Constant {
 	//regular filters
 
 	//Minimum age to not be filtered
-	public static final short AGE_MIN = 0;
+	public static final short AGE_MIN = 2;
 	
 	//Maximum 
 	public static final short VELOCITY_X_MAX = 100;
