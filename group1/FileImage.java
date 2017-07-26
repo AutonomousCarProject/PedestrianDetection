@@ -114,6 +114,10 @@ public class FileImage implements IImage
     public int getFrameNo(){
         return flyCam.frameNo;
     }
+    
+    public void setImage(IPixel[][] i){
+    	image = i;
+    }
 
     private void byteConvert()
     {
