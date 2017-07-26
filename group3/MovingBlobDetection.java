@@ -1,29 +1,38 @@
 package group3;
 import group2.Blob;
-import group2.TestBlobDetection;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Set;
+
+import global.Constant;
 
 public class MovingBlobDetection implements IMovingBlobDetection {
+	Constant c = new Constant();
+	
 	//list of all moving blobs that have been recently tracked
 	private List<MovingBlob> movingBlobs;
 	//maximum time before unmatched MovingBlob is deleted
-	int maxTimeOffScreen = 25;
+	int maxTimeOffScreen = c.MAX_TIME_OFF_SCREEN;
 	//maximum distance in pixels between blobs that can be matched
-	int distanceLimit = 30;
+	int distanceLimitX = c.DISTANCE_LIMIT_X;
+	int distanceLimitY = c.DISTANCE_LIMIT_Y;
+	int widthChangeLimit = c.MAX_CHANGE_WIDTH;
+	int heightChangeLimit = c.MAX_CHANGE_HEIGHT;
+	
 	//maximum distance between edges to unify
-	int unifyDistanceLimitX = 25;
-	int unifyDistanceLimitY = 30;
+	int xEdgeDistanceLimit = c.X_EDGE_DISTANCE_LIMIT;
+	int yEdgeDistanceLimit = c.Y_EDGE_DISTANCE_LIMIT;
+	float xOverlapPercent = c.X_OVERLAP_PERCENT;
+	float yOverlapPercent = c.Y_OVERLAP_PERCENT;
 
 	//maximum difference in velocity to unify
-	int unifyVelocityLimitX = 20;
-	int unifyVelocityLimitY = 30;
-
+	int unifyVelocityLimitX = c.UNIFY_VELOCITY_LIMIT_X;
+	int unifyVelocityLimitY = c.UNIFY_VELOCITY_LIMIT_Y;
+	float velocityLimitIncreaseX = c.VELOCITY_LIMIT_INCREASE_X;
+	float velocityLimitIncreaseY = c.VELOCITY_LIMIT_INCREASE_Y;
 
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
@@ -49,8 +58,12 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 				float velocityDifferenceX = Math.abs(movingBlob1.velocityX-movingBlob2.velocityX);
 				float velocityDifferenceY = Math.abs(movingBlob1.velocityY-movingBlob2.velocityY);
 				//checks if distance and velocity differences are under thresholds
-				if(distanceX<unifyDistanceLimitX && distanceY<unifyDistanceLimitY &&
-						velocityDifferenceX<unifyVelocityLimitX && velocityDifferenceY<unifyVelocityLimitY){
+				if(((distanceX<xEdgeDistanceLimit && distanceY<-yOverlapPercent*Math.min(movingBlob1.height, movingBlob2.height)) 
+						|| (distanceY<yEdgeDistanceLimit && distanceX<-xOverlapPercent*Math.min(movingBlob1.width, movingBlob2.width)))&&
+						velocityDifferenceX<unifyVelocityLimitX+
+						velocityLimitIncreaseX*Math.max(movingBlob1.velocityX, movingBlob2.velocityX) &&
+						velocityDifferenceY<unifyVelocityLimitY+
+						velocityLimitIncreaseY*Math.max(movingBlob1.velocityY, movingBlob2.velocityY)){
 					pairs.add(new BlobPair(0, movingBlob1, movingBlob2));
 				}
 			}
@@ -77,9 +90,12 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 				map.put(blob2,newUnifiedBlob);
 			}
 		}
-		HashSet<UnifiedBlob> unifiedBlobSet = new HashSet<>();
+		HashSet<MovingBlob> unifiedBlobSet = new HashSet<>();
 		for(MovingBlob blob:map.values()){
-			unifiedBlobSet.add((UnifiedBlob) blob);
+			unifiedBlobSet.add( blob);
+		}
+		for(MovingBlob blob:movingBlobs){
+			if(map.get(blob)==null) unifiedBlobSet.add(blob);
 		}
 		return new LinkedList<>(unifiedBlobSet);
 	}
@@ -100,10 +116,13 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			for(MovingBlob movingBlob:movingBlobs){
 				//creates pairs in queue of blobs & moving blobs with same color within 100 pixels
 				if(blob.color.getColor()==movingBlob.color.getColor()){
-					float distanceX = Math.abs(movingBlob.predictedX-blob.x);
-					float distanceY = Math.abs(movingBlob.predictedY-blob.y);
+					float distanceX = Math.abs(movingBlob.predictedX-(blob.x+blob.width/2));
+					float distanceY = Math.abs(movingBlob.predictedY-(blob.y+blob.height/2));
 					float distance = (float)Math.sqrt(distanceX*distanceX+distanceY*distanceY);
-					if(distance<distanceLimit){
+					float widthChange = Math.abs(movingBlob.width-blob.width);
+					float heightChange = Math.abs(movingBlob.height-blob.height);
+					if(distanceX<=distanceLimitX && distanceY<=distanceLimitY &&
+							widthChange<=widthChangeLimit && heightChange<=heightChangeLimit){
 						queue.add(new BlobPair(distance, blob, movingBlob));
 					}
 				}
@@ -140,6 +159,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		calculateVelocity(movingBlob, newBlob);
 		movingBlob.x = newBlob.x;
 		movingBlob.y = newBlob.y;
+		movingBlob.width = newBlob.width;
+		movingBlob.height = newBlob.height;
 		movingBlob.age++;
 		movingBlob.ageOffScreen=0;
 		movingBlob.updatePredictedPosition();	
@@ -147,7 +168,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 
 	private void updateUnmatched(MovingBlob movingBlob){
 
-		if(movingBlob.ageOffScreen>maxTimeOffScreen){
+		if(movingBlob.ageOffScreen>=maxTimeOffScreen){
 			//removes blob if it has been gone too long
 			movingBlobs.remove(movingBlob);
 		} else {
@@ -155,7 +176,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			movingBlob.x += movingBlob.velocityX;
 			movingBlob.y += movingBlob.velocityY;
 
-      movingBlob.age++;
+			movingBlob.age++;
 			movingBlob.ageOffScreen++;
 			movingBlob.updatePredictedPosition();
 		}
@@ -168,10 +189,24 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		float centerYNew = newBlob.y + newBlob.width/2;
 		float movementX = centerXNew - centerXOld;
 		float movementY = centerYNew - centerYOld;
+
+		float tempVelX = movingBlob.velocityX;
+		float tempVelY = movingBlob.velocityY;
 		//finds average of previous velocity and velocity between last and current frame
+
 		movingBlob.velocityX += movementX;
 		movingBlob.velocityX /= 2;
+		movingBlob.velocityChangeX = Math.abs(tempVelX-movingBlob.velocityX);
+
+
+		//System.out.println("Velocity change x: " + movingBlob.velocityChangeX);
+
+
 		movingBlob.velocityY += movementY;
 		movingBlob.velocityY /= 2;
+		movingBlob.velocityChangeY = Math.abs(tempVelY-movingBlob.velocityY);
+		//System.out.println("Velocity change y: " + movingBlob.velocityChangeY);
+		//System.out.println("new velY: " + movingBlob.velocityY);
+
 	}
 }

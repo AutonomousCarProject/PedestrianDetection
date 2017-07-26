@@ -11,7 +11,7 @@ public class FileImage implements IImage
 
     private final int frameRate = 3;
     private FlyCamera flyCam = new FlyCamera();
-    private final float greyRatio = 1.1f;
+    private final float greyRatio = 0.5f;
     private final int blackRange = 100;
     private final int whiteRange = 200;
 
@@ -39,6 +39,7 @@ public class FileImage implements IImage
 
         tile = flyCam.PixTile();
         System.out.println("tile: "+tile+" width: "+width+" height: "+height);
+
     }
 
     @Override
@@ -129,6 +130,10 @@ public class FileImage implements IImage
 
     public int getFrameNo(){
         return flyCam.frameNo;
+    }
+    
+    public void setImage(IPixel[][] i){
+    	image = i;
     }
 
     private void byteConvert()

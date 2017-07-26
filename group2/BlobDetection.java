@@ -1,157 +1,154 @@
 package group2;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import group1.IImage;
 import group1.IPixel;
 
 public class BlobDetection implements IBlobDetection
 {
-    private static Deque<Blob> unusedBlobs = new ArrayDeque<>();
-    private static List<Blob> blobs = new LinkedList<>();
-
-    private static Blob[] blobRow = null;
-
+    public static final int MAXIMUM_DIFFERENCE_IN_WIDTH_BETWEEN_TWO_BLOBS_IN_ORDER_TO_JOIN = 75;
     @Override
     public List<Blob> getBlobs(IImage image)
     {
-        unusedBlobs.addAll(blobs);
-        blobs.clear();
-
         IPixel[][] pixels = image.getImage();
-        final int height = pixels.length;
-        final int width = pixels[0].length;
-        final int size = height * width;
+        BlobInProgress[][] bips = new BlobInProgress[pixels.length][pixels[0].length];
 
-        if (blobRow == null)
+        for (int row = 0; row < pixels.length; row++)
         {
-            blobRow = new Blob[width];
-        }
-
-        for (int i = 0; i < size; i++)
-        {
-            final int row = i / width;
-            final int col = i % width;
-
-            IPixel pixel = pixels[row][col];
-
-            if (col < width - 1)
+            for (int col = 0; col < pixels[0].length - 1; col++)
             {
-                IPixel rightPixel = pixels[row][col + 1];
-                if (pixel.getColor() == rightPixel.getColor() && pixel.getSaturation() == rightPixel.getSaturation())
+                IPixel pix1 = pixels[row][col];
+                IPixel pix2 = pixels[row][col + 1];
+
+                if (pix1.getColor() == pix2.getColor())//matching
                 {
-                    Blob b = findBlob(col, row, pixel.getColor(), pixel.getSaturation());
-                    if (b == null)
+                    
+                    if (bips[row][col] != null)
                     {
-                        b = findBlob(col + 1, row, pixel.getColor(), pixel.getSaturation());
-                        if (b == null)
-                        {
-                            b = getBlob(2, 1, col, row, pixel);
-                            blobs.add(b);
-                        }
-                        else
-                        {
-                            if (!blobContains(b, col, row))
-                            {
-                                b.width = b.width + 1;
-                                b.x = col;
-                            }
-                        }
+                        bips[row][col].right = max(bips[row][col].right, col + 1);
                     }
                     else
                     {
-                        if (!blobContains(b, col + 1, row))
+                        bips[row][col] = new BlobInProgress(row, col, row, col + 1, pixels[row][col]);
+                    }
+
+                    bips[row][col + 1] = bips[row][col];
+                }
+            }
+        }
+        for (int row = 0; row < pixels.length - 1; row++)
+        {
+            for (int col = 0; col < pixels[0].length; col++)
+            {
+                IPixel pix1 = pixels[row][col];
+                IPixel pix2 = pixels[row + 1][col];
+
+                if (pix1.getColor() == pix2.getColor() && bips[row + 1][col] != null && bips[row][col] != null && Math.abs(bips[row + 1][col].width() - bips[row][col].width()) <= MAXIMUM_DIFFERENCE_IN_WIDTH_BETWEEN_TWO_BLOBS_IN_ORDER_TO_JOIN)
+                {
+                    if (bips[row][col] != null)//top pixel has a blob in progress
+                    {
+                        bips[row][col].bottom = max(bips[row][col].bottom, row + 1);
+
+                        if (bips[row + 1][col] != null && bips[row][col] != bips[row + 1][col])//they are both something
                         {
-                            b.width = b.width + 1;
+                            BlobInProgress old = bips[row + 1][col];
+                            
+                            for(int r = old.top; r <= old.bottom; r++)
+                            {
+                                for(int c = old.left; c <= old.right; c++)
+                                {
+                                    if(bips[r][c] == old)
+                                    {
+                                        bips[r][c] = bips[row][col];
+                                    }
+                                }
+                            }
+
+                            bips[row][col].left = min(bips[row][col].left, old.left);
+                            bips[row][col].right = max(bips[row][col].right, old.right);
+                            bips[row][col].top = min(bips[row][col].top, old.top);
+                            bips[row][col].bottom = max(bips[row][col].bottom, old.bottom);
+                        }
+
+                        bips[row + 1][col] = bips[row][col];
+                    }
+                    else if (bips[row + 1][col] != null)
+                    {
+                        bips[row + 1][col].top = min(bips[row + 1][col].top, row);
+                        bips[row][col] = bips[row + 1][col];
+                    }
+                    else
+                    {
+                        bips[row][col] = new BlobInProgress(row, col, row + 1, col, pixels[row][col]);
+                        bips[row + 1][col] = bips[row][col];
+                    }
+
+                }
+            }
+        }
+        
+
+        List<Blob> blobs = new LinkedList<>();
+        Set<Integer> added = new HashSet<>();
+        for (BlobInProgress[] bipRow : bips)
+        {
+            for (BlobInProgress bip : bipRow)
+            {
+                if (bip != null)
+                {
+                    if (!added.contains(bip.id))
+                    {
+                        added.add(bip.id);
+                        if (bip.width() >= 4 && bip.height() >= 4 && bip.width() < (pixels[0].length >> 2)
+                                && bip.height() < (pixels.length >> 2) && bip.color.getColor() != 3)
+                        {
+                            blobs.add(bip.toBlob());
                         }
                     }
                 }
             }
-
-            if (row < height - 1)
-            {
-                IPixel downPixel = pixels[row + 1][col];
-                if (pixel.getColor() == downPixel.getColor() && pixel.getSaturation() == downPixel.getSaturation())
-                {
-                    Blob b = findBlob(col, row, pixel.getColor(), pixel.getSaturation());
-                    if (b == null)
-                    {
-                        b = findBlob(col, row + 1, pixel.getColor(), pixel.getSaturation());
-                        if (b == null)
-                        {
-                            b = getBlob(1, 2, col, row, pixel);
-                            blobs.add(b);
-                        }
-                        else
-                        {
-                            if (!blobContains(b, col, row))
-                            {
-                                b.height = b.height + 1;
-                                b.y = row;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (!blobContains(b, col, row + 1))
-                        {
-                            b.height = b.height + 1;
-                        }
-                    }
-                }
-            }
         }
-
-        List<Blob> toRemove = new LinkedList<>();
-        for (Blob b : blobs)
-        {
-            if (b.width < 4 || b.height < 4)
-            {
-                toRemove.add(b);
-            }
-
-            // b.x = b.x + (b.width / 2f);
-            // b.y = b.y + (b.height / 2f);
-        }
-
-        blobs.removeAll(toRemove);
-
+        
+        
         return blobs;
     }
 
-    private Blob findBlob(int x, int y, int color, int saturation)
+    private static class BlobInProgress
     {
-        for (Blob b : blobs)
+        private int top, left, bottom, right, id;
+        private IPixel color;
+        private static int currentId = 0;
+
+        public BlobInProgress(int top, int left, int bottom, int right, IPixel color)
         {
-            if (blobContains(b, x, y) && (b.color.getColor() == color) && (b.color.getSaturation() == saturation))
-            {
-                return b;
-            }
+            this.top = top;
+            this.left = left;
+            this.bottom = bottom;
+            this.right = right;
+            this.id = currentId++;
+            this.color = color;
         }
 
-        return null;
-    }
-
-    private boolean blobContains(Blob b, int x, int y)
-    {
-        final float rx = x - b.x, ry = y - b.y;
-        return (rx >= 0 && rx < b.width) && (ry >= 0 && ry < b.height);
-    }
-
-    private Blob getBlob(int width, int height, int centerX, int centerY, IPixel color)
-    {
-        if (unusedBlobs.isEmpty())
+        public int width()
         {
-            return new Blob(width, height, centerX, centerY, color);
+            return right - left + 1;
         }
-        else
+
+        public int height()
         {
-            Blob b = unusedBlobs.pop();
-            b.set(width, height, centerX, centerY, color);
-            return b;
+            return bottom - top + 1;
+        }
+
+        public Blob toBlob()
+        {
+            return new Blob(width(), height(), left, top, color);
         }
     }
 }

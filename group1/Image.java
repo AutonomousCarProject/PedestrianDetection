@@ -10,7 +10,7 @@ public class Image implements IImage
     public int width;
 
     private final int frameRate = 3;
-    private FlyCamera flyCam = new FlyCamera();
+    public FlyCamera flyCam = new FlyCamera(); //FIXME
     private final float greyRatio = 1.1f;
     private final int blackRange = 100;
     private final int whiteRange = 200;
@@ -27,9 +27,10 @@ public class Image implements IImage
     private byte[] camBytes;
     private static IPixel[][] image;
 
-    public Image()
+    public Image(int exposure, int shutter, int gain)
     {
-        flyCam.Connect(frameRate);
+        flyCam.Connect(frameRate, exposure, shutter, gain);
+
         int res = flyCam.Dimz();
         height = res >> 16;
         width = res & 0x0000FFFF;
@@ -44,6 +45,7 @@ public class Image implements IImage
     @Override
     public void setAutoFreq(int autoFreq){  //How many frames are loaded before the calibrate is called (-1 never calls it)
         this.autoFreq = autoFreq;
+
     }
 
     @Override
