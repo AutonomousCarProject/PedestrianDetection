@@ -46,7 +46,7 @@ public class BlobDetectionRender extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        IBlobDetection blobDetect = new BlobDetection3();
+        IBlobDetection blobDetect = new BlobDetection();
         IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
         IMovingBlobReduction blobFilter = new BlobFilter();
         

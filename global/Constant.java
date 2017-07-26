@@ -1,12 +1,20 @@
 package global;
 
-public class CONSTANTS {
-	
+public class Constant {
+	/**
+	 * MovingBlobDetection
+	 */
+
 	//maximum time before unmatched MovingBlob is deleted
-	public static final int MAX_TIME_OFF_SCREEN = 2;
+	public static final int MAX_TIME_OFF_SCREEN = 0;
 	
 	//maximum distance in pixels between blobs that can be matched
-	public static final int DISTANCE_LIMIT = 20;
+	public static final int DISTANCE_LIMIT_X = 10;
+	public static final int DISTANCE_LIMIT_Y = 100;
+	
+	//maximum size difference in pixels between blobs that can be matched
+	public static final int MAX_CHANGE_WIDTH = 100;
+	public static final int MAX_CHANGE_HEIGHT = 100;
 	
 	//maximum distance between edges to unify
 	public static final int X_EDGE_DISTANCE_LIMIT = 25;
@@ -19,17 +27,25 @@ public class CONSTANTS {
 	public static final int UNIFY_VELOCITY_LIMIT_Y = 30;
 	public static final float VELOCITY_LIMIT_INCREASE_X = 0.5f;
 	public static final float VELOCITY_LIMIT_INCREASE_Y = 0.5f;
-	
+
+	/**
+	 * BlobFilter
+	 */
+
+	//regular filters
+
 	//Minimum age to not be filtered
-	public static final short AGE_MIN = 3;
+	public static final short AGE_MIN = 2;
 	
 	//Maximum 
-	public static final short VELOCITY_X_MAX = 20;
-	public static final short VELOCITY_Y_MAX = 10;
-	public static final float MAX_VELOCITY_CHANGE_X = 3;
-	public static final float MAX_VELOCITY_CHANGE_Y = 2;
+	public static final short VELOCITY_X_MAX = 100;
+	public static final short VELOCITY_Y_MAX = 20;
+	public static final float MAX_VELOCITY_CHANGE_X = 100;
+	public static final float MAX_VELOCITY_CHANGE_Y = 100;
 	
 	//Unified Blob filters
+
+	//stuff
 	public static final short MAX_WIDTH_HEIGHT_RATIO = 1;
 	public static final short MAX_WIDTH = 100;
 	public static final short MAX_HEIGHT = 200;
