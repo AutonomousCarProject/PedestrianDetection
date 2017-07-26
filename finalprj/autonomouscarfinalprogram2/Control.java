@@ -195,7 +195,7 @@ public class Control extends LooiObject
         }
     	frames.addFirst(copy);
     	
-    	if(frames.size() >= 5){
+    	if(frames.size() >= 8){
     		frames.removeLast();
     	}
         
@@ -215,9 +215,9 @@ public class Control extends LooiObject
     public void incrementCurrentFrame(int i){
     	setCurrentFrame(getCurrentFrame() + i);
     	if(currentFrame == frames.size()){
-    		currentFrame = 0;
-    	} else if(currentFrame <= 0){
     		currentFrame = frames.size()-1;
+    	} else if(currentFrame <= 0){
+    		currentFrame = 0;
     	}
     }
     
