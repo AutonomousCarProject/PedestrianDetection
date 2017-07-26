@@ -92,21 +92,14 @@ public class Control extends LooiObject
         
         frames.addFirst(firstFrame);
         
-        toggleGraphics = new AstheticButton(10,2010,135,100,"Toggle Graphics",Color.GRAY) 
-        {
-            @Override
-            protected void action() 
-            {
-                boxDrawer.setUsingBasicColors(!boxDrawer.isUsingBasicColors()); 
-            }
-        };
+        
         
         yCoordinate = 10;
-        toggleGraphics.setLayer(-999);
+        
         sliderWindow = new DraggingWindow(100,100,500,500,new Background(Color.WHITE));
         sliderWindow.add(sliderWindow.new ExitButton()); 
         sliderWindow.add(scrollBox = new ScrollBox(25,100,450,375,new Background(new Color(250,250,255))));
-        scrollBox.add(scrollBox.new ScrollBoxObject(toggleGraphics)); 
+        
         scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,3,(a)->{Constant.AGE_MIN = (short)(double)a;})));
         scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Age min")));
         scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,20,(a)->{Constant.DISTANCE_LIMIT_X = (int)(double)a;})));
@@ -154,6 +147,18 @@ public class Control extends LooiObject
         scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,1,(a)->{Constant.Y_OVERLAP_PERCENT = (float)(double)a;})));
         scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Y Overlap Percent")));
         scrollBox.add(scrollBox.new ScrollBoxObject(new SaveButton(10,yPos(),150,100,"Save",new Color(150,200,40)))); 
+        
+        toggleGraphics = new AstheticButton(10,yPos(),135,100,"Toggle Graphics",Color.GRAY) 
+        {
+            @Override
+            protected void action() 
+            {
+                boxDrawer.setUsingBasicColors(!boxDrawer.isUsingBasicColors()); 
+            }
+        };
+        toggleGraphics.setLayer(-999);
+        scrollBox.add(scrollBox.new ScrollBoxObject(toggleGraphics)); 
+    
     }
     
     protected int yPos(){
@@ -189,7 +194,6 @@ public class Control extends LooiObject
         	blobDetection = new BlobDetection();
             movingBlobDetection = new MovingBlobDetection();
             blobFilter = new BlobFilter();
-            boxDrawer.setUsingBasicColors(true);
             currentImage.readCam();
         }
         
