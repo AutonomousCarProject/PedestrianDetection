@@ -58,7 +58,6 @@ public class JpgImage implements IImage
             }
         }
     }
-
     public void autoColor(){}
 
     @Override
@@ -73,5 +72,5 @@ public class JpgImage implements IImage
     {
         // TODO Auto-generated method stub
         
-    };
+    }
 }

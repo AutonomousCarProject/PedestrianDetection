@@ -100,7 +100,7 @@ public class BlobDetectionRender extends Application
                     }
                 }
 
-                IBlobDetection blobDetect = new BlobDetection3();
+                IBlobDetection blobDetect = new BlobDetection();
                 IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
                 IMovingBlobReduction blobFilter = new BlobFilter();
 

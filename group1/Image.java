@@ -42,6 +42,7 @@ public class Image implements IImage
     @Override
     public void setAutoFreq(int autoFreq){  //How many frames are loaded before the calibrate is called (-1 never calls it)
         this.autoFreq = autoFreq;
+
     }
 
     @Override
