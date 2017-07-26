@@ -6,6 +6,7 @@
 package com.looi.looi.gui_essentials;
 
 import com.looi.looi.Point;
+import java.awt.Color;
 import java.awt.event.MouseEvent;
 
 /**
@@ -20,19 +21,31 @@ public class Slider extends Rectangle
             DEFAULT_SLIDER_HEIGHT = 10,
             DEFAULT_MAX_SLIDER_HEIGHT = 20,
             DEFAULT_HORIZONTAL_MARGIN_FRACTION = .1;//.1 of width
+    public static final Color 
+            DEFAULT_TRACK_COLOR = Color.LIGHT_GRAY,
+            DEFAULT_SLIDER_COLOR = Color.BLACK;
     private double percentage = 0;
     private double trackHeight;
     private double horizontalMargin;
     private SliderObject sliderObject;
     private double sliderMinX;
     private double sliderMaxX;
+    private Color sliderColor;
+    private Color trackColor;
     
-    public Slider(double x, double y, double width, double height, Background background, double horizontalMargin, double trackHeight, double sliderWidth, double sliderHeight, double maxSliderHeight)
+    
+    public Slider(double x, double y, double width, double height, Background background, double horizontalMargin, double trackHeight, double sliderWidth, double sliderHeight, double maxSliderHeight, Color sliderColor, Color trackColor)
     {
         super(x,y,width,height,background);
         setHorizontalMargin(horizontalMargin);
         setTrackHeight(trackHeight);
         add(sliderObject = new SliderObject(sliderWidth,sliderHeight,maxSliderHeight));
+        setSliderColor(sliderColor);
+        setTrackColor(trackColor);
+    }
+    public Slider(double x, double y, double width, double height, Background background, double horizontalMargin, double trackHeight, double sliderWidth, double sliderHeight, double maxSliderHeight)
+    {
+        this(x,y,width,height,background,horizontalMargin,trackHeight,sliderWidth,sliderHeight,maxSliderHeight,DEFAULT_SLIDER_COLOR,DEFAULT_TRACK_COLOR);
     }
     public Slider(double x, double y, double width, double height, Background background)
     {
@@ -44,6 +57,12 @@ public class Slider extends Rectangle
     public void setTrackHeight(double trackHeight){this.trackHeight = trackHeight;}
     public double getSliderMinX(){return sliderMinX;}
     public double getSliderMaxX(){return sliderMaxX;}
+    public Color getSliderColor(){return sliderColor;}
+    public void setSliderColor(Color sliderColor){this.sliderColor = sliderColor;}
+    public Color getTrackColor(){return trackColor;}
+    public void setTrackColor(Color trackColor){this.trackColor = trackColor;}
+    
+    
     
     
     protected void looiStep()
@@ -57,6 +76,12 @@ public class Slider extends Rectangle
         
         //sliderObject.setPosition(startX + distance * percentage/100,getY() + getHeight()/2);
         percentage = sliderObjectProgress/totalDistance * 100;
+    }
+    protected void looiPaint()
+    {
+        super.looiPaint();
+        setColor(trackColor);
+        fillRect(getX() + getHorizontalMargin(),getY() + getHeight()/2 - getTrackHeight()/2,getWidth() - getHorizontalMargin()*2, getTrackHeight());
     }
     
     public double getPercentage(){return percentage;}
@@ -104,6 +129,7 @@ public class Slider extends Rectangle
             super.looiPaint();
             center = new Point(getX(),getY());
             points = findPoints();
+            setColor(sliderColor);
             fillPolygon(points);
         }
         protected Point[] findPoints()

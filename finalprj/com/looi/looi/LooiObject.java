@@ -265,7 +265,7 @@ public abstract class LooiObject implements Comparable<LooiObject>
     * Sets the layer of this LooiObject so that this LooiObject is painted
     * at the front of the screen
     */
-    protected void goToFront()
+    public void goToFront()
     {
         setLayer(thisWindow().getTopLayer()-.001);
     }
@@ -273,7 +273,7 @@ public abstract class LooiObject implements Comparable<LooiObject>
      * Sets the layer of this LooiObject so that this LooiObject is painted
      * at the back of the screen
      */
-    protected void goToBack()
+    public void goToBack()
     {
             setLayer(thisWindow().getBottomLayer()+.001);
     }
