@@ -22,7 +22,7 @@ public class FileImage implements IImage
     // 307200
     // private byte[] camBytes = new byte[2457636];
     private byte[] camBytes;
-    private IPixel[][] image;
+    protected IPixel[][] image;
 
     public FileImage()
     {
@@ -50,24 +50,18 @@ public class FileImage implements IImage
         return image;
     }
 
+    public void setImage(IPixel[][] thing) { this.image = thing; }
+
     // gets a single frame
     @Override
     public void readCam()
     {
-        autoCount++;
+        //autoCount++;
         //System.out.println("TILE: " + flyCam.PixTile());
         // System.out.println(flyCam.errn);
         flyCam.NextFrame(camBytes);
         // System.out.println(flyCam.errn);
-
-
-        if(autoCount > autoFreq && autoFreq > -1) {
-            autoConvert();
-            autoCount = 0;
-        }
-        else{
-            byteConvert();
-        }
+        byteConvert();
     }
 /*
     private void autoColor(){

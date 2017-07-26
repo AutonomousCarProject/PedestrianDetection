@@ -1,12 +1,14 @@
 package group1;
 
+import java.awt.*;
+
 //Defines basic implementation for pixel
 public class Pixel implements IPixel
 { // 0-765
   // YUV
     private short luma;
     private short saturation;
-    private short color; // 0: red, 1: green, 2: blue, 3: grey, 4: black, 5:
+    protected short color; // 0: red, 1: green, 2: blue, 3: grey, 4: black, 5:
                          // white
 
     // RGB Values 0-255
@@ -24,7 +26,7 @@ public class Pixel implements IPixel
         this.red = red;
         this.green = green;
         this.blue = blue;
-        simpleConvert();
+        //simpleConvert();
     }
 
     public void setRGB(short red, short green, short blue)
@@ -32,7 +34,7 @@ public class Pixel implements IPixel
         this.red = red;
         this.green = green;
         this.blue = blue;
-        simpleConvert();
+        //simpleConvert();
     }
 
     @Override
@@ -71,7 +73,23 @@ public class Pixel implements IPixel
         return blue;
     }
 
-    private void simpleConvert()
+    @Override
+    public void setColor(short hue) {
+        this.color = hue;
+        if(hue == 256){
+            this.red = 255;
+            this.green = 255;
+            this.blue = 255;
+        }
+        else{
+            Color thing = new Color(Color.HSBtoRGB((float)hue / 255.0f, 1.0f, 1.0f));
+            this.red = (short)thing.getRed();
+            this.green = (short)thing.getGreen();
+            this.blue = (short)thing.getBlue();
+        }
+    }
+
+    protected void simpleConvert()
     {
         short ave = (short) (red + green + blue);
         int r = red * 3;

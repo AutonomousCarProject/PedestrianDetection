@@ -9,10 +9,10 @@ public class FlyCamera {
 
 
 //  private final String fiName = "group1/fly0cam/FlyCapped.By8";  // --non IDE
-  private final String fiName = "src/group1/fly0cam/FlyCapped8.By8"; // -- IDE
+  //private final String fiName = "src/group1/fly0cam/FlyCapped8.By8"; // -- IDE
 //  private final String fiName = "src/group1/fly0cam/.By8";
 
-  private final String fiName = "src/group1/fly0cam/FlyCapped.By8";
+  private final String fiName = "src/group1/fly0cam/Sun_0_0_0.By8";
   
   public int rose, // actual number of rows = FlyCap2.fc2Image.rows/2
       colz, // actual number of columns = FlyCap2.fc2Image.cols/2

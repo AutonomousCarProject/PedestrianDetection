@@ -23,7 +23,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
-
+/*
 public class BlobDetectionRender extends Application
 {
     boolean drawBlobs = true;
@@ -137,7 +137,7 @@ public class BlobDetectionRender extends Application
 		        for(MovingBlob b : movingBlobs)
 		        {
 		            System.out.println(b);
-		        }*/
+		        }*
 		        List<MovingBlob> filteredBlobs = blobFilter.reduce(unifiedBlobs);
 		        		       
 		        gc.setStroke(Color.DARKGOLDENROD);
@@ -222,3 +222,4 @@ public class BlobDetectionRender extends Application
         }
     }
 }
+*/

@@ -36,6 +36,11 @@ public class JpgImage implements IImage
         return image;
     }
 
+    @Override
+    public void setAutoFreq(int what) {
+
+    }
+
     // gets a single frame
     @Override
     public void readCam()

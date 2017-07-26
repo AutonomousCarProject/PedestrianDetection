@@ -11,6 +11,10 @@ public interface IPixel
 
     short getColor();
 
+    //CUZ
+    void setColor(short hue);
+    //Hue is an integer, doesn't mater on what scale for now
+
     // RGB
     short getRed();
 

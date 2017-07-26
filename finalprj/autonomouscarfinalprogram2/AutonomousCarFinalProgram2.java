@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package autonomouscarfinalprogram2;
+package finalprj.autonomouscarfinalprogram2;
 
 import com.looi.looi.LooiWindow;
 
@@ -25,7 +25,7 @@ public class AutonomousCarFinalProgram2 {
         mainWindow.fitWindow();
         
         // parameter in this constructor is the delay (in milliseconds) between frames
-        control = new Control(100);
+        control = new Control();
         hotkeys = new Hotkeys();
     }
     
