@@ -1,6 +1,7 @@
 package group1;
 //import group1.fly0cam.FlyCamera;
 import fly2cam.FlyCamera;
+import global.Constant;
 
 //Defines image as an 2d array of pixels
 public class Image implements IImage
@@ -10,9 +11,9 @@ public class Image implements IImage
 
     private final int frameRate = 3;
     private FlyCamera flyCam = new FlyCamera();
-    private final float greyRatio = 0.75f;
-    private final int blackRange = 100;
-    private final int whiteRange = 200;
+    private final float greyRatio = Constant.GREY_RATIO;
+    private final int blackRange = Constant.BLACK_RANGE;
+    private final int whiteRange = Constant.WHITE_RANGE;
 
     private int tile;
     private int autoCount = 0;
