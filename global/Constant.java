@@ -35,20 +35,48 @@ public class Constant {
 	//regular filters
 
 	//Minimum age to not be filtered
-	public static short AGE_MIN = 3;
+	public static int AGE_MIN = 3;
 	
 	//Maximum 
-	public static short VELOCITY_X_MAX = 21;
-	public static short VELOCITY_Y_MAX = 12;
+	public static int VELOCITY_X_MAX = 21;
+	public static int VELOCITY_Y_MAX = 12;
 	public static float MAX_VELOCITY_CHANGE_X = 11;
 	public static float MAX_VELOCITY_CHANGE_Y = 4;
 	//Unified Blob filters
 
 	//stuff
 	public static float MAX_WIDTH_HEIGHT_RATIO = 1;
-	public static short MAX_WIDTH = 100;
-	public static short MAX_HEIGHT = 200;
-	public static short MAX_SCALED_VELOCITY_X = 10;
-	public static short MAX_SCALED_VELOCITY_Y = 10;
+	public static int MAX_WIDTH = 100;
+	public static int MAX_HEIGHT = 200;
+	public static int MAX_SCALED_VELOCITY_X = 10;
+	public static int MAX_SCALED_VELOCITY_Y = 10;
+	
+	public static void setVariable(int index, double a){
+		switch(index){
+		case 1: MAX_TIME_OFF_SCREEN = (int)a; break;
+		case 2: DISTANCE_LIMIT_X = (int)a; break;
+		case 3: DISTANCE_LIMIT_Y = (int)a; break;
+		case 4: MAX_CHANGE_WIDTH  = (int)a; break;
+		case 5: MAX_CHANGE_HEIGHT = (int)a; break;
+		case 6: X_EDGE_DISTANCE_LIMIT = (int)a; break;
+		case 7: Y_EDGE_DISTANCE_LIMIT = (int)a; break;
+		case 8: X_OVERLAP_PERCENT = (float)a; break;
+		case 9: Y_OVERLAP_PERCENT  = (float)a; break;
+		case 10: UNIFY_VELOCITY_LIMIT_X = (int)a; break;
+		case 11: UNIFY_VELOCITY_LIMIT_Y = (int)a; break;
+		case 12: VELOCITY_LIMIT_INCREASE_X = (float)a; break;
+		case 13: VELOCITY_LIMIT_INCREASE_Y = (float)a; break;
+		case 14: AGE_MIN  = (int)a; break;
+		case 15: VELOCITY_X_MAX = (int)a; break;
+		case 16: VELOCITY_Y_MAX = (int)a; break;
+		case 17: MAX_VELOCITY_CHANGE_X = (float)a; break;
+		case 18: MAX_VELOCITY_CHANGE_Y = (float)a; break;
+		case 19: MAX_WIDTH_HEIGHT_RATIO  = (float)a; break;
+		case 20: MAX_WIDTH = (int)a; break;
+		case 21: MAX_HEIGHT = (int)a; break;
+		case 22: MAX_SCALED_VELOCITY_X = (int)a; break;
+		case 23: MAX_SCALED_VELOCITY_Y = (int)a; break;
+		}
+	}
 	
 }

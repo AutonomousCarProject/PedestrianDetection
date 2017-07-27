@@ -103,28 +103,14 @@ public class Control extends LooiObject
         sliderWindow.add(sliderWindow.new ExitButton()); 
         sliderWindow.add(scrollBox = new ScrollBox(25,100,450,375,new Background(new Color(250,250,255))));
         
-        String text[] = {"Distance Limit X", "Distance Limit Y", "Max Time Off Screen", "Unify Velocity Limit X", 
-        					"Unify Velocity Limit Y", "X Edge Distance Limit", "Y Edge Distance Limit", "Max Change Height",
-        					"Max Change Width", "Max Velocity Change X", "Max Velocity Change Y", "Velocity Limit Increase X",  
-        					"Velocity Limit Increase Y", "X Overlap Percent", "Y Overlap Percent",
-        					"Age Min", "Max Height", "Max Width", /*"Max Width Height Ratio",*/ "Max Scaled Velocity X", 
-        					"Max Scaled Velocity Y", "Velocity X Max", "Velocity Y Max"};
-
-       Integer consVar[] = {Constant.DISTANCE_LIMIT_X, Constant.DISTANCE_LIMIT_Y, 
-    		   			Constant.MAX_TIME_OFF_SCREEN, Constant.UNIFY_VELOCITY_LIMIT_X, Constant.UNIFY_VELOCITY_LIMIT_Y,
-    		   			Constant.X_EDGE_DISTANCE_LIMIT, Constant.Y_EDGE_DISTANCE_LIMIT, Constant.MAX_CHANGE_HEIGHT, 
-    		   			Constant.MAX_CHANGE_WIDTH};
+        String text[] = {"Max Time Off Screen", "Distance Limit X", "Distance Limit Y", "Max Change Width", "Max Change Height",
+        					"X Edge Distance Limit", "Y Edge Distance Limit", "X Overlap Percent", "Y Overlap Percent", 
+        					"Unify Velocity Limit X", "Unify Velocity Limit Y", "Velocity Limit Increase X",  
+        					"Velocity Limit Increase Y", "Age Min","Velocity X Max", "Velocity Y Max",
+        					 "Max Velocity Change X", "Max Velocity Change Y", "Max Width Height Ratio", "Max Width",
+        					 "Max Height", "Max Scaled Velocity X", "Max Scaled Velocity Y", };
        
-
-       Float consVar2[] = {Constant.MAX_VELOCITY_CHANGE_X, Constant.MAX_VELOCITY_CHANGE_Y,
-    		   			   Constant.VELOCITY_LIMIT_INCREASE_X, Constant.VELOCITY_LIMIT_INCREASE_Y,
-    		   			   Constant.X_OVERLAP_PERCENT, Constant.Y_OVERLAP_PERCENT};
-
-       Short consVar3[] = {Constant.AGE_MIN, Constant.MAX_HEIGHT, Constant.MAX_WIDTH, /*Constant.MAX_WIDTH_HEIGHT_RATIO,*/ 
-    		   			   Constant.MAX_SCALED_VELOCITY_X, Constant.MAX_SCALED_VELOCITY_Y, Constant.VELOCITY_X_MAX,
-    		   			   Constant.VELOCITY_Y_MAX};
-       
-       int maximumValues[] = {40, 40, 0, 30, 30, 20, 20, 100, 100, 35, 35, 1, 1, 1, 1, 7, 400, 400, 40, 40, 50, 50};
+       int maximumValues[] = {0, 40, 40, 100, 100, 20, 20, 1, 1, 35, 35, 1, 1, 7, 100, 100, 100, 100, 0, 400, 400, 100, 100};
        
        
         // displays text
@@ -132,39 +118,19 @@ public class Control extends LooiObject
         	scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150, i*100+20, 100, 30, new Background(Color.WHITE), text[i])));
         }
       
-        // displays sliders with int type
-        for(int j = 0; j < consVar.length; j++) {
-        	int i = j;
+        // displays sliders
+        for(int j = 0; j < text.length; j++) {
+        	int i = j+1;
             scrollBox.add(scrollBox.new ScrollBoxObject(
             		new VariableSlider(10,j*100+20,100,20,
             				new Background(Color.WHITE),0,maximumValues[j],(a)->{
-            	consVar[i] = (int)(double)a;
+            	Constant.setVariable(i, a);
             })));
         }
         
-        // displays sliders with float type
-        for(int j = 0; j < consVar2.length; j++) {
-        	int i = j;
-            scrollBox.add(scrollBox.new ScrollBoxObject(
-            		new VariableSlider(10,j*100+100*consVar.length+20,100,20,
-            				new Background(Color.WHITE),0,maximumValues[j+consVar.length],(a)->{
-            	consVar2[i] = (float)(double)a;
-            })));
-        }
-
-        // displays sliders with short type
-        for(int j = 0; j < consVar3.length; j++) {
-        	int i = j;
-            scrollBox.add(scrollBox.new ScrollBoxObject(
-            		new VariableSlider(10,j*100+100*consVar.length+100*consVar2.length+20,100,20,
-            				new Background(Color.WHITE),0,maximumValues[j+consVar.length+consVar2.length],(a)->{
-            	consVar3[i] = (short)(double)a;
-            })));
-        }
-       
-        scrollBox.add(scrollBox.new ScrollBoxObject(new SaveButton(10,100*consVar.length+100*consVar2.length+100*consVar3.length,150,100,"Save",new Color(150,200,40))));
+        scrollBox.add(scrollBox.new ScrollBoxObject(new SaveButton(10,100*text.length,150,100,"Save",new Color(150,200,40))));
         
-        toggleGraphics = new AstheticButton(10,100*consVar.length+100*consVar2.length+100*consVar3.length+100,135,100,"Toggle Graphics",Color.GRAY) 
+        toggleGraphics = new AstheticButton(10,100*text.length+100,135,100,"Toggle Graphics",Color.GRAY) 
         {
             @Override
             protected void action() 
@@ -175,15 +141,6 @@ public class Control extends LooiObject
         toggleGraphics.setLayer(-999);
         scrollBox.add(scrollBox.new ScrollBoxObject(toggleGraphics)); 
     
-    }
-    
-    protected int yPos(){
-    	yCoordinate += 100;
-    	return yCoordinate-100;
-    }
-    
-    protected int yPos2(){
-    	return yCoordinate-100;
     }
     
     /**
@@ -202,8 +159,6 @@ public class Control extends LooiObject
     protected void updateWhileUnpaused(){
     	currentImage.readCam();
         previousFrame++;
-        
-        System.out.println(Constant.DISTANCE_LIMIT_X);
         
         if(currentImage.getFrameNo()==previousFrame){
         	previousFrame = 0;
