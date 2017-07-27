@@ -254,6 +254,5 @@ public class Image implements IImage
         System.out.println("greyMargin: " + Pixel.greyMargin + " blackMargin: " + Pixel.blackMargin + " whiteMargin: " + Pixel.whiteMargin);
 
     }
-    
 
 }
