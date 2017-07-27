@@ -23,6 +23,7 @@ public abstract class GuiComponent extends LooiObject
     public GuiComponent(double x, double y)
     {
         setPosition(x,y);
+        goToFront();
     }
     public double getX()
     {

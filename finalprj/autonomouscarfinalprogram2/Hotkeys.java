@@ -15,9 +15,10 @@ import java.awt.event.KeyEvent;
  */
 public class Hotkeys extends LooiObject
 {
-    public Hotkeys()
+	public Control control;
+    public Hotkeys(Control c)
     {
-        
+        control = c;
     }
     public void keyPressed(KeyEvent e)
     {
@@ -27,7 +28,15 @@ public class Hotkeys extends LooiObject
         }
         if(e.getKeyCode() == KeyEvent.VK_SPACE)
         {
-        	Control.pauseUnpause();
+        	control.pauseUnpause();
         }
-    }
+        if(e.getKeyCode() == KeyEvent.VK_RIGHT)
+        {
+        	control.incrementCurrentFrame(-1);
+        }
+        if(e.getKeyCode() == KeyEvent.VK_LEFT)
+        {
+        	control.incrementCurrentFrame(1);
+        }
+    } 
 }

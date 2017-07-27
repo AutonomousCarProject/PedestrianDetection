@@ -25,7 +25,7 @@ import java.util.List;
 public class IImageBoxDrawer implements IImageDrawing
 {
     public static final int DEFAULT_LINE_THICKNESS = 1;
-    public static final Color DEFAULT_STILL_COLOR = Color.BLACK;
+    public static final Color DEFAULT_STILL_COLOR = Color.RED;
     public static final Color DEFAULT_FAST_COLOR = Color.RED;
     public static final double DEFAULT_MAX_VELOCITY = 5;
     
@@ -67,6 +67,18 @@ public class IImageBoxDrawer implements IImageDrawing
         
         drawLines(rectangles,b,stillColor,fastColor,DEFAULT_LINE_THICKNESS);
         currentImage = b;
+    }
+    public void draw2(IImage image, List<MovingBlob> iBlobs,List<MovingBlob> iBlobs2)
+    {
+    	 Rectangle[] rectangles = findRectangles(image,iBlobs);
+    	 Rectangle[] rectangles2 = findRectangles(image, iBlobs2);
+         BufferedImage b = new BufferedImage(image.getImage()[0].length,image.getImage().length,BufferedImage.TYPE_INT_ARGB);
+         setPixels(b,image.getImage());
+         
+         
+         drawLines(rectangles,b,Color.RED,Color.RED,DEFAULT_LINE_THICKNESS);
+         drawLines(rectangles2, b, Color.GREEN, Color.GREEN, DEFAULT_LINE_THICKNESS);
+         currentImage = b;
     }
     protected Color findColor(Color min, Color max, double percent)
     {
@@ -228,7 +240,7 @@ public class IImageBoxDrawer implements IImageDrawing
                 
                 double velocity = Math.sqrt( (r.getBlob().velocityX)*(r.getBlob().velocityX) + (r.getBlob().velocityY)*(r.getBlob().velocityY) );
                 
-                Color lineColor = findColor(this.stillColor,this.fastColor,velocity/maxVelocity);
+                Color lineColor = findColor(still,moving,r.getBlob().age/maxVelocity);
                 
                 g.setColor(lineColor);
                 g.drawLine((int)start.getX(),(int)start.getY(),(int)end.getX(),(int)end.getY());
