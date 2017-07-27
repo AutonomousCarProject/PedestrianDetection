@@ -110,7 +110,7 @@ public class Control extends LooiObject
         					 "Max Velocity Change X", "Max Velocity Change Y", "Max Width Height Ratio", "Max Width",
         					 "Max Height", "Max Scaled Velocity X", "Max Scaled Velocity Y", };
        
-       int maximumValues[] = {0, 40, 40, 100, 100, 20, 20, 1, 1, 35, 35, 3, 3, 7, 100, 100, 100, 100, 1, 1000, 1000, 100, 100};
+       int maximumValues[] = {0, 40, 40, 100, 100, 20, 20, 1, 1, 35, 35, 3, 3, 7, 100, 100, 100, 100, 2, 1000, 1000, 100, 100};
        
        
         // displays text
@@ -175,7 +175,9 @@ public class Control extends LooiObject
         List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
         List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
         List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
-        boxDrawer.draw2(currentImage,fmovingBlobs,funifiedBlobs);
+        //boxDrawer.draw2(currentImage,fmovingBlobs,funifiedBlobs);
+        boxDrawer.draw(currentImage, funifiedBlobs);
+        
         
         IPixel[][] image = currentImage.getImage();
         IPixel[][] copy = new IPixel[image.length][image[0].length];
@@ -195,10 +197,13 @@ public class Control extends LooiObject
     public void updateWhilePaused(){
 		currentImage.setImage(frameList.get(currentFrame));
 		
-        List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs();
+		List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
+        List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
         List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
-		boxDrawer.draw2(currentImage, movingBlobs, fmovingBlobs);
-
+        List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
+        List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
+        //boxDrawer.draw2(currentImage,fmovingBlobs,funifiedBlobs);
+        boxDrawer.draw(currentImage, funifiedBlobs);
 	        
     }   
     

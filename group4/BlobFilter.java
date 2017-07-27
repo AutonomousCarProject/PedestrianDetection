@@ -24,11 +24,14 @@ public class BlobFilter implements IMovingBlobReduction
 	
 	//returns false if blob should be filtered
 	private boolean filterMovingBlob(MovingBlob blob){
+		System.out.println();
 		return blob.age >= Constant.AGE_MIN &&
 				Math.abs(blob.velocityY) < Constant.VELOCITY_Y_MAX &&
 				Math.abs(blob.velocityX) < Constant.VELOCITY_X_MAX &&
 				blob.velocityChangeX < Constant.MAX_VELOCITY_CHANGE_X &&
-				blob.velocityChangeY < Constant.MAX_VELOCITY_CHANGE_Y;
+				blob.velocityChangeY < Constant.MAX_VELOCITY_CHANGE_Y &&
+				(float)blob.width/(float)blob.height < Constant.MAX_WIDTH_HEIGHT_RATIO;
+				
 	}
 	
 	public List<MovingBlob> filterUnifiedBlobs(List<MovingBlob> blobs){
