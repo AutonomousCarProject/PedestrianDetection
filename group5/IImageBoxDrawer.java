@@ -77,7 +77,7 @@ public class IImageBoxDrawer implements IImageDrawing
          
          
          drawLines(rectangles,b,Color.RED,Color.RED,DEFAULT_LINE_THICKNESS);
-         drawLines(rectangles2, b, Color.GREEN, Color.GREEN, DEFAULT_LINE_THICKNESS);
+         drawLines(rectangles2, b, Color.BLUE, Color.BLUE, DEFAULT_LINE_THICKNESS);
          currentImage = b;
     }
     protected Color findColor(Color min, Color max, double percent)
