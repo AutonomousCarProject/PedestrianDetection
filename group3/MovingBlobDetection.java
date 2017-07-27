@@ -3,6 +3,7 @@ import group2.Blob;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -40,7 +41,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 
 	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
 		//pairs that should be unified
-		HashSet<BlobPair> pairs = new HashSet<>();
+		HashSet<MovingBlob[]> pairs = new HashSet<>();
 		for(MovingBlob movingBlob1:movingBlobs){
 			for(MovingBlob movingBlob2:movingBlobs){
 				float distanceX;
@@ -64,35 +65,37 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 						velocityLimitIncreaseX*Math.max(movingBlob1.velocityX, movingBlob2.velocityX) &&
 						velocityDifferenceY<unifyVelocityLimitY+
 						velocityLimitIncreaseY*Math.max(movingBlob1.velocityY, movingBlob2.velocityY)){
-					pairs.add(new BlobPair(0, movingBlob1, movingBlob2));
+					MovingBlob[] pair = {movingBlob1,movingBlob2};
+					pairs.add(pair);
 				}
 			}
 		}
-		HashMap<MovingBlob, UnifiedBlob> map = new HashMap<>();
-		for(BlobPair pair:pairs){
-			MovingBlob blob1 = pair.oldBlob;
-			MovingBlob blob2 = (MovingBlob) pair.newBlob;
-			MovingBlob unifiedBlob1 = map.get(blob1);
-			if(unifiedBlob1==null){
-				unifiedBlob1 = blob1;
-			}
-			MovingBlob unifiedBlob2 = map.get(blob2);
-			if(unifiedBlob2==null){
-				unifiedBlob2 = blob2;
-			}
-			//unifies the current top level unification of each blob in pair
-			if(unifiedBlob1!=unifiedBlob2){
-				HashSet<MovingBlob> blobSet = new HashSet<>();
-				blobSet.add(unifiedBlob1);
-				blobSet.add(unifiedBlob2);
-				UnifiedBlob newUnifiedBlob = new UnifiedBlob(blobSet);
-				map.put(blob1,newUnifiedBlob);
-				map.put(blob2,newUnifiedBlob);
+		HashMap<MovingBlob, HashSet<MovingBlob>> map = new HashMap<>();
+		for(MovingBlob[] pair:pairs){
+			MovingBlob blob1 = pair[0];
+			MovingBlob blob2 = pair[1];
+			HashSet<MovingBlob> set1 = map.get(blob1);
+			HashSet<MovingBlob> set2 = map.get(blob2);
+			if(set1==null&&set2==null){
+				HashSet<MovingBlob> newSet = new HashSet<>();
+				newSet.add(blob1);
+				newSet.add(blob2);
+				map.put(blob1, newSet);
+				map.put(blob2, newSet);
+			} else if(set1==null){
+				set2.add(blob1);
+				map.put(blob1,set2);
+			} else if(set2==null){
+				set1.add(blob2);
+				map.put(blob2,set1);
+			} else {
+				set1.addAll(set2);
+				map.put(blob2,set1);
 			}
 		}
 		HashSet<MovingBlob> unifiedBlobSet = new HashSet<>();
-		for(MovingBlob blob:map.values()){
-			unifiedBlobSet.add( blob);
+		for(HashSet<MovingBlob> blobSet:map.values()){
+			unifiedBlobSet.add(new UnifiedBlob(blobSet));
 		}
 		for(MovingBlob blob:movingBlobs){
 			if(map.get(blob)==null) unifiedBlobSet.add(blob);
