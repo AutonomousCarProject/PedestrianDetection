@@ -11,7 +11,7 @@ public class FileImage implements IImage
 
     private final int frameRate = 3;
     private FlyCamera flyCam = new FlyCamera();
-    private final float greyRatio = 0.5f;
+    private final float greyRatio = 0.75f;
     private final int blackRange = 100;
     private final int whiteRange = 200;
 
@@ -62,7 +62,7 @@ public class FileImage implements IImage
 
 
         if(autoCount > autoFreq && autoFreq > -1) {
-            autoConvert();
+            autoConvertV2();
             autoCount = 0;
         }
         else{
@@ -267,15 +267,15 @@ public class FileImage implements IImage
         
         
         //autoThreshold variables
-        float threshold = 127;
-		float avg; 
+        int threshold = 381;
+		int avg; //0-765
 		int r, b, g;
-		float lesserSum = 0;
-		float greaterSum = 0;
+		int lesserSum = 0;
+		int greaterSum = 0;
 		int lesserCount = 0;
 		int greaterCount = 0;
-		float lesserMean;
-		float greaterMean;
+		int lesserMean;
+		int greaterMean;
 
         int pos = 0;
         if(tile == 1){
@@ -292,7 +292,7 @@ public class FileImage implements IImage
     					b = image[i][j].getBlue();
     					g = image[i][j].getGreen();
     				
-    					avg = (float)(r+b+g)/3;
+    					avg = (r+b+g);
     				
     					if(avg < threshold) {
     					
@@ -310,14 +310,10 @@ public class FileImage implements IImage
 
                 }
 
-                pos += width * 2;
+                pos += width << 1;
 
             }
-            
-            lesserMean = lesserSum/(float)lesserCount;
-    			greaterMean = greaterSum/(float)greaterCount;
-    			
-    			threshold = (lesserMean + greaterMean)/2;
+          
             
         }
         else if(tile == 3){
@@ -334,7 +330,7 @@ public class FileImage implements IImage
 					b = image[i][j].getBlue();
 					g = image[i][j].getGreen();
 				
-					avg = (float)(r+b+g)/3;
+					avg = (r+b+g);
 				
 					if(avg < threshold) {
 					
@@ -351,19 +347,19 @@ public class FileImage implements IImage
 
                 }
 
-                pos += width * 2;
+                pos += width << 1;
 
             }
             
-            lesserMean = lesserSum/(float)lesserCount;
-			greaterMean = greaterSum/(float)greaterCount;
-			
-			threshold = (lesserMean + greaterMean)/2;
             
         }
+        
+        lesserMean = lesserSum/lesserCount;
+        greaterMean = greaterSum/greaterCount;
+ 		threshold = (lesserMean + greaterMean) >> 1;
 
-        average = (int)threshold;
-        average2 = average*3;
+        average2 = threshold;
+        average = average2/3;
         
 
         for (int i = 0; i < height; i++)
