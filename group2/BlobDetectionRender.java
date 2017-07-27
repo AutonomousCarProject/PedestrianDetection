@@ -2,7 +2,6 @@ package group2;
 
 import java.util.List;
 
-import group1.FileImage;
 import group1.IImage;
 import group1.IPixel;
 import group1.Image;
