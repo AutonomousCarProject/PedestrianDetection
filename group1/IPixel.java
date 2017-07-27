@@ -17,7 +17,4 @@ public interface IPixel
     short getGreen();
 
     short getBlue();
-
-    void setMargins(int greyMargin, int blackMargin, int whiteMargin);
-    void setRGB(short red, short green, short blue);
 }
