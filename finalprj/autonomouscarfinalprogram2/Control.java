@@ -15,6 +15,9 @@ import group1.IPixel;
 import group1.Pixel;
 import com.looi.looi.gui_essentials.TextBox;
 import com.looi.looi.gui_essentials.Window;
+import com.looi.looi.gui_essentials.ScrollBox.ScrollBoxObject;
+import com.looi.looi.gui_essentials.Window.ExitButton;
+
 import global.Constant;
 import group1.FileImage;
 import group2.Blob;
@@ -100,55 +103,59 @@ public class Control extends LooiObject
         sliderWindow.add(sliderWindow.new ExitButton()); 
         sliderWindow.add(scrollBox = new ScrollBox(25,100,450,375,new Background(new Color(250,250,255))));
         
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,3,(a)->{Constant.AGE_MIN = (short)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Age min")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,20,(a)->{Constant.DISTANCE_LIMIT_X = (int)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Distance Limit X")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,20,(a)->{Constant.DISTANCE_LIMIT_Y = (int)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Distance Limit Y")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,30,(a)->{Constant.MAX_CHANGE_WIDTH = (int)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Max Change Width")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,30,(a)->{Constant.MAX_CHANGE_HEIGHT = (int)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Max Change Height")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,200,(a)->{Constant.MAX_WIDTH = (short)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Max Width")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,200,(a)->{Constant.MAX_HEIGHT = (short)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Max Height")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,40,(a)->{Constant.MAX_SCALED_VELOCITY_X = (short)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Max Scaled Velocity X")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,40,(a)->{Constant.MAX_SCALED_VELOCITY_Y = (short)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Max_Scaled_Velocity_Y")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,10,(a)->{Constant.MAX_TIME_OFF_SCREEN = (int)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Max Time Off Screen")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,30,(a)->{Constant.MAX_VELOCITY_CHANGE_X = (float)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Max Velocity Change X")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,30,(a)->{Constant.MAX_VELOCITY_CHANGE_Y = (float)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Max Velocity Change Y")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,1,(a)->{Constant.MAX_WIDTH_HEIGHT_RATIO = (float)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Max Width Height Ratio")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,40,(a)->{Constant.UNIFY_VELOCITY_LIMIT_X = (int)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Unify Velocity Limit X")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,40,(a)->{Constant.UNIFY_VELOCITY_LIMIT_Y = (int)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Unify Velocity Limit Y")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,1,(a)->{Constant.VELOCITY_LIMIT_INCREASE_X = (float)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Velocity Limit Increase X")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,1,(a)->{Constant.VELOCITY_LIMIT_INCREASE_Y = (float)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Velocity Limit Increase Y")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,40,(a)->{Constant.VELOCITY_X_MAX = (short)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Velocity X Max")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,40,(a)->{Constant.VELOCITY_Y_MAX = (short)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Velocity Y Max")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,10,(a)->{Constant.X_EDGE_DISTANCE_LIMIT = (int)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"X Edge Distance Limit")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,1,(a)->{Constant.X_OVERLAP_PERCENT = (float)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"X Overlap Percent")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,10,(a)->{Constant.Y_EDGE_DISTANCE_LIMIT = (int)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Y Edge Distance Limit")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,yPos(),100,20,new Background(Color.WHITE),0,1,(a)->{Constant.Y_OVERLAP_PERCENT = (float)(double)a;})));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150,yPos2(),100,30,new Background(Color.WHITE),"Y Overlap Percent")));
-        scrollBox.add(scrollBox.new ScrollBoxObject(new SaveButton(10,yPos(),150,100,"Save",new Color(150,200,40)))); 
+        String text[] = {"Distance Limit X", "Distance Limit Y", "Max Time Off Screen", "Unify Velocity Limit X", 
+        				 "Unify Velocity Limit Y", "X Edge Distance Limit", "Y Edge Distance Limit", "Max Velocity Change X", 
+        				 "Max Velocity Change Y", "Velocity Limit Increase X", "Unify Velocity Limit Y", 
+        				 "Velocity Limit Increase X", "Velocity Limit Increase Y", "X Overlap Percent", "Y Overlap Percent",
+        				 "Age Min", "Max Height", "Max Width", /*"Max Width Height Ratio",*/ "Max Scaled Velocity X", 
+        				 "Max Scaled Velocity Y", "Velocity X Max", "Velocity Y Max"};
+
+       int consVar[] = {Constant.DISTANCE_LIMIT_X, Constant.DISTANCE_LIMIT_Y, 
+    		   			Constant.MAX_TIME_OFF_SCREEN, Constant.UNIFY_VELOCITY_LIMIT_X, Constant.UNIFY_VELOCITY_LIMIT_Y,
+    		   			Constant.X_EDGE_DISTANCE_LIMIT, Constant.Y_EDGE_DISTANCE_LIMIT};
+
+       
+
+       float consVar2[] = {Constant.MAX_VELOCITY_CHANGE_X, Constant.MAX_VELOCITY_CHANGE_Y, Constant.VELOCITY_LIMIT_INCREASE_X,
+    		   			   Constant.UNIFY_VELOCITY_LIMIT_Y, Constant.VELOCITY_LIMIT_INCREASE_X, Constant.VELOCITY_LIMIT_INCREASE_Y,
+    		   			   Constant.X_OVERLAP_PERCENT, Constant.Y_OVERLAP_PERCENT};
+
+       short consVar3[] = {Constant.AGE_MIN, Constant.MAX_HEIGHT, Constant.MAX_WIDTH, /*Constant.MAX_WIDTH_HEIGHT_RATIO,*/ 
+    		   			   Constant.MAX_SCALED_VELOCITY_X, Constant.MAX_SCALED_VELOCITY_Y, Constant.VELOCITY_X_MAX,
+    		   			   Constant.VELOCITY_Y_MAX};
+       
+        // prints text
+        for(int i = 0; i < text.length; i++) {                        /// change to ypos2
+        	scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150, i*100+20, 100, 30, new Background(Color.WHITE), text[i])));
+        }
+      
+        // displays sliders with int type
+        for(int j = 0; j < consVar.length; j++) {
+        	int i = j;
+            scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,j*100+20,100,20,new Background(Color.WHITE),10,40,(a)->{
+            	consVar[i] = (int)(double)a;
+            })));
+        }
         
-        toggleGraphics = new AstheticButton(10,yPos(),135,100,"Toggle Graphics",Color.GRAY) 
+        // displays sliders with float type
+        for(int j = 0; j < consVar2.length; j++) {
+        	int i = j;
+            scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,j*100+100*consVar.length+20,100,20,new Background(Color.WHITE),10,40,(a)->{
+            	consVar2[i] = (float)(double)a;
+            })));
+        }
+
+        // displays sliders with short type
+        for(int j = 0; j < consVar3.length; j++) {
+        	int i = j;
+            scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,j*100+100*consVar.length+100*consVar2.length+20,100,20,new Background(Color.WHITE),10,40,(a)->{
+            	consVar3[i] = (short)(double)a;
+            })));
+        }
+       
+        scrollBox.add(scrollBox.new ScrollBoxObject(new SaveButton(10,100*consVar.length+100*consVar2.length+100*consVar3.length,150,100,"Save",new Color(150,200,40))));
+        
+        toggleGraphics = new AstheticButton(10,100*consVar.length+100*consVar2.length+100*consVar3.length+100,135,100,"Toggle Graphics",Color.GRAY) 
         {
             @Override
             protected void action() 
