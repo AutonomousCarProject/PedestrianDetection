@@ -197,11 +197,13 @@ public class Control extends LooiObject
     public void updateWhilePaused(){
 		currentImage.setImage(frameList.get(currentFrame));
 		
-        List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs();
+		List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
+        List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
         List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
-		//boxDrawer.draw2(currentImage, movingBlobs, fmovingBlobs);
-        boxDrawer.draw(currentImage, movingBlobs);
-
+        List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
+        List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
+        //boxDrawer.draw2(currentImage,fmovingBlobs,funifiedBlobs);
+        boxDrawer.draw(currentImage, funifiedBlobs);
 	        
     }   
     
