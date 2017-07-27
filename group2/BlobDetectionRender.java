@@ -50,7 +50,6 @@ public class BlobDetectionRender extends Application
         //IImage -image = new JpgImage("src/testImage1.png");
         //IImage image = new Image(0, 50, 0);
 
-
         IPixel[][] pixels = image.getImage();
         final int scale = 2;
 
@@ -66,7 +65,7 @@ public class BlobDetectionRender extends Application
         Canvas canvas = new Canvas(width * scale, height * scale);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        image.setAutoFreq(15);
+        image.setAutoFreq(1);
         
 
         AnimationTimer timer = new AnimationTimer() {

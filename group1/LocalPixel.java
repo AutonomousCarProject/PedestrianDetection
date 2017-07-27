@@ -1,13 +1,13 @@
 package group1;
 
 //Defines basic implementation for pixel
-public class Pixel implements IPixel
+public class LocalPixel implements IPixel
 { // 0-765
-  // YUV
+    // YUV
     private short luma;
     private short saturation;
     private short color; // 0: red, 1: green, 2: blue, 3: grey, 4: black, 5:
-                         // white
+    // white
 
     // RGB Values 0-255
     private short red;
@@ -15,11 +15,11 @@ public class Pixel implements IPixel
     private short blue;
 
 
-    static int greyMargin = 145;
-    static int blackMargin = 400;
-    static int whiteMargin = 700; // 0-765
+    int greyMargin = 145;
+    int blackMargin = 400;
+    int whiteMargin = 700; // 0-765
 
-    public Pixel(short red, short green, short blue)
+    public LocalPixel(short red, short green, short blue)
     {
         this.red = red;
         this.green = green;
@@ -121,11 +121,11 @@ public class Pixel implements IPixel
     /*
      * public void convert(){ //luminance = sum of rgb luma = (short)(red +
      * green + blue);
-     * 
+     *
      * //saturation = max - min of rgb saturation =
      * (short)((Math.max(Math.max(red, green), blue) - Math.min(Math.min(red,
      * green), blue))*3);
-     * 
+     *
      * //hue short ave = (short)(red + green + blue); int r = red*3; int g =
      * green*3; int b = blue*3; int rdiff = r - ave; int gdiff = g - ave; int
      * bdiff = b - ave; if(rdiff < greyMargin && gdiff < greyMargin && bdiff <
