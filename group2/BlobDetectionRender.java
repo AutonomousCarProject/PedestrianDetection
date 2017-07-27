@@ -39,9 +39,19 @@ public class BlobDetectionRender extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+<<<<<<< HEAD
+        IBlobDetection blobDetect = new BlobDetection();
+        IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
+        IMovingBlobReduction blobFilter = new BlobFilter();
+        
+        // IImage image = new JpgImage("src/testImage1.png");
+        IImage image = new FileImage();
+        
+=======
 //         IImage -image = new JpgImage("src/testImage1.png");
         IImage image = new Image(0, 50, 0);
 
+>>>>>>> 5c28b525e66c51feb6e085b2c82011568cbeb681
         IPixel[][] pixels = image.getImage();
         final int scale = 2;
 
@@ -59,6 +69,53 @@ public class BlobDetectionRender extends Application
 
         image.setAutoFreq(15);
         
+<<<<<<< HEAD
+        AnimationTimer timer = new AnimationTimer() {
+        	@Override
+        	public void handle(long time)
+        	{
+        		/*
+        		if(lastTime != -1)
+        		{
+        			cumulativeTime += (time - lastTime);
+        		}
+        		
+        		lastTime = time;
+        		
+        		if(++currentFrame != framesPerCall && image instanceof FileImage)
+        		{
+        		    return;
+        		}
+        		
+        		currentFrame = 0;
+        		
+        		if(cumulativeTime >= calTime)
+        		{
+        			cumulativeTime = 0;
+        			image.autoColor();
+        		}
+        		*/
+        		
+		        image.readCam();
+		        IPixel[][] pixels = image.getImage();
+		
+		        final int width = pixels[0].length;
+		        final int height = pixels.length;
+		
+		        final float blockedOutArea = (0);
+		        for (int i = 0; i < width; i++)
+		        {
+		            for (int j = 0; j < height; j++)
+		            {
+		                if (j < (height * blockedOutArea))
+		                {
+		                    gc.setFill(Color.RED);
+		                    pixels[j][i] = new Pixel((short) 255, (short) 0, (short) 0);
+		                }
+		                else
+		                {
+		                    //@formatter:off
+=======
         AnimationTimer timer = new AnimationTimer()
         {
             @Override
@@ -83,6 +140,7 @@ public class BlobDetectionRender extends Application
                         else
                         {
                             //@formatter:off
+>>>>>>> 5c28b525e66c51feb6e085b2c82011568cbeb681
 		                    IPixel p = pixels[j][i];
 		                    Paint fill = Color.rgb(p.getRed(), p.getGreen(), p.getBlue());
 		                    
