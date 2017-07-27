@@ -107,13 +107,13 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 
 	private void updateMovingBlobs(List<Blob> blobList){
 		//set of unmatched movingblobs (all are unmatched at start of frame)
-		HashSet<MovingBlob> movingBlobSet = new HashSet<>(movingBlobs);
+		HashSet<MovingBlob> movingBlobSet = new HashSet<>(getMovingBlobs());
 		//set of unmatched blobs
 		HashSet<Blob> blobSet = new HashSet<>(blobList);
 		//queue with shortest distance pairs of movingblobs and blobs in front
 		PriorityQueue<BlobPair> queue = new PriorityQueue<>();
 		for(Blob blob:blobList){
-			for(MovingBlob movingBlob:movingBlobs){
+			for(MovingBlob movingBlob:getMovingBlobs()){
 				//creates pairs in queue of blobs & moving blobs with same color within 100 pixels
 				if(blob.color.getColor()==movingBlob.color.getColor()){
 					float distanceX = Math.abs(movingBlob.predictedX-(blob.x+blob.width/2));
@@ -150,7 +150,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		}
 		//creates new MovingBlobs for unmatched blobs
 		for(Blob blob:blobSet){
-			movingBlobs.add(new MovingBlob(blob));
+			getMovingBlobs().add(new MovingBlob(blob));
 		}
 	}
 
@@ -170,7 +170,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 
 		if(movingBlob.ageOffScreen>=maxTimeOffScreen){
 			//removes blob if it has been gone too long
-			movingBlobs.remove(movingBlob);
+			getMovingBlobs().remove(movingBlob);
 		} else {
 			//update position based on most recent velocity
 			movingBlob.x += movingBlob.velocityX;
@@ -208,5 +208,13 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		//System.out.println("Velocity change y: " + movingBlob.velocityChangeY);
 		//System.out.println("new velY: " + movingBlob.velocityY);
 
+	}
+
+	public List<MovingBlob> getMovingBlobs() {
+		return movingBlobs;
+	}
+
+	public void setMovingBlobs(List<MovingBlob> movingBlobs) {
+		this.movingBlobs = movingBlobs;
 	}
 }

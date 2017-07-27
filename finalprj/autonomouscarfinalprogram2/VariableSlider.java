@@ -5,6 +5,7 @@
  */
 package autonomouscarfinalprogram2;
 
+import java.text.DecimalFormat;
 import com.looi.looi.gui_essentials.Background;
 import com.looi.looi.gui_essentials.Slider;
 import com.looi.looi.gui_essentials.Window;
@@ -34,7 +35,10 @@ public class VariableSlider extends Slider
     protected void looiPaint()
     {
     	super.looiPaint();
-    	drawString(super.getPercentage()/100.0 * (max - min) + min,getX() + getWidth()/2,getY() -20);
+    	
+    	DecimalFormat df = new DecimalFormat();
+    	df.setMaximumFractionDigits(2);
+    	drawString(df.format(super.getPercentage()/100.0 * (max - min) + min),getX() + getWidth()/2,getY() -20);
     }
             
     public static interface Setter<E>

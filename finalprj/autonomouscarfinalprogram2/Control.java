@@ -103,59 +103,34 @@ public class Control extends LooiObject
         sliderWindow.add(sliderWindow.new ExitButton()); 
         sliderWindow.add(scrollBox = new ScrollBox(25,100,450,375,new Background(new Color(250,250,255))));
         
-        String text[] = {"Distance Limit X", "Distance Limit Y", "Max Time Off Screen", "Unify Velocity Limit X", 
-        				 "Unify Velocity Limit Y", "X Edge Distance Limit", "Y Edge Distance Limit", "Max Velocity Change X", 
-        				 "Max Velocity Change Y", "Velocity Limit Increase X", "Unify Velocity Limit Y", 
-        				 "Velocity Limit Increase X", "Velocity Limit Increase Y", "X Overlap Percent", "Y Overlap Percent",
-        				 "Age Min", "Max Height", "Max Width", /*"Max Width Height Ratio",*/ "Max Scaled Velocity X", 
-        				 "Max Scaled Velocity Y", "Velocity X Max", "Velocity Y Max"};
-
-       int consVar[] = {Constant.DISTANCE_LIMIT_X, Constant.DISTANCE_LIMIT_Y, 
-    		   			Constant.MAX_TIME_OFF_SCREEN, Constant.UNIFY_VELOCITY_LIMIT_X, Constant.UNIFY_VELOCITY_LIMIT_Y,
-    		   			Constant.X_EDGE_DISTANCE_LIMIT, Constant.Y_EDGE_DISTANCE_LIMIT};
-
+        String text[] = {"Max Time Off Screen", "Distance Limit X", "Distance Limit Y", "Max Change Width", "Max Change Height",
+        					"X Edge Distance Limit", "Y Edge Distance Limit", "X Overlap Percent", "Y Overlap Percent", 
+        					"Unify Velocity Limit X", "Unify Velocity Limit Y", "Velocity Limit Increase X",  
+        					"Velocity Limit Increase Y", "Age Min","Velocity X Max", "Velocity Y Max",
+        					 "Max Velocity Change X", "Max Velocity Change Y", "Max Width Height Ratio", "Max Width",
+        					 "Max Height", "Max Scaled Velocity X", "Max Scaled Velocity Y", };
        
-
-       float consVar2[] = {Constant.MAX_VELOCITY_CHANGE_X, Constant.MAX_VELOCITY_CHANGE_Y, Constant.VELOCITY_LIMIT_INCREASE_X,
-    		   			   Constant.UNIFY_VELOCITY_LIMIT_Y, Constant.VELOCITY_LIMIT_INCREASE_X, Constant.VELOCITY_LIMIT_INCREASE_Y,
-    		   			   Constant.X_OVERLAP_PERCENT, Constant.Y_OVERLAP_PERCENT};
-
-       short consVar3[] = {Constant.AGE_MIN, Constant.MAX_HEIGHT, Constant.MAX_WIDTH, /*Constant.MAX_WIDTH_HEIGHT_RATIO,*/ 
-    		   			   Constant.MAX_SCALED_VELOCITY_X, Constant.MAX_SCALED_VELOCITY_Y, Constant.VELOCITY_X_MAX,
-    		   			   Constant.VELOCITY_Y_MAX};
+       int maximumValues[] = {0, 40, 40, 100, 100, 20, 20, 1, 1, 35, 35, 3, 3, 7, 100, 100, 100, 100, 2, 1000, 1000, 100, 100};
        
-        // prints text
+       
+        // displays text
         for(int i = 0; i < text.length; i++) {                        
         	scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150, i*100+20, 100, 30, new Background(Color.WHITE), text[i])));
         }
       
-        // displays sliders with int type
-        for(int j = 0; j < consVar.length; j++) {
-        	int i = j;
-            scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,j*100+20,100,20,new Background(Color.WHITE),10,40,(a)->{
-            	consVar[i] = (int)(double)a;
+        // displays sliders
+        for(int j = 0; j < text.length; j++) {
+        	int i = j+1;
+            scrollBox.add(scrollBox.new ScrollBoxObject(
+            		new VariableSlider(10,j*100+20,100,20,
+            				new Background(Color.WHITE),0,maximumValues[j],(a)->{
+            	Constant.setVariable(i, a);
             })));
         }
         
-        // displays sliders with float type
-        for(int j = 0; j < consVar2.length; j++) {
-        	int i = j;
-            scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,j*100+100*consVar.length+20,100,20,new Background(Color.WHITE),10,40,(a)->{
-            	consVar2[i] = (float)(double)a;
-            })));
-        }
-
-        // displays sliders with short type
-        for(int j = 0; j < consVar3.length; j++) {
-        	int i = j;
-            scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,j*100+100*consVar.length+100*consVar2.length+20,100,20,new Background(Color.WHITE),10,40,(a)->{
-            	consVar3[i] = (short)(double)a;
-            })));
-        }
-       
-        scrollBox.add(scrollBox.new ScrollBoxObject(new SaveButton(10,100*consVar.length+100*consVar2.length+100*consVar3.length,150,100,"Save",new Color(150,200,40))));
+        scrollBox.add(scrollBox.new ScrollBoxObject(new SaveButton(10,100*text.length,150,100,"Save",new Color(150,200,40))));
         
-        toggleGraphics = new AstheticButton(10,100*consVar.length+100*consVar2.length+100*consVar3.length+100,135,100,"Toggle Graphics",Color.GRAY) 
+        toggleGraphics = new AstheticButton(10,100*text.length+100,135,100,"Toggle Graphics",Color.GRAY) 
         {
             @Override
             protected void action() 
@@ -166,15 +141,6 @@ public class Control extends LooiObject
         toggleGraphics.setLayer(-999);
         scrollBox.add(scrollBox.new ScrollBoxObject(toggleGraphics)); 
     
-    }
-    
-    protected int yPos(){
-    	yCoordinate += 100;
-    	return yCoordinate-100;
-    }
-    
-    protected int yPos2(){
-    	return yCoordinate-100;
     }
     
     /**
@@ -207,8 +173,11 @@ public class Control extends LooiObject
         List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
         List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
         List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
+        List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
+        List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
+        //boxDrawer.draw2(currentImage,fmovingBlobs,funifiedBlobs);
+        boxDrawer.draw(currentImage, funifiedBlobs);
         
-        boxDrawer.draw2(currentImage,movingBlobs,fmovingBlobs);
         
         IPixel[][] image = currentImage.getImage();
         IPixel[][] copy = new IPixel[image.length][image[0].length];
@@ -228,10 +197,10 @@ public class Control extends LooiObject
     public void updateWhilePaused(){
 		currentImage.setImage(frameList.get(currentFrame));
 		
-		List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
-        List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
+        List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs();
         List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
-		boxDrawer.draw2(currentImage,movingBlobs, fmovingBlobs);
+		//boxDrawer.draw2(currentImage, movingBlobs, fmovingBlobs);
+        boxDrawer.draw(currentImage, movingBlobs);
 
 	        
     }   

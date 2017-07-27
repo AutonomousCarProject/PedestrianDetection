@@ -42,6 +42,18 @@ public class BlobDetectionRender extends Application
 //         IImage -image = new JpgImage("src/testImage1.png");
 //        IImage image = new Image(0, 50, 0);
         IImage image = new FileImage();
+        
+        IBlobDetection blobDetect = new BlobDetection();
+        IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
+        IMovingBlobReduction blobFilter = new BlobFilter();
+        
+        // IImage image = new JpgImage("src/testImage1.png");
+        IImage image = new FileImage();
+        
+
+        //IImage -image = new JpgImage("src/testImage1.png");
+        //IImage image = new Image(0, 50, 0);
+
 
         IPixel[][] pixels = image.getImage();
         final int scale = 2;
@@ -60,30 +72,53 @@ public class BlobDetectionRender extends Application
 
         image.setAutoFreq(15);
         
-        AnimationTimer timer = new AnimationTimer()
-        {
-            @Override
-            public void handle(long time)
-            {
-                image.readCam();
-                IPixel[][] pixels = image.getImage();
 
-                final int width = pixels[0].length;
-                final int height = pixels.length;
+        AnimationTimer timer = new AnimationTimer() {
+        	@Override
+        	public void handle(long time)
+        	{
+        		/*
+        		if(lastTime != -1)
+        		{
+        			cumulativeTime += (time - lastTime);
+        		}
+        		
+        		lastTime = time;
+        		
+        		if(++currentFrame != framesPerCall && image instanceof FileImage)
+        		{
+        		    return;
+        		}
+        		
+        		currentFrame = 0;
+        		
+        		if(cumulativeTime >= calTime)
+        		{
+        			cumulativeTime = 0;
+        			image.autoColor();
+        		}
+        		*/
+        		
+		        image.readCam();
+		        IPixel[][] pixels = image.getImage();
+		
+		        final int width = pixels[0].length;
+		        final int height = pixels.length;
+		
+		        final float blockedOutArea = (0);
+		        for (int i = 0; i < width; i++)
+		        {
+		            for (int j = 0; j < height; j++)
+		            {
+		                if (j < (height * blockedOutArea))
+		                {
+		                    gc.setFill(Color.RED);
+		                    pixels[j][i] = new Pixel((short) 255, (short) 0, (short) 0);
+		                }
+		                else
+		                {
+		                    //@formatter:off
 
-                final float blockedOutArea = (0);
-                for (int i = 0; i < width; i++)
-                {
-                    for (int j = 0; j < height; j++)
-                    {
-                        if (j < (height * blockedOutArea))
-                        {
-                            gc.setFill(Color.RED);
-                            pixels[j][i] = new Pixel((short) 255, (short) 0, (short) 0);
-                        }
-                        else
-                        {
-                            //@formatter:off
 		                    IPixel p = pixels[j][i];
 		                    Paint fill = Color.rgb(p.getRed(), p.getGreen(), p.getBlue());
 		                    
@@ -100,10 +135,6 @@ public class BlobDetectionRender extends Application
                         gc.fillRect(i * scale, j * scale, scale, scale);
                     }
                 }
-
-                IBlobDetection blobDetect = new BlobDetection();
-                IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
-                IMovingBlobReduction blobFilter = new BlobFilter();
 
                 List<Blob> blobs = blobDetect.getBlobs(image);
                 List<MovingBlob> movingBlobs = movingBlobDetect.getMovingBlobs(blobs);

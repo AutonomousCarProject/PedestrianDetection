@@ -256,5 +256,199 @@ public class FileImage implements IImage
         System.out.println("greyMargin: " + Pixel.greyMargin + " blackMargin: " + Pixel.blackMargin + " whiteMargin: " + Pixel.whiteMargin);
 
     }
+    
+    
+    private void autoConvertV2() {
+    	
+    		int average = 0;    //0-255
+        int average2;   //0-765
+        int variation = 0;
+        final int divisor = (width*height);
+        
+        
+        //autoThreshold variables
+        float threshold = 127;
+		float avg; 
+		int r, b, g;
+		float lesserSum = 0;
+		float greaterSum = 0;
+		int lesserCount = 0;
+		int greaterCount = 0;
+		float lesserMean;
+		float greaterMean;
+
+        int pos = 0;
+        if(tile == 1){
+            for (int i = 0; i < height; i++)
+            {
+
+                for (int j = 0; j < width; j++)
+                {
+
+                    image[i][j] = new Pixel((short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255), (short) (camBytes[pos + 1 + width * 2] & 255));
+                    pos += 2;
+
+                    r = image[i][j].getRed();
+    					b = image[i][j].getBlue();
+    					g = image[i][j].getGreen();
+    				
+    					avg = (float)(r+b+g)/3;
+    				
+    					if(avg < threshold) {
+    					
+    						lesserSum += avg;
+    						lesserCount++;
+    					
+    					}
+    					else {
+    					
+    						greaterSum += avg;
+    						greaterCount++;
+    					
+    					}
+                    
+
+                }
+
+                pos += width * 2;
+
+            }
+            
+            lesserMean = lesserSum/(float)lesserCount;
+    			greaterMean = greaterSum/(float)greaterCount;
+    			
+    			threshold = (lesserMean + greaterMean)/2;
+            
+        }
+        else if(tile == 3){
+            for (int i = 0; i < height; i++)
+            {
+
+                for (int j = 0; j < width; j++)
+                {
+
+                    image[i][j] = new Pixel((short) (camBytes[pos +  width * 2] & 255) , (short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255));
+                    pos += 2;
+
+                    r = image[i][j].getRed();
+					b = image[i][j].getBlue();
+					g = image[i][j].getGreen();
+				
+					avg = (float)(r+b+g)/3;
+				
+					if(avg < threshold) {
+					
+						lesserSum += avg;
+						lesserCount++;
+					
+					}
+					else {
+					
+						greaterSum += avg;
+						greaterCount++;
+					
+					}
+
+                }
+
+                pos += width * 2;
+
+            }
+            
+            lesserMean = lesserSum/(float)lesserCount;
+			greaterMean = greaterSum/(float)greaterCount;
+			
+			threshold = (lesserMean + greaterMean)/2;
+            
+        }
+
+        average = (int)threshold;
+        average2 = average*3;
+        
+
+        for (int i = 0; i < height; i++)
+        {
+            for (int j = 0; j < width; j++) {
+
+                IPixel temp = image[i][j];
+                int rVar = temp.getRed()-average;
+                if(rVar < 0){
+                    rVar = -rVar;
+                }
+
+                int gVar = temp.getGreen()-average;
+                if(gVar < 0){
+                    gVar = -rVar;
+                }
+
+                int bVar = temp.getBlue()-average;
+                if(bVar < 0) {
+                    bVar = -bVar;
+                }
+
+                variation += rVar + gVar + bVar;
+            }
+
+        }
+
+        variation = variation / divisor;
+        Pixel.greyMargin = (int)(variation * greyRatio);
+        Pixel.blackMargin = average2 - blackRange;
+        Pixel.whiteMargin = average2 + whiteRange;
+    	
+    }
+
+    public float autoThreshold(Pixel[][] image) //takes rgb image, returns float threshold
+    {
+    	
+    		float threshold = 127;
+    		float avg; 
+    		int r, b, g;
+    		
+    		float lesserSum = 0;
+    		float greaterSum = 0;
+    		int lesserCount = 0;
+    		int greaterCount = 0;
+    		
+    		float lesserMean;
+    		float greaterMean;
+    		
+    		
+    		for(int i = 0 ; i < image.length ; i++) {
+    			
+    			for(int j = 0 ; j < image[0].length ; j++) {
+    				
+    				r = image[i][j].getRed();
+    				b = image[i][j].getBlue();
+    				g = image[i][j].getGreen();
+    				
+    				avg = (float)(r+b+g)/3;
+    				
+    				if(avg < threshold) {
+    					
+    					lesserSum += avg;
+    					lesserCount++;
+    					
+    				}
+    				else {
+    					
+    					greaterSum += avg;
+    					greaterCount++;
+    					
+    				}
+    				
+    			}
+    			
+    			
+    		}
+    		
+    		lesserMean = lesserSum/(float)lesserCount;
+    		greaterMean = greaterSum/(float)greaterCount;
+    		
+    		threshold = (lesserMean + greaterMean)/2;
+    		
+    		return threshold;
+    	
+    }
 
 }
