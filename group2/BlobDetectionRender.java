@@ -51,7 +51,7 @@ public class BlobDetectionRender extends Application
         IMovingBlobReduction blobFilter = new BlobFilter();
         
         // IImage image = new JpgImage("src/testImage1.png");
-        IImage image = new Image();
+        IImage image = new FileImage();
         
         IPixel[][] pixels = image.getImage();
         final int scale = 2;
@@ -72,6 +72,7 @@ public class BlobDetectionRender extends Application
         	@Override
         	public void handle(long time)
         	{
+        		/*
         		if(lastTime != -1)
         		{
         			cumulativeTime += (time - lastTime);
@@ -91,6 +92,7 @@ public class BlobDetectionRender extends Application
         			cumulativeTime = 0;
         			image.autoColor();
         		}
+        		*/
         		
 		        image.readCam();
 		        IPixel[][] pixels = image.getImage();

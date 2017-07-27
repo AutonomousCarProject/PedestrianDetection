@@ -62,4 +62,6 @@ public class JpgImage implements IImage
     public void autoColor(){};
 
     public void finish(){}
+    
+    public void setAutoFreq(int autoFreq){};
 }
