@@ -113,18 +113,20 @@ public class Control extends LooiObject
        int consVar[] = {Constant.DISTANCE_LIMIT_X, Constant.DISTANCE_LIMIT_Y, 
     		   			Constant.MAX_TIME_OFF_SCREEN, Constant.UNIFY_VELOCITY_LIMIT_X, Constant.UNIFY_VELOCITY_LIMIT_Y,
     		   			Constant.X_EDGE_DISTANCE_LIMIT, Constant.Y_EDGE_DISTANCE_LIMIT};
-
        
 
-       float consVar2[] = {Constant.MAX_VELOCITY_CHANGE_X, Constant.MAX_VELOCITY_CHANGE_Y, Constant.VELOCITY_LIMIT_INCREASE_X,
-    		   			   Constant.UNIFY_VELOCITY_LIMIT_Y, Constant.VELOCITY_LIMIT_INCREASE_X, Constant.VELOCITY_LIMIT_INCREASE_Y,
+       float consVar2[] = {Constant.MAX_VELOCITY_CHANGE_X, Constant.MAX_VELOCITY_CHANGE_Y,
+    		   			   Constant.VELOCITY_LIMIT_INCREASE_X, Constant.VELOCITY_LIMIT_INCREASE_Y,
     		   			   Constant.X_OVERLAP_PERCENT, Constant.Y_OVERLAP_PERCENT};
 
        short consVar3[] = {Constant.AGE_MIN, Constant.MAX_HEIGHT, Constant.MAX_WIDTH, /*Constant.MAX_WIDTH_HEIGHT_RATIO,*/ 
     		   			   Constant.MAX_SCALED_VELOCITY_X, Constant.MAX_SCALED_VELOCITY_Y, Constant.VELOCITY_X_MAX,
     		   			   Constant.VELOCITY_Y_MAX};
        
-        // prints text
+       int maximumValues[] = {40, 40, 0, 30, 30, 20, 20, 35, 35, 1, 1, 1, 1, 7, 400, 400, 40, 40, 50, 50};
+       
+       
+        // displays text
         for(int i = 0; i < text.length; i++) {                        
         	scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150, i*100+20, 100, 30, new Background(Color.WHITE), text[i])));
         }
@@ -132,7 +134,9 @@ public class Control extends LooiObject
         // displays sliders with int type
         for(int j = 0; j < consVar.length; j++) {
         	int i = j;
-            scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,j*100+20,100,20,new Background(Color.WHITE),10,40,(a)->{
+            scrollBox.add(scrollBox.new ScrollBoxObject(
+            		new VariableSlider(10,j*100+20,100,20,
+            				new Background(Color.WHITE),0,maximumValues[j],(a)->{
             	consVar[i] = (int)(double)a;
             })));
         }
@@ -140,7 +144,9 @@ public class Control extends LooiObject
         // displays sliders with float type
         for(int j = 0; j < consVar2.length; j++) {
         	int i = j;
-            scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,j*100+100*consVar.length+20,100,20,new Background(Color.WHITE),10,40,(a)->{
+            scrollBox.add(scrollBox.new ScrollBoxObject(
+            		new VariableSlider(10,j*100+100*consVar.length+20,100,20,
+            				new Background(Color.WHITE),0,maximumValues[j+consVar.length],(a)->{
             	consVar2[i] = (float)(double)a;
             })));
         }
@@ -148,7 +154,9 @@ public class Control extends LooiObject
         // displays sliders with short type
         for(int j = 0; j < consVar3.length; j++) {
         	int i = j;
-            scrollBox.add(scrollBox.new ScrollBoxObject(new VariableSlider(10,j*100+100*consVar.length+100*consVar2.length+20,100,20,new Background(Color.WHITE),10,40,(a)->{
+            scrollBox.add(scrollBox.new ScrollBoxObject(
+            		new VariableSlider(10,j*100+100*consVar.length+100*consVar2.length+20,100,20,
+            				new Background(Color.WHITE),0,maximumValues[j+consVar.length+consVar2.length],(a)->{
             	consVar3[i] = (short)(double)a;
             })));
         }
