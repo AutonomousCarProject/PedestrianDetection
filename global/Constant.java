@@ -9,21 +9,21 @@ public class Constant {
 	public static int MAX_TIME_OFF_SCREEN = 0;
 	
 	//maximum distance in pixels between blobs that can be matched
-	public static int DISTANCE_LIMIT_X = 13;
-	public static int DISTANCE_LIMIT_Y = 10;
+	public static int DISTANCE_LIMIT_X = 40;
+	public static int DISTANCE_LIMIT_Y = 40;
 	
 	//maximum size difference in pixels between blobs that can be matched
-	public static int MAX_CHANGE_WIDTH = 14;
-	public static int MAX_CHANGE_HEIGHT = 13;
+	public static int MAX_CHANGE_WIDTH = 29;
+	public static int MAX_CHANGE_HEIGHT = 34;
 	
 	//maximum distance between edges to unify
-	public static int X_EDGE_DISTANCE_LIMIT = 25;
-	public static int Y_EDGE_DISTANCE_LIMIT = 30;
-	public static float X_OVERLAP_PERCENT = 0.4f;
-	public static float Y_OVERLAP_PERCENT = 0.4f;
+	public static int X_EDGE_DISTANCE_LIMIT = 6;
+	public static int Y_EDGE_DISTANCE_LIMIT = 10;
+	public static float X_OVERLAP_PERCENT = 0.1f;
+	public static float Y_OVERLAP_PERCENT = 0.1f;
 	
 	//maximum difference in velocity to unify
-	public static int UNIFY_VELOCITY_LIMIT_X = 20;
+	public static int UNIFY_VELOCITY_LIMIT_X = 17;
 	public static int UNIFY_VELOCITY_LIMIT_Y = 30;
 	public static float VELOCITY_LIMIT_INCREASE_X = 0.5f;
 	public static float VELOCITY_LIMIT_INCREASE_Y = 0.5f;
@@ -38,18 +38,18 @@ public class Constant {
 	public static int AGE_MIN = 3;
 	
 	//Maximum 
-	public static int VELOCITY_X_MAX = 21;
-	public static int VELOCITY_Y_MAX = 12;
-	public static float MAX_VELOCITY_CHANGE_X = 11;
-	public static float MAX_VELOCITY_CHANGE_Y = 4;
+	public static int VELOCITY_X_MAX = 100;
+	public static int VELOCITY_Y_MAX = 50;
+	public static float MAX_VELOCITY_CHANGE_X = 5;
+	public static float MAX_VELOCITY_CHANGE_Y = 20;
 	//Unified Blob filters
 
 	//stuff
-	public static float MAX_WIDTH_HEIGHT_RATIO = 1;
-	public static int MAX_WIDTH = 100;
-	public static int MAX_HEIGHT = 200;
-	public static int MAX_SCALED_VELOCITY_X = 10;
-	public static int MAX_SCALED_VELOCITY_Y = 10;
+	public static float MAX_WIDTH_HEIGHT_RATIO = 0.9f;
+	public static int MAX_WIDTH = 400;
+	public static int MAX_HEIGHT = 300;
+	public static int MAX_SCALED_VELOCITY_X = 50;
+	public static int MAX_SCALED_VELOCITY_Y = 50;
 	
 	public static void setVariable(int index, double a){
 		switch(index){
