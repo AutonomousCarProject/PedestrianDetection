@@ -125,7 +125,7 @@ public class Control extends LooiObject
     		   			   Constant.VELOCITY_Y_MAX};
        
         // prints text
-        for(int i = 0; i < text.length; i++) {                        /// change to ypos2
+        for(int i = 0; i < text.length; i++) {                        
         	scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150, i*100+20, 100, 30, new Background(Color.WHITE), text[i])));
         }
       
