@@ -1,12 +1,16 @@
 package group3;
 import group2.Blob;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
+
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import global.Constant;
 
@@ -34,112 +38,100 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	int unifyVelocityLimitY = c.UNIFY_VELOCITY_LIMIT_Y;
 	float velocityLimitIncreaseX = c.VELOCITY_LIMIT_INCREASE_X;
 	float velocityLimitIncreaseY = c.VELOCITY_LIMIT_INCREASE_Y;
+	
+	float kernelBandwidth = 30;
 
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
 	}
 	
-	private float distBetweenBlobs(MovingBlob blob1,MovingBlob blob2){
+	private float distBetweenBlobs(float[] point,MovingBlob blob1,MovingBlob blob2){
 		float distanceX;
 		float distanceY;
-		if(blob1.x>blob2.x){
-			distanceX = blob1.x-(blob2.x+blob2.width);
+		if(point[0]>blob2.x){
+			distanceX = point[0]-(blob2.x+blob2.width);
 		} else {
-			distanceX = blob2.x-(blob1.x+blob1.width);
+			distanceX = blob2.x-(point[0]+blob1.width);
 		}
-		if(blob1.y>blob2.y){
-			distanceY = blob1.y-(blob2.y+blob2.height);
+		if(point[1]>blob2.y){
+			distanceY = point[1]-(blob2.y+blob2.height);
 		} else {
-			distanceY = blob2.y-(blob1.y+blob1.height);
+			distanceY = blob2.y-(point[1]+blob1.height);
 		}
 		distanceX = Math.max(0,distanceX);
 		distanceY = Math.max(0,distanceY);
-		float distanceVX = Math.abs(blob1.velocityX-blob2.velocityX);
-		float distanceVY = Math.abs(blob1.velocityX-blob2.velocityY);
+		float distanceVX = Math.abs(point[2]-blob2.velocityX);
+		float distanceVY = Math.abs(point[3]-blob2.velocityY);
 		return (float) Math.sqrt(distanceX*distanceX + distanceY*distanceY + distanceVX*distanceVX + distanceVY*distanceVY);
 	}
-
-/*
-	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
-		//pairs that should be unified
-		HashSet<MovingBlob[]> pairs = new HashSet<>();
-		for(MovingBlob movingBlob1:movingBlobs){
-			for(MovingBlob movingBlob2:movingBlobs){
-				float distanceX;
-				float distanceY;
-				if(movingBlob1.x>movingBlob2.x){
-					distanceX = movingBlob1.x-(movingBlob2.x+movingBlob2.width);
-				} else {
-					distanceX = movingBlob2.x-(movingBlob1.x+movingBlob1.width);
-				}
-				if(movingBlob1.y>movingBlob2.y){
-					distanceY = movingBlob1.y-(movingBlob2.y+movingBlob2.height);
-				} else {
-					distanceY = movingBlob2.y-(movingBlob1.y+movingBlob1.height);
-				}
-				float velocityDifferenceX = Math.abs(movingBlob1.velocityX-movingBlob2.velocityX);
-				float velocityDifferenceY = Math.abs(movingBlob1.velocityY-movingBlob2.velocityY);
-				//checks if distance and velocity differences are under thresholds
-				if(((distanceX<xEdgeDistanceLimit && distanceY<-yOverlapPercent*Math.min(movingBlob1.height, movingBlob2.height)) 
-						|| (distanceY<yEdgeDistanceLimit && distanceX<-xOverlapPercent*Math.min(movingBlob1.width, movingBlob2.width)))&&
-						velocityDifferenceX<unifyVelocityLimitX+
-						velocityLimitIncreaseX*Math.max(movingBlob1.velocityX, movingBlob2.velocityX) &&
-						velocityDifferenceY<unifyVelocityLimitY+
-						velocityLimitIncreaseY*Math.max(movingBlob1.velocityY, movingBlob2.velocityY)){
-					MovingBlob[] pair = {movingBlob1,movingBlob2};
-					pairs.add(pair);
-				}
-			}
-		}
-		HashMap<MovingBlob, HashSet<MovingBlob>> map = new HashMap<>();
-		for(MovingBlob[] pair:pairs){
-			MovingBlob blob1 = pair[0];
-			MovingBlob blob2 = pair[1];
-			HashSet<MovingBlob> set1 = map.get(blob1);
-			HashSet<MovingBlob> set2 = map.get(blob2);
-			if(set1==null&&set2==null){
-				HashSet<MovingBlob> newSet = new HashSet<>();
-				newSet.add(blob1);
-				newSet.add(blob2);
-				map.put(blob1, newSet);
-				map.put(blob2, newSet);
-			} else if(set1==null){
-				set2.add(blob1);
-				map.put(blob1,set2);
-			} else if(set2==null){
-				set1.add(blob2);
-				map.put(blob2,set1);
-			} else {
-				set1.addAll(set2);
-				map.put(blob2,set1);
-			}
-		}
-		HashSet<MovingBlob> unifiedBlobSet = new HashSet<>();
-		for(HashSet<MovingBlob> blobSet:map.values()){
-			unifiedBlobSet.add(new UnifiedBlob(blobSet));
-		}
-		for(MovingBlob blob:movingBlobs){
-			if(map.get(blob)==null) unifiedBlobSet.add(blob);
-		}
-		return new LinkedList<>(unifiedBlobSet);
-	}*/
 	
 	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
-		float[][] points = new float[movingBlobs.size()][4];
+		float[][] finalPoints = new float[movingBlobs.size()][4];
 		
 		int index = 0;
 		for(MovingBlob movingBlob:movingBlobs){
 			float[] point = {movingBlob.x, movingBlob.y, movingBlob.velocityX, movingBlob.velocityY};
-			while(distanceMoved > someValue){
-				point = shift(point, movingBlobs);
+			float distanceMoved = 1000;
+			while(distanceMoved > 3){
+				float[] pointTemp = {point[0], point[1], point[2], point[3]};
+				point = shift(point, movingBlob, movingBlobs);
+				distanceMoved = (float)Math.sqrt(Math.pow(point[0]-pointTemp[0], 2)+Math.pow(point[1]-pointTemp[1], 2)+
+								Math.pow(point[2]-pointTemp[2], 2)+Math.pow(point[3]-pointTemp[3], 2));
 			}
-			points[index] = point;
+			finalPoints[index] = point;
 			index++;
 		}
+		
+		// first dimension is what it is because that's how many distances there are
+		// second dimension is length 3 because we are storing [distance, index of first point, index of second point]
+		float[][] distances = new float[finalPoints.length*finalPoints.length/2][3];
+		for(int j=0;j<distances.length;j++){
+			for(int i1=0;i1<finalPoints.length;i1++){
+				for(int i2=i1+1;i2<finalPoints.length;i2++){
+					float distance = (float)Math.pow(finalPoints[i1][0]-finalPoints[i2][0], 2);
+					distances[j][0] = distance;
+					distances[j][1] = i1;
+					distances[j][2] = i2;
+				}
+			}
+		}
+		
+		Arrays.sort(distances,new Comparator<float[]>(){
+			@Override
+			public int compare(float[] o1, float[] o2) {
+				return (int) Math.signum(o1[0]-o2[0]);
+			}
+			
+		});
+		
 	}
 	
-	public float[] shift(float[] point, List<MovingBlob> movingBlobs){
+	public float[] shift(float[] point, MovingBlob movingBlob, List<MovingBlob> movingBlobs){
 		float[] shift = {0,0,0,0};
+		float weightTotal = 0;
+		for(MovingBlob blob:movingBlobs){
+			float distance = distBetweenBlobs(point, movingBlob, blob);
+			float weight = kernel(distance, this.kernelBandwidth);
+			
+			weightTotal += weight;
+			shift[0] += (blob.x+blob.width/2)*weight;
+			shift[1] += (blob.y+blob.height/2)*weight;
+			shift[2] += blob.velocityX*weight;
+			shift[3] += blob.velocityY*weight;
+		}
+		for(int i=0;i<4;i++){
+			shift[i]/=weightTotal;
+		}
+		return shift; 
+	}
+	
+	public float kernel(float distance, float kernelBandwidth){
+		if(distance<kernelBandwidth){
+			return 1;
+		}
+		else{
+			return 0;
+		}
 	}
 
 	public List<MovingBlob> getMovingBlobs(List<Blob> blobList){
