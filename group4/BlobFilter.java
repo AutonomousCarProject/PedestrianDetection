@@ -1,5 +1,6 @@
 package group4;
 
+import global.Constant;
 import group3.MovingBlob;
 import group4.IMovingBlobReduction;
 
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 
 public class BlobFilter implements IMovingBlobReduction
 {
+
 	/**
 	/*
 	 * Moving Blob filters
@@ -42,33 +44,7 @@ public class BlobFilter implements IMovingBlobReduction
 	 * @param blobs 	the list of potential pedestrian blobs
 	 * @return			the list of blobs determined to be pedestrians
 	 */
-	public List<MovingBlob> reduce(List<MovingBlob> blobs)
-	{
-		return blobs.parallelStream().filter(p -> isPedestrian(p)).collect(Collectors.toList());
-	}
-	
-	/**
-	 * Checks an individual blob to determine if it is a pedestrian or non-pedestrian. Determination
-	 * is made based on blob width vs. height, blob 'age' on screen, and blob xVelocity.
-	 * 
-	 * @param blob 		the blob being checked
-	 * @return 			if the blob is a pedestrian
-	 */
-	private boolean isPedestrian(MovingBlob blob)
-	{
-		//lol formatting wut
-		return  blob.width >= DIMENSION_MIN && blob.height >= DIMENSION_MIN
-				&& blob.width / blob.height <= WIDTH_HEIGHT_RATIO_MAX
-				&& (blob.age >= AGE_MIN || (blob.x + blob.width/2 >= CENTER_CHECK_WIDTH / 2
-											&& blob.x + blob.width/2 <= 640 - CENTER_CHECK_WIDTH / 2
-											&& blob.y + blob.height/2 >= CENTER_CHECK_HEIGHT / 2
-											&& blob.y + blob.height/2 <= 480 - CENTER_CHECK_HEIGHT / 2
-											&& blob.velocityX >= CENTER_X_VELOCITY_MIN))
-				&& Math.abs(blob.velocityX) <= X_VELOCITY_MAX
-				&& blob.predictedX >= PREDICTED_BORDER_DISTANCE_MIN && blob.predictedX <= (640 - PREDICTED_BORDER_DISTANCE_MIN)
-				&& blob.predictedY >= PREDICTED_BORDER_DISTANCE_MIN && blob.predictedY <= (480 - PREDICTED_BORDER_DISTANCE_MIN);
-	}
-	
+
 	public List<MovingBlob> filterMovingBlobs(List<MovingBlob> blobs){
 		List<MovingBlob> ret = new LinkedList<>();
 		for(MovingBlob blob : blobs){
@@ -76,13 +52,17 @@ public class BlobFilter implements IMovingBlobReduction
 		}
 		return ret;
 	}
-	
-	//returns true if blob passes through filter
+
+	//returns false if blob should be filtered
 	private boolean filterMovingBlob(MovingBlob blob){
-		if(blob.age<=AGE_MIN) return false;
-		if(blob.velocityX>=MAX_VELOCITY_X) return false;
-		if(blob.velocityY>=MAX_VELOCITY_Y) return false;
-		return true;
+		System.out.println();
+		return blob.age >= Constant.AGE_MIN &&
+				Math.abs(blob.velocityY) < Constant.VELOCITY_Y_MAX &&
+				Math.abs(blob.velocityX) < Constant.VELOCITY_X_MAX &&
+				blob.velocityChangeX < Constant.MAX_VELOCITY_CHANGE_X &&
+				blob.velocityChangeY < Constant.MAX_VELOCITY_CHANGE_Y &&
+				(float)blob.width/(float)blob.height < Constant.MAX_WIDTH_HEIGHT_RATIO;
+				
 	}
 	
 	public List<MovingBlob> filterUnifiedBlobs(List<MovingBlob> blobs){
@@ -94,12 +74,10 @@ public class BlobFilter implements IMovingBlobReduction
 	}
 	
 	private boolean filterUnifiedBlob(MovingBlob blob){
-		if((float)blob.width/(float)blob.height>=MAX_WIDTH_HEIGHT_RATIO) return false;
-		if(blob.width>=MAX_WIDTH) return false;
-		if(blob.height>=MAX_HEIGHT) return false;
-		if(blob.getScaledVelocityX()>=MAX_SCALED_VELOCITY_X) return false;
-		if(blob.getScaledVelocityY()>=MAX_SCALED_VELOCITY_Y) return false;
-		return true;
+		return (float)blob.width / (float)blob.height < Constant.MAX_WIDTH_HEIGHT_RATIO &&
+				blob.width < Constant.MAX_WIDTH &&
+				blob.height < Constant.MAX_HEIGHT &&
+				blob.getScaledVelocityX() < Constant.MAX_SCALED_VELOCITY_X &&
+				blob.getScaledVelocityY() < Constant.MAX_SCALED_VELOCITY_Y;
 	}
-	
 }

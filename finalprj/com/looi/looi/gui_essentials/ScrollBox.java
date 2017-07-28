@@ -5,6 +5,7 @@
  */
 package com.looi.looi.gui_essentials;
 
+import com.looi.looi.LooiObject;
 import com.looi.looi.Point;
 import java.awt.Color;
 import java.awt.Font;
@@ -47,6 +48,8 @@ public class ScrollBox extends Rectangle
     {
         double difference = layer - getLayer();
         super.setLayer(layer);
+        if(scrollBoxObjects == null)
+            return;
         for(int i = 0; i < scrollBoxObjects.size(); i++)
         {
             scrollBoxObjects.get(i).thisComponent().setLayer(scrollBoxObjects.get(i).thisComponent().getLayer() + difference);
@@ -150,6 +153,20 @@ public class ScrollBox extends Rectangle
         for(ScrollBoxObject s : scrollBoxObjects)
         {
             s.checkOutOfScrollBox();
+        }
+    }
+    public void setPosition(double x, double y)
+    {
+        double deltaX = x - this.getX();
+        double deltaY = y - this.getY();
+        
+        super.setPosition(x,y);
+        if(scrollBoxObjects == null)
+            return;
+        for(int i = 0; i < scrollBoxObjects.size(); i++)
+        {
+            ScrollBoxObject l = scrollBoxObjects.get(i);
+            l.setVirtualPosition(l.getVirtualX() + deltaX,l.getVirtualY() + deltaY);
         }
     }
     public class ScrollBoxObject

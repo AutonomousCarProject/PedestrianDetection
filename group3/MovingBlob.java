@@ -9,7 +9,9 @@ public class MovingBlob extends Blob
     // The X and Y components of the MovingBlob's velocity.
     public float velocityX, velocityY;
 
-    // The predicted X and Y coordinates of the MovingBlob in the next frame.
+    public float velocityChangeX, velocityChangeY;
+
+    // The predicted X and Y center coordinates of the MovingBlob in the next frame.
     public float predictedX, predictedY;
 
     // The time, in frames, that the MovingBlob has been on-screen.
@@ -108,8 +110,8 @@ public class MovingBlob extends Blob
      */
     public void updatePredictedPosition()
     {
-        predictedX = velocityX + x;
-        predictedY = velocityY + y;
+        predictedX = velocityX + x+width/2;
+        predictedY = velocityY + y+height/2;
     }
 
     @Override
