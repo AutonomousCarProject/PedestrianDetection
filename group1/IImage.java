@@ -7,5 +7,5 @@ public interface IImage
 	void finish();
 	void setAutoFreq(int autoFreq);	
 	void setImage(IPixel[][] image);
-	void getFrameNo();
+	int getFrameNo();
 }
