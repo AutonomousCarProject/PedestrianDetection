@@ -17,16 +17,16 @@ public class Constant {
 	public static int MAX_CHANGE_HEIGHT = 34;
 	
 	//maximum distance between edges to unify
-	public static int X_EDGE_DISTANCE_LIMIT = 6;
-	public static int Y_EDGE_DISTANCE_LIMIT = 10;
+	public static int X_EDGE_DISTANCE_LIMIT = 15;
+	public static int Y_EDGE_DISTANCE_LIMIT = 25;
 	public static float X_OVERLAP_PERCENT = 0.1f;
 	public static float Y_OVERLAP_PERCENT = 0.1f;
 	
 	//maximum difference in velocity to unify
-	public static int UNIFY_VELOCITY_LIMIT_X = 17;
-	public static int UNIFY_VELOCITY_LIMIT_Y = 30;
-	public static float VELOCITY_LIMIT_INCREASE_X = 0.5f;
-	public static float VELOCITY_LIMIT_INCREASE_Y = 0.5f;
+	public static int UNIFY_VELOCITY_LIMIT_X = 10;
+	public static int UNIFY_VELOCITY_LIMIT_Y = 25;
+	public static float VELOCITY_LIMIT_INCREASE_X = 0.75f;
+	public static float VELOCITY_LIMIT_INCREASE_Y = 0.3f;
 
 	/**
 	 * BlobFilter
