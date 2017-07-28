@@ -40,6 +40,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	float velocityLimitIncreaseY = c.VELOCITY_LIMIT_INCREASE_Y;
 	
 	float kernelBandwidth = 30;
+	float maxDistBetweenPointsInCluster = 30;
 
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
@@ -65,6 +66,11 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		return (float) Math.sqrt(distanceX*distanceX + distanceY*distanceY + distanceVX*distanceVX + distanceVY*distanceVY);
 	}
 	
+	private float distBetweenPoints(float[] point1,float[] point2){
+		return (float)Math.sqrt(Math.pow(point1[0]-point2[0], 2)+Math.pow(point1[1]-point2[1], 2)+
+				Math.pow(point1[2]-point2[2], 2)+Math.pow(point1[3]-point2[3], 2));
+	}
+	
 	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
 		float[][] finalPoints = new float[movingBlobs.size()][4];
 		
@@ -75,8 +81,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			while(distanceMoved > 3){
 				float[] pointTemp = {point[0], point[1], point[2], point[3]};
 				point = shift(point, movingBlob, movingBlobs);
-				distanceMoved = (float)Math.sqrt(Math.pow(point[0]-pointTemp[0], 2)+Math.pow(point[1]-pointTemp[1], 2)+
-								Math.pow(point[2]-pointTemp[2], 2)+Math.pow(point[3]-pointTemp[3], 2));
+				distanceMoved = distBetweenPoints(point,pointTemp);
 			}
 			finalPoints[index] = point;
 			index++;
@@ -103,10 +108,81 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			}
 			
 		});
-		
+		HashMap<Integer, HashSet<Integer>> map = new HashMap<>();
+		for(int i=0;i<distances.length;i++){
+			int point1 = (int) distances[i][1];
+			int point2 = (int) distances[i][2];
+			HashSet<Integer> pointSet1 = map.get(point1);
+			HashSet<Integer> pointSet2 = map.get(point2);
+			if(pointSet1!=pointSet2){
+				if(pointSet1==null && pointSet2==null){
+					if(distBetweenPoints(finalPoints[point1], finalPoints[point2])<=maxDistBetweenPointsInCluster){
+						HashSet<Integer> newSet = new HashSet<>();
+						newSet.add(point1);
+						newSet.add(point2);
+						map.put(point1, newSet);
+						map.put(point2, newSet);
+					}
+				} else if(pointSet1==null){
+					boolean canCombine = true;
+					for(int point:pointSet2){
+						if(distBetweenPoints(finalPoints[point1], finalPoints[point])>maxDistBetweenPointsInCluster){
+							canCombine=false;
+						}
+					}
+					if(canCombine){
+						pointSet2.add(point1);
+						map.put(point1,pointSet2);
+					}
+				} else if(pointSet2==null){
+					boolean canCombine = true;
+					for(int point:pointSet1){
+						if(distBetweenPoints(finalPoints[point2], finalPoints[point])>maxDistBetweenPointsInCluster){
+							canCombine=false;
+						}
+					}
+					if(canCombine){
+						pointSet1.add(point2);
+						map.put(point2,pointSet1);
+					}
+				} else {
+					boolean canCombine = true;
+					for(int points1:pointSet1){
+						for(int points2:pointSet2){
+							if(distBetweenPoints(finalPoints[points1], finalPoints[points2])>maxDistBetweenPointsInCluster){
+								canCombine=false;
+							}
+						}
+					}
+					if(canCombine){
+						pointSet1.addAll(pointSet2);
+						for(int point: pointSet2){
+							map.put(point,pointSet1);
+						}
+					}
+				}
+			}
+		}
+		LinkedList<MovingBlob> unifiedBlobs = new LinkedList<>();
+		for(HashSet<Integer> set:map.values()){
+			HashSet<MovingBlob> blobSet = new HashSet<>();
+			for(int i:set){
+				blobSet.add(movingBlobs.get(i));
+			}
+			unifiedBlobs.add(new UnifiedBlob(blobSet));
+		}
+		int i =0;
+		for(MovingBlob movingBlob:movingBlobs){
+			if(map.get(i)==null){
+				unifiedBlobs.add(movingBlob);
+			}
+			i++;
+		}
+		return unifiedBlobs;
 	}
 	
-	public float[] shift(float[] point, MovingBlob movingBlob, List<MovingBlob> movingBlobs){
+	
+	private float[] shift(float[] point, MovingBlob movingBlob, List<MovingBlob> movingBlobs){
 		float[] shift = {0,0,0,0};
 		float weightTotal = 0;
 		for(MovingBlob blob:movingBlobs){
@@ -125,7 +201,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		return shift; 
 	}
 	
-	public float kernel(float distance, float kernelBandwidth){
+	private float kernel(float distance, float kernelBandwidth){
 		if(distance<kernelBandwidth){
 			return 1;
 		}
