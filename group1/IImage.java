@@ -6,4 +6,6 @@ public interface IImage
 	void readCam();
 	void finish();
 	void setAutoFreq(int autoFreq);	
+	void setImage(IPixel[][] image);
+	void getFrameNo();
 }
