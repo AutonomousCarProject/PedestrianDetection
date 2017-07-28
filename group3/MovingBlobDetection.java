@@ -38,6 +38,27 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
 	}
+	
+	private float distBetweenBlobs(MovingBlob blob1,MovingBlob blob2){
+		float distanceX;
+		float distanceY;
+		if(blob1.x>blob2.x){
+			distanceX = blob1.x-(blob2.x+blob2.width);
+		} else {
+			distanceX = blob2.x-(blob1.x+blob1.width);
+		}
+		if(blob1.y>blob2.y){
+			distanceY = blob1.y-(blob2.y+blob2.height);
+		} else {
+			distanceY = blob2.y-(blob1.y+blob1.height);
+		}
+		distanceX = Math.max(0,distanceX);
+		distanceY = Math.max(0,distanceY);
+		float distanceVX = Math.abs(blob1.velocityX-blob2.velocityX);
+		float distanceVY = Math.abs(blob1.velocityX-blob2.velocityY);
+		return (float) Math.sqrt(distanceX*distanceX + distanceY*distanceY + distanceVX*distanceVX + distanceVY*distanceVY);
+	}
+
 /*
 	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
 		//pairs that should be unified
