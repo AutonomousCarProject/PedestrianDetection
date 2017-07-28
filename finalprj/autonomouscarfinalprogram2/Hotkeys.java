@@ -38,5 +38,9 @@ public class Hotkeys extends LooiObject
         {
         	control.incrementCurrentFrame(1);
         }
+        if(e.getKeyCode() == KeyEvent.VK_D)
+        {
+        	control.display();
+        }
     } 
 }
