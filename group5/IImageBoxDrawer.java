@@ -24,8 +24,8 @@ import java.util.List;
  */
 public class IImageBoxDrawer implements IImageDrawing
 {
-    public static final int DEFAULT_LINE_THICKNESS = 3;
-    public static final Color DEFAULT_STILL_COLOR = Color.BLACK;
+    public static final int DEFAULT_LINE_THICKNESS = 1;
+    public static final Color DEFAULT_STILL_COLOR = Color.RED;
     public static final Color DEFAULT_FAST_COLOR = Color.RED;
     public static final double DEFAULT_MAX_VELOCITY = 5;
     
@@ -61,12 +61,24 @@ public class IImageBoxDrawer implements IImageDrawing
     public void draw(IImage image, List<MovingBlob> iBlobs)
     {
         Rectangle[] rectangles = findRectangles(image,iBlobs);
-        BufferedImage b = new BufferedImage(image.getImage().length,image.getImage()[0].length,BufferedImage.TYPE_INT_ARGB);
+        BufferedImage b = new BufferedImage(image.getImage()[0].length,image.getImage().length,BufferedImage.TYPE_INT_ARGB);
         setPixels(b,image.getImage());
         
         
         drawLines(rectangles,b,stillColor,fastColor,DEFAULT_LINE_THICKNESS);
         currentImage = b;
+    }
+    public void draw2(IImage image, List<MovingBlob> iBlobs,List<MovingBlob> iBlobs2)
+    {
+    	 Rectangle[] rectangles = findRectangles(image,iBlobs);
+    	 Rectangle[] rectangles2 = findRectangles(image, iBlobs2);
+         BufferedImage b = new BufferedImage(image.getImage()[0].length,image.getImage().length,BufferedImage.TYPE_INT_ARGB);
+         setPixels(b,image.getImage());
+         
+         
+         drawLines(rectangles,b,Color.RED,Color.RED,DEFAULT_LINE_THICKNESS);
+         drawLines(rectangles2, b, Color.BLUE, Color.BLUE, DEFAULT_LINE_THICKNESS);
+         currentImage = b;
     }
     protected Color findColor(Color min, Color max, double percent)
     {
@@ -99,10 +111,10 @@ public class IImageBoxDrawer implements IImageDrawing
             MovingBlob b = iBlobs.get(i);
             Point[] points = new Point[4];
 
-            points[0] = new Point(b.x-b.width/2,b.y-b.height/2);
-            points[1] = new Point(b.x+b.width/2,b.y-b.height/2);
-            points[2] = new Point(b.x+b.width/2,b.y+b.height/2);
-            points[3] = new Point(b.x-b.width/2,b.y+b.height/2);
+            points[0] = new Point(b.x,b.y);
+            points[1] = new Point(b.x+b.width,b.y);
+            points[2] = new Point(b.x+b.width,b.y+b.height);
+            points[3] = new Point(b.x,b.y+b.height);
             
             rectangles[i] = new Rectangle(points,b);
         }
@@ -112,6 +124,8 @@ public class IImageBoxDrawer implements IImageDrawing
     {
         //int[] pixelColors1D = new int[pixels.length * pixels[0].length];
         //int i = 0;
+        //System.out.println("rows: " + pixels.length + " cols: " + pixels[0].length);
+        //System.out.println("BI: rows: " + b.getHeight() + );
         for(int r = 0; r < pixels.length; r++)
         {
             if(useBasicColors)
@@ -162,7 +176,7 @@ public class IImageBoxDrawer implements IImageDrawing
 
 
                         int p = (255/*alpha*/ << 24) | (theColor.getRed() << 16) | (theColor.getGreen() << 8) | theColor.getBlue();
-                        b.setRGB(r,c,p);
+                        b.setRGB(c,r,p);
                     }
                     catch(ArrayIndexOutOfBoundsException e)
                     {
@@ -188,7 +202,7 @@ public class IImageBoxDrawer implements IImageDrawing
 
 
                         int p = (255/*alpha*/ << 24) | (red << 16) | (green << 8) | blue;
-                        b.setRGB(r,c,p);
+                        b.setRGB(c,r,p);
                     }
                     catch(ArrayIndexOutOfBoundsException e)
                     {
@@ -226,7 +240,7 @@ public class IImageBoxDrawer implements IImageDrawing
                 
                 double velocity = Math.sqrt( (r.getBlob().velocityX)*(r.getBlob().velocityX) + (r.getBlob().velocityY)*(r.getBlob().velocityY) );
                 
-                Color lineColor = findColor(this.stillColor,this.fastColor,velocity/maxVelocity);
+                Color lineColor = findColor(still,moving,r.getBlob().age/maxVelocity);
                 
                 g.setColor(lineColor);
                 g.drawLine((int)start.getX(),(int)start.getY(),(int)end.getX(),(int)end.getY());

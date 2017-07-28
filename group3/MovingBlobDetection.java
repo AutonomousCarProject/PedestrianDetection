@@ -1,32 +1,39 @@
 package group3;
 import group2.Blob;
-import group2.TestBlobDetection;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Set;
+
+import global.Constant;
 
 public class MovingBlobDetection implements IMovingBlobDetection {
+	Constant c = new Constant();
+	
 	//list of all moving blobs that have been recently tracked
 	private List<MovingBlob> movingBlobs;
 	//maximum time before unmatched MovingBlob is deleted
-	int maxTimeOffScreen = 0;
+	int maxTimeOffScreen = c.MAX_TIME_OFF_SCREEN;
 	//maximum distance in pixels between blobs that can be matched
-	int distanceLimit = 30;
+	int distanceLimitX = c.DISTANCE_LIMIT_X;
+	int distanceLimitY = c.DISTANCE_LIMIT_Y;
+	int widthChangeLimit = c.MAX_CHANGE_WIDTH;
+	int heightChangeLimit = c.MAX_CHANGE_HEIGHT;
+	
 	//maximum distance between edges to unify
-	int xEdgeDistanceLimit = 25;
-	int yEdgeDistanceLimit = 30;
-	float xOverlapPercent = 0.4f;
-	float yOverlapPercent = 0.4f;
+	int xEdgeDistanceLimit = c.X_EDGE_DISTANCE_LIMIT;
+	int yEdgeDistanceLimit = c.Y_EDGE_DISTANCE_LIMIT;
+	float xOverlapPercent = c.X_OVERLAP_PERCENT;
+	float yOverlapPercent = c.Y_OVERLAP_PERCENT;
 
 	//maximum difference in velocity to unify
-	int unifyVelocityLimitX = 20;
-	int unifyVelocityLimitY = 30;
-	float velocityLimitIncreaseX = 0.5f;
-	float velocityLimitIncreaseY = 0.5f;
+	int unifyVelocityLimitX = c.UNIFY_VELOCITY_LIMIT_X;
+	int unifyVelocityLimitY = c.UNIFY_VELOCITY_LIMIT_Y;
+	float velocityLimitIncreaseX = c.VELOCITY_LIMIT_INCREASE_X;
+	float velocityLimitIncreaseY = c.VELOCITY_LIMIT_INCREASE_Y;
 
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
@@ -34,7 +41,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 
 	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
 		//pairs that should be unified
-		HashSet<BlobPair> pairs = new HashSet<>();
+		HashSet<MovingBlob[]> pairs = new HashSet<>();
 		for(MovingBlob movingBlob1:movingBlobs){
 			for(MovingBlob movingBlob2:movingBlobs){
 				float distanceX;
@@ -53,40 +60,45 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 				float velocityDifferenceY = Math.abs(movingBlob1.velocityY-movingBlob2.velocityY);
 				//checks if distance and velocity differences are under thresholds
 				if(((distanceX<xEdgeDistanceLimit && distanceY<-yOverlapPercent*Math.min(movingBlob1.height, movingBlob2.height)) 
-						|| (distanceY<yEdgeDistanceLimit && distanceX<-xOverlapPercent*Math.min(movingBlob1.height, movingBlob2.height)))&&
+						|| (distanceY<yEdgeDistanceLimit && distanceX<-xOverlapPercent*Math.min(movingBlob1.width, movingBlob2.width)))&&
 						velocityDifferenceX<unifyVelocityLimitX+
 						velocityLimitIncreaseX*Math.max(movingBlob1.velocityX, movingBlob2.velocityX) &&
 						velocityDifferenceY<unifyVelocityLimitY+
 						velocityLimitIncreaseY*Math.max(movingBlob1.velocityY, movingBlob2.velocityY)){
-					pairs.add(new BlobPair(0, movingBlob1, movingBlob2));
+					MovingBlob[] pair = {movingBlob1,movingBlob2};
+					pairs.add(pair);
 				}
 			}
 		}
-		HashMap<MovingBlob, UnifiedBlob> map = new HashMap<>();
-		for(BlobPair pair:pairs){
-			MovingBlob blob1 = pair.oldBlob;
-			MovingBlob blob2 = (MovingBlob) pair.newBlob;
-			MovingBlob unifiedBlob1 = map.get(blob1);
-			if(unifiedBlob1==null){
-				unifiedBlob1 = blob1;
-			}
-			MovingBlob unifiedBlob2 = map.get(blob2);
-			if(unifiedBlob2==null){
-				unifiedBlob2 = blob2;
-			}
-			//unifies the current top level unification of each blob in pair
-			if(unifiedBlob1!=unifiedBlob2){
-				HashSet<MovingBlob> blobSet = new HashSet<>();
-				blobSet.add(unifiedBlob1);
-				blobSet.add(unifiedBlob2);
-				UnifiedBlob newUnifiedBlob = new UnifiedBlob(blobSet);
-				map.put(blob1,newUnifiedBlob);
-				map.put(blob2,newUnifiedBlob);
+		HashMap<MovingBlob, HashSet<MovingBlob>> map = new HashMap<>();
+		for(MovingBlob[] pair:pairs){
+			MovingBlob blob1 = pair[0];
+			MovingBlob blob2 = pair[1];
+			HashSet<MovingBlob> set1 = map.get(blob1);
+			HashSet<MovingBlob> set2 = map.get(blob2);
+			if(set1==null&&set2==null){
+				HashSet<MovingBlob> newSet = new HashSet<>();
+				newSet.add(blob1);
+				newSet.add(blob2);
+				map.put(blob1, newSet);
+				map.put(blob2, newSet);
+			} else if(set1==null){
+				set2.add(blob1);
+				map.put(blob1,set2);
+			} else if(set2==null){
+				set1.add(blob2);
+				map.put(blob2,set1);
+			} else {
+				set1.addAll(set2);
+				map.put(blob2,set1);
 			}
 		}
-		HashSet<UnifiedBlob> unifiedBlobSet = new HashSet<>();
-		for(MovingBlob blob:map.values()){
-			unifiedBlobSet.add((UnifiedBlob) blob);
+		HashSet<MovingBlob> unifiedBlobSet = new HashSet<>();
+		for(HashSet<MovingBlob> blobSet:map.values()){
+			unifiedBlobSet.add(new UnifiedBlob(blobSet));
+		}
+		for(MovingBlob blob:movingBlobs){
+			if(map.get(blob)==null) unifiedBlobSet.add(blob);
 		}
 		return new LinkedList<>(unifiedBlobSet);
 	}
@@ -98,19 +110,22 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 
 	private void updateMovingBlobs(List<Blob> blobList){
 		//set of unmatched movingblobs (all are unmatched at start of frame)
-		HashSet<MovingBlob> movingBlobSet = new HashSet<>(movingBlobs);
+		HashSet<MovingBlob> movingBlobSet = new HashSet<>(getMovingBlobs());
 		//set of unmatched blobs
 		HashSet<Blob> blobSet = new HashSet<>(blobList);
 		//queue with shortest distance pairs of movingblobs and blobs in front
 		PriorityQueue<BlobPair> queue = new PriorityQueue<>();
 		for(Blob blob:blobList){
-			for(MovingBlob movingBlob:movingBlobs){
+			for(MovingBlob movingBlob:getMovingBlobs()){
 				//creates pairs in queue of blobs & moving blobs with same color within 100 pixels
 				if(blob.color.getColor()==movingBlob.color.getColor()){
-					float distanceX = Math.abs(movingBlob.predictedX-blob.x);
-					float distanceY = Math.abs(movingBlob.predictedY-blob.y);
+					float distanceX = Math.abs(movingBlob.predictedX-(blob.x+blob.width/2));
+					float distanceY = Math.abs(movingBlob.predictedY-(blob.y+blob.height/2));
 					float distance = (float)Math.sqrt(distanceX*distanceX+distanceY*distanceY);
-					if(distance<distanceLimit){
+					float widthChange = Math.abs(movingBlob.width-blob.width);
+					float heightChange = Math.abs(movingBlob.height-blob.height);
+					if(distanceX<=distanceLimitX && distanceY<=distanceLimitY &&
+							widthChange<=widthChangeLimit && heightChange<=heightChangeLimit){
 						queue.add(new BlobPair(distance, blob, movingBlob));
 					}
 				}
@@ -138,7 +153,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		}
 		//creates new MovingBlobs for unmatched blobs
 		for(Blob blob:blobSet){
-			movingBlobs.add(new MovingBlob(blob));
+			getMovingBlobs().add(new MovingBlob(blob));
 		}
 	}
 
@@ -147,6 +162,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		calculateVelocity(movingBlob, newBlob);
 		movingBlob.x = newBlob.x;
 		movingBlob.y = newBlob.y;
+		movingBlob.width = newBlob.width;
+		movingBlob.height = newBlob.height;
 		movingBlob.age++;
 		movingBlob.ageOffScreen=0;
 		movingBlob.updatePredictedPosition();	
@@ -156,7 +173,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 
 		if(movingBlob.ageOffScreen>=maxTimeOffScreen){
 			//removes blob if it has been gone too long
-			movingBlobs.remove(movingBlob);
+			getMovingBlobs().remove(movingBlob);
 		} else {
 			//update position based on most recent velocity
 			movingBlob.x += movingBlob.velocityX;
@@ -175,10 +192,32 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		float centerYNew = newBlob.y + newBlob.width/2;
 		float movementX = centerXNew - centerXOld;
 		float movementY = centerYNew - centerYOld;
+
+		float tempVelX = movingBlob.velocityX;
+		float tempVelY = movingBlob.velocityY;
 		//finds average of previous velocity and velocity between last and current frame
+
 		movingBlob.velocityX += movementX;
 		movingBlob.velocityX /= 2;
+		movingBlob.velocityChangeX = Math.abs(tempVelX-movingBlob.velocityX);
+
+
+		//System.out.println("Velocity change x: " + movingBlob.velocityChangeX);
+
+
 		movingBlob.velocityY += movementY;
 		movingBlob.velocityY /= 2;
+		movingBlob.velocityChangeY = Math.abs(tempVelY-movingBlob.velocityY);
+		//System.out.println("Velocity change y: " + movingBlob.velocityChangeY);
+		//System.out.println("new velY: " + movingBlob.velocityY);
+
+	}
+
+	public List<MovingBlob> getMovingBlobs() {
+		return movingBlobs;
+	}
+
+	public void setMovingBlobs(List<MovingBlob> movingBlobs) {
+		this.movingBlobs = movingBlobs;
 	}
 }
