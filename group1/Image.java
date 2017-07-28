@@ -9,7 +9,7 @@ public class Image implements IImage
     public int width;
 
     private final int frameRate = 3;
-    private FlyCamera flyCam = new FlyCamera();
+    public FlyCamera flyCam = new FlyCamera();
     private final float greyRatio = 0.75f;
     private final int blackRange = 100;
     private final int whiteRange = 200;
@@ -23,6 +23,11 @@ public class Image implements IImage
     private byte[] camBytes;
     private IPixel[][] image;
 
+    public Image()
+    {
+        this(0, 0, 0);
+    }
+    
     public Image(int exposure, int shutter, int gain)
     {
         flyCam.Connect(frameRate, exposure, shutter, gain);
@@ -328,6 +333,13 @@ public class Image implements IImage
         Pixel.blackMargin = average2 - blackRange;
         Pixel.whiteMargin = average2 + whiteRange;
 
+    }
+
+    private int frameNo = 0;
+    @Override
+    public int getFrameNo()
+    {
+        return frameNo++;
     }
 
 }

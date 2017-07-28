@@ -41,19 +41,11 @@ public class BlobDetectionRender extends Application
     {
 //         IImage -image = new JpgImage("src/testImage1.png");
 //        IImage image = new Image(0, 50, 0);
-        IImage image = new FileImage();
+        IImage image = new Image();
         
         IBlobDetection blobDetect = new BlobDetection();
         IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
         IMovingBlobReduction blobFilter = new BlobFilter();
-        
-        // IImage image = new JpgImage("src/testImage1.png");
-        IImage image = new FileImage();
-        
-
-        //IImage -image = new JpgImage("src/testImage1.png");
-        //IImage image = new Image(0, 50, 0);
-
 
         IPixel[][] pixels = image.getImage();
         final int scale = 2;

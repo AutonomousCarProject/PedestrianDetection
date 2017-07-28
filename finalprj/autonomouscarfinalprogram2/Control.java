@@ -12,14 +12,18 @@ import com.looi.looi.gui_essentials.Button;
 import com.looi.looi.gui_essentials.ScrollBox;
 import com.looi.looi.gui_essentials.Slider;
 import group1.IPixel;
+import group1.Image;
 import group1.Pixel;
 import com.looi.looi.gui_essentials.TextBox;
 import com.looi.looi.gui_essentials.Window;
 import com.looi.looi.gui_essentials.ScrollBox.ScrollBoxObject;
 import com.looi.looi.gui_essentials.Window.ExitButton;
 
+import fly2cam.AutoExposure;
+import fly2cam.IAutoExposure;
 import global.Constant;
 import group1.FileImage;
+import group1.IImage;
 import group2.Blob;
 import group2.BlobDetection;
 import group3.MovingBlob;
@@ -43,11 +47,12 @@ import java.awt.Font;
  */
 public class Control extends LooiObject
 {
+    private IAutoExposure autoExposure;
     private BlobDetection blobDetection;
     private MovingBlobDetection movingBlobDetection;
     private BlobFilter blobFilter;
     private IImageBoxDrawer boxDrawer;
-    private FileImage currentImage;
+    private IImage currentImage;
     
     private Button toggleGraphics;
     private ScrollBox scrollBox;
@@ -80,9 +85,10 @@ public class Control extends LooiObject
         blobDetection = new BlobDetection();
         movingBlobDetection = new MovingBlobDetection();
         blobFilter = new BlobFilter();
-        currentImage = new FileImage();
+        currentImage = new Image();
         boxDrawer = new IImageBoxDrawer();
         boxDrawer.setUsingBasicColors(true);
+        autoExposure = new AutoExposure(currentImage, 30);
 
         previousFrame = 0;
         setCurrentFrame(1);
@@ -96,7 +102,7 @@ public class Control extends LooiObject
         frames.addFirst(firstFrame);
         
         
-        
+        frameList = new ArrayList<>(frames);
         yCoordinate = 10;
         
         sliderWindow = new DraggingWindow(100,100,500,500,new Background(Color.WHITE));
@@ -163,12 +169,14 @@ public class Control extends LooiObject
         if(currentImage.getFrameNo()==previousFrame){
         	previousFrame = 0;
         	currentImage.finish();
-            currentImage = new FileImage();
+            currentImage = new Image();
         	blobDetection = new BlobDetection();
             movingBlobDetection = new MovingBlobDetection();
             blobFilter = new BlobFilter();
             currentImage.readCam();
         }
+        
+        autoExposure.autoAdjust(currentImage.getImage());
         
         List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
         List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
@@ -195,6 +203,7 @@ public class Control extends LooiObject
     }
     
     public void updateWhilePaused(){
+        System.out.println(frameList);
 		currentImage.setImage(frameList.get(currentFrame));
 		
         List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs();

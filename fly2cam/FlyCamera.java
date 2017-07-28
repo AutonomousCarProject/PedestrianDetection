@@ -16,7 +16,13 @@ public class FlyCamera {
   public int debug = 50, debug2 = 50;
 
   public native boolean Connect(int frameRate, int exposure, int shutter, int gain); // required at start, sets rose,colz,tile
-  public native void Settings(int exposure, int shutter, int gain);
+  public native int SetExposure(int exposure);
+  public native int GetExposure();
+  public native int SetShutter(int shutter);
+  public native int GetShutter();
+  public native int SetGain(int gain);
+  public native int GetGain();
+  
   public native boolean NextFrame(byte[] pixels); // fills pixels, false if can't
   public native void Finish(); // required at end to prevent memory leaks
 

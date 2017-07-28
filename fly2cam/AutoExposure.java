@@ -1,44 +1,61 @@
 package fly2cam;
 
+import global.Log;
+import group1.IImage;
 import group1.IPixel;
+import group1.Image;
 
 public class AutoExposure implements IAutoExposure
 {
     private int framerate;
     private int currentFrame;
+    private FlyCamera flyCam;
 
-    private static final int BLOCK_SIZE = 16;
+    private static final int BLOCK_SIZE = 64;
     private static final int SAMPLE_SIZE = 1;
     private static final int MAX_BOOST = 10;
 
-    public AutoExposure(int framerate)
+    public AutoExposure(IImage image, int framerate)
     {
+        if(image instanceof Image)
+        {
+            flyCam = ((Image) image).flyCam;
+        }
+        else
+        {
+            flyCam = null;
+        }
+        
+        if(framerate < 2)
+        {
+            throw new IllegalArgumentException("AutoExposure framerate must be at least 2.");
+        }
+        
         this.framerate = framerate;
-        this.currentFrame = framerate - 1;
+        this.currentFrame = framerate - 2;
     }
-
+    
     @Override
-    public int exposureBoost(IPixel[][] pixels)
+    public void autoAdjust(IPixel[][] pixels)
     {
-        return 0;
-    }
-
-    private int oldShutter = 0;
-
-    @Override
-    public int shutterBoost(IPixel[][] pixels)
-    {
-        if (++currentFrame != framerate) return oldShutter;
-
+        if (flyCam == null) return;
+        if(++currentFrame == framerate - 1)
+        {
+            new Thread(() -> flyCam.SetShutter(2000)).start();
+            return;
+        }
+        
+        if(currentFrame != framerate) return;
+        
         currentFrame = 0;
 
         final int height = pixels.length;
         final int width = pixels[0].length;
 
         final int mult = (765 * height * width) / (SAMPLE_SIZE * SAMPLE_SIZE);
-        final int darkThresh = (int) (mult * 0.2f);
-        final int lightThresh = (int) (mult * 0.8f);
-
+        final int darkThresh = (int) (mult * 0.4f);
+        final int lightThresh = (int) (mult * 0.6f);
+        
         int sum = 0;
         for (int i1 = 0; i1 < width; i1 += BLOCK_SIZE)
         {
@@ -49,10 +66,13 @@ public class AutoExposure implements IAutoExposure
                 {
                     for (int j2 = 0; j2 < BLOCK_SIZE; j2 += SAMPLE_SIZE)
                     {
-                        final int i = (i1 * BLOCK_SIZE) + i2;
-                        final int j = (j1 * BLOCK_SIZE) + j2;
+                        final int i = i1 + i2;
+                        final int j = j1 + j2;
+                        
+                        if(i >= width) continue;
+                        if(j >= height) continue;    
 
-                        IPixel pixel = pixels[i][j];
+                        IPixel pixel = pixels[j][i];
                         totalBrightness += pixel.getRed() + pixel.getGreen() + pixel.getBlue();
                     }
                 }
@@ -69,14 +89,24 @@ public class AutoExposure implements IAutoExposure
         }
 
         final int maxSum = (int) (Math.ceil(width / (float) BLOCK_SIZE) * Math.ceil(height / (float) BLOCK_SIZE));
-        final float sumRatio = 2 * ((((float) sum) / maxSum) - 0.5f);
+        final float sumRatio = (float) sum / maxSum;
 
-        return Math.round(MAX_BOOST * sumRatio);
-    }
-
-    @Override
-    public int gainBoost(IPixel[][] pixels)
-    {
-        return 0;
+        final int shutterBoost = Math.round(-MAX_BOOST * sumRatio);
+        
+        Log.d("Shutter boost", shutterBoost);
+        
+        Thread t = new Thread(() -> 
+        {
+//            try
+            {
+                Log.d("Current shutter", flyCam.GetShutter());
+                flyCam.SetShutter(flyCam.GetShutter() + shutterBoost);
+            }
+//            catch (InterruptedException e)
+//            {
+//                e.printStackTrace();
+//            }
+        });
+        t.start();
     }
 }
