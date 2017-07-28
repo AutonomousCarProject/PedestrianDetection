@@ -38,7 +38,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
 	}
-
+/*
 	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
 		//pairs that should be unified
 		HashSet<MovingBlob[]> pairs = new HashSet<>();
@@ -101,6 +101,24 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			if(map.get(blob)==null) unifiedBlobSet.add(blob);
 		}
 		return new LinkedList<>(unifiedBlobSet);
+	}*/
+	
+	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
+		float[][] points = new float[movingBlobs.size()][4];
+		
+		int index = 0;
+		for(MovingBlob movingBlob:movingBlobs){
+			float[] point = {movingBlob.x, movingBlob.y, movingBlob.velocityX, movingBlob.velocityY};
+			while(distanceMoved > someValue){
+				point = shift(point, movingBlobs);
+			}
+			points[index] = point;
+			index++;
+		}
+	}
+	
+	public float[] shift(float[] point, List<MovingBlob> movingBlobs){
+		float[] shift = {0,0,0,0};
 	}
 
 	public List<MovingBlob> getMovingBlobs(List<Blob> blobList){
