@@ -10,15 +10,16 @@ import com.looi.looi.gui_essentials.AstheticButton;
 import com.looi.looi.gui_essentials.Background;
 import com.looi.looi.gui_essentials.Button;
 import com.looi.looi.gui_essentials.ScrollBox;
+import com.looi.looi.gui_essentials.Slider;
 import group1.IPixel;
+import group1.Pixel;
+import com.looi.looi.gui_essentials.TextBox;
 import com.looi.looi.gui_essentials.Window;
 import com.looi.looi.gui_essentials.ScrollBox.ScrollBoxObject;
 import com.looi.looi.gui_essentials.Window.ExitButton;
 
 import global.Constant;
 import group1.FileImage;
-import group1.IImage;
-import group1.Image;
 import group2.Blob;
 import group2.BlobDetection;
 import group3.MovingBlob;
@@ -28,6 +29,7 @@ import group5.IImageBoxDrawer;
 import java.awt.image.BufferedImage;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.awt.Color;
 import java.awt.Font;
@@ -45,7 +47,7 @@ public class Control extends LooiObject
     private MovingBlobDetection movingBlobDetection;
     private BlobFilter blobFilter;
     private IImageBoxDrawer boxDrawer;
-    private IImage currentImage;
+    private FileImage currentImage;
     
     private Button toggleGraphics;
     private ScrollBox scrollBox;
@@ -73,22 +75,12 @@ public class Control extends LooiObject
     
     private int yCoordinate;
     
-    private LoadTextBox ltb;
-    
-    public Control(int frameDelay, boolean useCamera)
+    public Control(int frameDelay)
     {
-        ArrayList<VariableSlider> variableSliders = new ArrayList<>();
         blobDetection = new BlobDetection();
         movingBlobDetection = new MovingBlobDetection();
         blobFilter = new BlobFilter();
-        if(!useCamera)
-        {
-            currentImage = new FileImage();
-        }
-        else
-        {
-            currentImage = new Image(1,1,1); 
-        }
+        currentImage = new FileImage();
         boxDrawer = new IImageBoxDrawer();
         boxDrawer.setUsingBasicColors(true);
 
@@ -103,9 +95,11 @@ public class Control extends LooiObject
         
         frames.addFirst(firstFrame);
         
-        
-       
-        yCoordinate = 10;
+    }
+    
+    protected void display()
+    {
+    	yCoordinate = 10;
         
         sliderWindow = new DraggingWindow(100,100,500,500,new Background(Color.WHITE));
         sliderWindow.add(sliderWindow.new ExitButton()); 
@@ -118,7 +112,7 @@ public class Control extends LooiObject
         					 "Max Velocity Change X", "Max Velocity Change Y", "Max Width Height Ratio", "Max Width",
         					 "Max Height", "Max Scaled Velocity X", "Max Scaled Velocity Y", };
        
-       int maximumValues[] = {5, 40, 40, 100, 100, 20, 20, 1, 1, 35, 35, 3, 3, 7, 100, 100, 100, 100, 2, 1000, 1000, 100, 100};
+       int maximumValues[] = {0, 40, 40, 100, 100, 20, 20, 1, 1, 35, 35, 3, 3, 7, 100, 100, 100, 100, 2, 1000, 1000, 100, 100};
        
        
         // displays text
@@ -129,13 +123,11 @@ public class Control extends LooiObject
         // displays sliders
         for(int j = 0; j < text.length; j++) {
         	int i = j+1;
-                VariableSlider sld = new VariableSlider<Double>(10,j*100+20,100,20,
+            scrollBox.add(scrollBox.new ScrollBoxObject(
+            		new VariableSlider(10,j*100+20,100,20,
             				new Background(Color.WHITE),0,maximumValues[j],(a)->{
             	Constant.setVariable(i, a);
-            }, () -> {return Constant.getVariable(i);});
-                variableSliders.add(sld);
-                
-            scrollBox.add(scrollBox.new ScrollBoxObject(  sld  )); 
+            })));
         }
         
         scrollBox.add(scrollBox.new ScrollBoxObject(new SaveButton(10,100*text.length,150,100,"Save",new Color(150,200,40))));
@@ -149,10 +141,7 @@ public class Control extends LooiObject
             }
         };
         toggleGraphics.setLayer(-999);
-        scrollBox.add(scrollBox.new ScrollBoxObject(toggleGraphics)); 
-        ltb = new LoadTextBox(10,3010,300,40,new Background(Color.WHITE),"File Name", new Font("",Font.PLAIN,16),true,Color.BLACK,10,5,0);
-        scrollBox.add(scrollBox.new ScrollBoxObject(ltb));
-        ltb.addSliders(variableSliders); 
+        scrollBox.add(scrollBox.new ScrollBoxObject(toggleGraphics));
     }
     
     /**

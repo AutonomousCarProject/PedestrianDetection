@@ -45,7 +45,7 @@ public class SaveButton extends AstheticButton
             {
                 bw.write(f.getName() + ": " + f.get(null) + "\r");
                 bw.newLine();
-                
+                System.out.println(f.getName()+":  " + f.get(null));
             }
             bw.write("Honestly, why? smh");
             
