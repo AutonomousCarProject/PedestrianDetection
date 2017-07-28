@@ -95,9 +95,11 @@ public class Control extends LooiObject
         
         frames.addFirst(firstFrame);
         
-        
-       /* 
-        yCoordinate = 10;
+    }
+    
+    protected void display()
+    {
+    	yCoordinate = 10;
         
         sliderWindow = new DraggingWindow(100,100,500,500,new Background(Color.WHITE));
         sliderWindow.add(sliderWindow.new ExitButton()); 
@@ -139,8 +141,7 @@ public class Control extends LooiObject
             }
         };
         toggleGraphics.setLayer(-999);
-        scrollBox.add(scrollBox.new ScrollBoxObject(toggleGraphics)); 
-    */
+        scrollBox.add(scrollBox.new ScrollBoxObject(toggleGraphics));
     }
     
     /**
