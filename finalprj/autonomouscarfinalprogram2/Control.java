@@ -33,6 +33,8 @@ public class Control extends LooiObject
 	private int SATURATION_MIN = 10;
 	private int WINDOW_SIZE = 30 / 2;
 
+	private double histogram[] = new double[255];
+
 	private FileImage image = new FileImage();
 	private IImageBoxDrawer boxDrawer = new IImageBoxDrawer();
 	private IBlobDetection blobDetect = new BlobDetection();
@@ -84,7 +86,7 @@ public class Control extends LooiObject
 	    //step 2: throw out any grays b/c the hues on them will be weird
 	    //and also create histogram
 
-	    double histogram[] = new double[255];
+	    histogram = new double[255];
 
 	    //for now we'll hue them to thier own number
 	    for(int i = 0; i < ray.length; i++){
@@ -148,6 +150,15 @@ public class Control extends LooiObject
     protected void looiPaint()
     {
         drawImage(boxDrawer.getCurrentImage(),0,0,getInternalWidth(),getInternalHeight());
+
         //drawImage(testBI,0,0,getInternalWidth(),getInternalHeight());
+
+	    //histogram
+	    for(int i = 0; i < histogram.length; i++){
+	    	//set color
+		    setColor(new Color(Color.HSBtoRGB((float)i / 255.0f, 1.0f, 1.0f)));
+		    //draw rect
+		    drawRect(i, getInternalHeight(), 1, -histogram[i]);
+	    }
     }
 }
