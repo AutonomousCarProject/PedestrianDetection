@@ -106,9 +106,9 @@ public class IImageBoxDrawer implements IImageDrawing
     {
         //...
         Rectangle[] rectangles = new Rectangle[iBlobs.size()];
-        int i = 0;
-        for(MovingBlob b:iBlobs)
+        for(int i = 0; i < iBlobs.size(); i++)
         {
+            MovingBlob b = iBlobs.get(i);
             Point[] points = new Point[4];
 
             points[0] = new Point(b.x,b.y);
@@ -117,23 +117,26 @@ public class IImageBoxDrawer implements IImageDrawing
             points[3] = new Point(b.x,b.y+b.height);
             
             rectangles[i] = new Rectangle(points,b);
-            i++;
         }
         return rectangles;
     }
     protected void setPixels(BufferedImage b, IPixel[][] pixels)
     {
-        for(int r = 0; r < pixels[0].length; r++)
+        //int[] pixelColors1D = new int[pixels.length * pixels[0].length];
+        //int i = 0;
+        //System.out.println("rows: " + pixels.length + " cols: " + pixels[0].length);
+        //System.out.println("BI: rows: " + b.getHeight() + );
+        for(int r = 0; r < pixels.length; r++)
         {
             if(useBasicColors)
             {
-                for(int c = 0; c < pixels.length; c++)
+                for(int c = 0; c < pixels[0].length; c++)
                 {
 
                     try
                     {
 
-                        int colorNumber = pixels[c][r].getColor();
+                        int colorNumber = pixels[r][c].getColor();
                         Color theColor;
                         if(colorNumber == 0)
                         {
@@ -185,16 +188,16 @@ public class IImageBoxDrawer implements IImageDrawing
             }
             else
             {
-                for(int c = 0; c < pixels.length; c++)
+                for(int c = 0; c < pixels[0].length; c++)
                 {
 
                     try
                     {
 
 
-                        short red = pixels[c][r].getRed();
-                        short green = pixels[c][r].getGreen();
-                        short blue = pixels[c][r].getBlue();
+                        short red = pixels[r][c].getRed();
+                        short green = pixels[r][c].getGreen();
+                        short blue = pixels[r][c].getBlue();
 
 
 

@@ -1,18 +1,6 @@
 package global;
 
 public class Constant {
-	/*
-	    Image
-	    FileImage
-	 */
-
-	//constants for color margin calibrations
-	//ratio of absolute average deviation to greyMargin
-    public static float GREY_RATIO = 0.75f;
-
-    //how far to set black and white margins from mean
-    public static int BLACK_RANGE = 100;
-    public static int WHITE_RANGE = 200;
 
     /**
 	 * MovingBlobDetection
@@ -63,6 +51,19 @@ public class Constant {
 	public static int MAX_HEIGHT = 300;
 	public static int MAX_SCALED_VELOCITY_X = 50;
 	public static int MAX_SCALED_VELOCITY_Y = 50;
+	
+	/*
+    Image
+    FileImage
+	 */
+	
+	//constants for color margin calibrations
+	//ratio of absolute average deviation to greyMargin
+	public static float GREY_RATIO = 0.75f;
+	
+	//how far to set black and white margins from mean
+	public static int BLACK_RANGE = 100;
+	public static int WHITE_RANGE = 200;
 	
 	public static void setVariable(int index, double a){
 		switch(index){

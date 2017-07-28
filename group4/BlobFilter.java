@@ -55,7 +55,6 @@ public class BlobFilter implements IMovingBlobReduction
 
 	//returns false if blob should be filtered
 	private boolean filterMovingBlob(MovingBlob blob){
-		System.out.println();
 		return blob.age >= Constant.AGE_MIN &&
 				Math.abs(blob.velocityY) < Constant.VELOCITY_Y_MAX &&
 				Math.abs(blob.velocityX) < Constant.VELOCITY_X_MAX &&
