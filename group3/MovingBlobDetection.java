@@ -39,8 +39,12 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	float velocityLimitIncreaseX = c.VELOCITY_LIMIT_INCREASE_X;
 	float velocityLimitIncreaseY = c.VELOCITY_LIMIT_INCREASE_Y;
 
-	float kernelBandwidth = 100;
-	float maxDistBetweenPointsInCluster = 100;
+	float kernelBandwidth = 6;
+	float maxDistBetweenPointsInCluster = 70;
+	float xDistWeight = 1f;
+	float yDistWeight = 0.35f;
+	float vXWeight = 3f;
+	float vYWeight = 0.25f;
 
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
@@ -59,17 +63,17 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		} else {
 			distanceY = blob2.y-(point[1]+blob1.height);
 		}
-		distanceX = Math.max(0,distanceX);
-		distanceY = Math.max(0,distanceY);
+		distanceX = xDistWeight * Math.max(0,distanceX);
+		distanceY = yDistWeight * Math.max(0,distanceY);
 		//System.out.println("distanceX: " + distanceX + "   distanceY: " + distanceY);
-		float distanceVX = Math.abs(point[2]-blob2.velocityX);
-		float distanceVY = Math.abs(point[3]-blob2.velocityY);
+		float distanceVX = vXWeight * Math.abs(point[2]-blob2.velocityX);
+		float distanceVY = vYWeight * Math.abs(point[3]-blob2.velocityY);
 		return (float) Math.sqrt(distanceX*distanceX + distanceY*distanceY + distanceVX*distanceVX + distanceVY*distanceVY);
 	}
 
 	private float distBetweenPoints(float[] point1,float[] point2){
-		return (float)Math.sqrt(Math.pow(point1[0]-point2[0], 2)+Math.pow(point1[1]-point2[1], 2)+
-				Math.pow(point1[2]-point2[2], 2)+Math.pow(point1[3]-point2[3], 2));
+		return (float)Math.sqrt(Math.pow(xDistWeight*(point1[0]-point2[0]), 2)+Math.pow(yDistWeight*(point1[1]-point2[1]), 2)+
+				Math.pow(vXWeight*(point1[2]-point2[2]), 2)+Math.pow(vYWeight*(point1[3]-point2[3]), 2));
 	}
 
 	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
@@ -90,35 +94,36 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 
 		// first dimension is what it is because that's how many distances there are
 		// second dimension is length 3 because we are storing [distance, index of first point, index of second point]
-		float[][] distances = new float[finalPoints.length*finalPoints.length/2][3];
-		for(int j=0;j<distances.length;j++){
-			for(int i1=0;i1<finalPoints.length;i1++){
-				for(int i2=i1+1;i2<finalPoints.length;i2++){
-					float distance = (float)Math.pow(finalPoints[i1][0]-finalPoints[i2][0], 2);
-					distances[j][0] = distance;
-					distances[j][1] = i1;
-					distances[j][2] = i2;
-				}
+		float[][] distances = new float[finalPoints.length*(finalPoints.length-1)/2][3];
+		int j = 0;
+		for(int i1=0;i1<finalPoints.length;i1++){
+			for(int i2=i1+1;i2<finalPoints.length;i2++){
+				float distance = distBetweenPoints(finalPoints[i1], finalPoints[i2]);
+				distances[j][0] = distance;
+				distances[j][1] = i1;
+				distances[j][2] = i2;
+				j++;
 			}
 		}
+
 		//System.out.println(distances.length);
 
 		Arrays.sort(distances,new Comparator<float[]>(){
 			@Override
 			public int compare(float[] o1, float[] o2) {
-				return (int) Math.signum(o1[0]-o2[0]);
+				int answer = (int) Math.signum(o1[0]-o2[0]);
+				return answer;
 			}
 
 		});
 
-		System.out.println(distance);
 		HashMap<Integer, HashSet<Integer>> map = new HashMap<>();
 		for(int i=0;i<distances.length;i++){
 			int point1 = (int) distances[i][1];
 			int point2 = (int) distances[i][2];
 			HashSet<Integer> pointSet1 = map.get(point1);
 			HashSet<Integer> pointSet2 = map.get(point2);
-			System.out.println(pointSet1 + " :" +pointSet2);
+			//System.out.println(pointSet1 + " :" +pointSet2);
 			if(pointSet1!=pointSet2||pointSet1==null){
 				if(pointSet1==null && pointSet2==null){
 					if(distBetweenPoints(finalPoints[point1], finalPoints[point2])<=maxDistBetweenPointsInCluster){
@@ -129,7 +134,6 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 						map.put(point2, newSet);
 					}
 				} else if(pointSet1==null){
-					System.out.println("3");
 					boolean canCombine = true;
 					for(int point:pointSet2){
 						if(distBetweenPoints(finalPoints[point1], finalPoints[point])>maxDistBetweenPointsInCluster){
@@ -137,12 +141,10 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 						}
 					}
 					if(canCombine){
-						System.out.println("6");
 						pointSet2.add(point1);
 						map.put(point1,pointSet2);
 					}
 				} else if(pointSet2==null){
-					System.out.println("4");
 					boolean canCombine = true;
 					for(int point:pointSet1){
 						if(distBetweenPoints(finalPoints[point2], finalPoints[point])>maxDistBetweenPointsInCluster){
@@ -150,12 +152,10 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 						}
 					}
 					if(canCombine){
-						System.out.println("7");
 						pointSet1.add(point2);
 						map.put(point2,pointSet1);
 					}
 				} else {
-					System.out.println("10");
 					boolean canCombine = true;
 					for(int points1:pointSet1){
 						for(int points2:pointSet2){
@@ -165,7 +165,6 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 						}
 					}
 					if(canCombine){
-						System.out.println("8");
 						pointSet1.addAll(pointSet2);
 						for(int point: pointSet2){
 							map.put(point,pointSet1);
@@ -207,7 +206,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			shift[3] += blob.velocityY*weight;
 		}
 		for(int i=0;i<4;i++){
-			shift[i]/=weightTotal;
+			if(weightTotal!=0)
+				shift[i]/=weightTotal;
 		}
 		return shift; 
 	}

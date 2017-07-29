@@ -11,7 +11,7 @@ public class Constant {
 	
 	//maximum distance in pixels between blobs that can be matched
 	public static int DISTANCE_LIMIT_X = 40;
-	public static int DISTANCE_LIMIT_Y = 40;
+	public static int DISTANCE_LIMIT_Y = 20;
 	
 	//maximum size difference in pixels between blobs that can be matched
 	public static int MAX_CHANGE_WIDTH = 29;
@@ -46,11 +46,11 @@ public class Constant {
 	//Unified Blob filters
 
 	//stuff
-	public static float MAX_WIDTH_HEIGHT_RATIO = 0.9f;
-	public static int MAX_WIDTH = 400;
-	public static int MAX_HEIGHT = 300;
-	public static int MAX_SCALED_VELOCITY_X = 50;
-	public static int MAX_SCALED_VELOCITY_Y = 50;
+	public static float MAX_WIDTH_HEIGHT_RATIO = .75f;
+	public static int MAX_WIDTH = 100000;
+	public static int MAX_HEIGHT = 100000;
+	public static float MIN_SCALED_VELOCITY_X = 0.75f;
+	public static int MIN_SCALED_VELOCITY_Y = 0;
 	
 	/*
     Image
@@ -88,8 +88,8 @@ public class Constant {
 		case 19: MAX_WIDTH_HEIGHT_RATIO  = (float)a; break;
 		case 20: MAX_WIDTH = (int)a; break;
 		case 21: MAX_HEIGHT = (int)a; break;
-		case 22: MAX_SCALED_VELOCITY_X = (int)a; break;
-		case 23: MAX_SCALED_VELOCITY_Y = (int)a; break;
+		case 22: MIN_SCALED_VELOCITY_X = (int)a; break;
+		case 23: MIN_SCALED_VELOCITY_Y = (int)a; break;
 		}
 	}
 	

@@ -60,14 +60,14 @@ public class BlobFilter implements IMovingBlobReduction
 				Math.abs(blob.velocityX) < Constant.VELOCITY_X_MAX &&
 				blob.velocityChangeX < Constant.MAX_VELOCITY_CHANGE_X &&
 				blob.velocityChangeY < Constant.MAX_VELOCITY_CHANGE_Y &&
-				(float)blob.width/(float)blob.height < Constant.MAX_WIDTH_HEIGHT_RATIO;
+				(float)blob.width/(float)blob.height < 1.3;
 				
 	}
 	
 	public List<MovingBlob> filterUnifiedBlobs(List<MovingBlob> blobs){
 		List<MovingBlob> ret = new LinkedList<>();
 		for(MovingBlob blob : blobs){
-			if(!filterUnifiedBlob(blob)) ret.add(blob);
+			if(filterUnifiedBlob(blob)) ret.add(blob);
 		}
 		return ret;
 	}
@@ -76,7 +76,7 @@ public class BlobFilter implements IMovingBlobReduction
 		return (float)blob.width / (float)blob.height < Constant.MAX_WIDTH_HEIGHT_RATIO &&
 				blob.width < Constant.MAX_WIDTH &&
 				blob.height < Constant.MAX_HEIGHT &&
-				blob.getScaledVelocityX() < Constant.MAX_SCALED_VELOCITY_X &&
-				blob.getScaledVelocityY() < Constant.MAX_SCALED_VELOCITY_Y;
+				Math.abs(blob.getScaledVelocityX()) > Constant.MIN_SCALED_VELOCITY_X &&
+				Math.abs(blob.getScaledVelocityY()) > Constant.MIN_SCALED_VELOCITY_Y;
 	}
 }
