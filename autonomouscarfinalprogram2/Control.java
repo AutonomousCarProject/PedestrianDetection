@@ -10,13 +10,8 @@ import com.looi.looi.gui_essentials.AstheticButton;
 import com.looi.looi.gui_essentials.Background;
 import com.looi.looi.gui_essentials.Button;
 import com.looi.looi.gui_essentials.ScrollBox;
-import com.looi.looi.gui_essentials.Slider;
 import group1.IPixel;
-import group1.Pixel;
-import com.looi.looi.gui_essentials.TextBox;
 import com.looi.looi.gui_essentials.Window;
-import com.looi.looi.gui_essentials.ScrollBox.ScrollBoxObject;
-import com.looi.looi.gui_essentials.Window.ExitButton;
 
 import global.Constant;
 import group1.FileImage;
@@ -29,12 +24,8 @@ import group5.IImageBoxDrawer;
 import java.awt.image.BufferedImage;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 import java.awt.Color;
-import java.awt.Font;
-
-
 
 
 /**

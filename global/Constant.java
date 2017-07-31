@@ -12,7 +12,10 @@ public class Constant {
 
     //how far to set black and white margins from mean
     public static int BLACK_RANGE = 100;
-    public static int WHITE_RANGE = 200;
+    public static int WHITE_RANGE = 100;
+
+    //threshold between light and dark means on dynamic ranging
+    public static int LIGHT_DARK_THRESHOLD = 381;
 
     /**
 	 * MovingBlobDetection
