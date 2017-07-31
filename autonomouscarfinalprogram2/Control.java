@@ -75,7 +75,7 @@ public class Control extends LooiObject
     
     private LoadTextBox ltb;
     
-    public Control(int frameDelay, boolean useCamera)
+    public Control(boolean useCamera)
     {
         ArrayList<VariableSlider> variableSliders = new ArrayList<>();
         blobDetection = new BlobDetection();
