@@ -18,16 +18,16 @@ public class Constant {
 	public static int MAX_CHANGE_HEIGHT = 34;
 	
 	//maximum distance between edges to unify
-	public static int X_EDGE_DISTANCE_LIMIT = 6;
-	public static int Y_EDGE_DISTANCE_LIMIT = 10;
+	public static int X_EDGE_DISTANCE_LIMIT = 15;
+	public static int Y_EDGE_DISTANCE_LIMIT = 25;
 	public static float X_OVERLAP_PERCENT = 0.1f;
 	public static float Y_OVERLAP_PERCENT = 0.1f;
 	
 	//maximum difference in velocity to unify
-	public static int UNIFY_VELOCITY_LIMIT_X = 17;
-	public static int UNIFY_VELOCITY_LIMIT_Y = 30;
-	public static float VELOCITY_LIMIT_INCREASE_X = 0.5f;
-	public static float VELOCITY_LIMIT_INCREASE_Y = 0.5f;
+	public static int UNIFY_VELOCITY_LIMIT_X = 10;
+	public static int UNIFY_VELOCITY_LIMIT_Y = 25;
+	public static float VELOCITY_LIMIT_INCREASE_X = 0.75f;
+	public static float VELOCITY_LIMIT_INCREASE_Y = 0.3f;
 
 	/**
 	 * BlobFilter
@@ -92,5 +92,35 @@ public class Constant {
 		case 23: MIN_SCALED_VELOCITY_Y = (int)a; break;
 		}
 	}
+        public static double getVariable(int index){
+		switch(index){
+		case 1: return MAX_TIME_OFF_SCREEN ;
+		case 2: return DISTANCE_LIMIT_X;
+		case 3: return DISTANCE_LIMIT_Y;
+		case 4: return MAX_CHANGE_WIDTH;
+		case 5: return MAX_CHANGE_HEIGHT;
+		case 6: return X_EDGE_DISTANCE_LIMIT;
+		case 7: return Y_EDGE_DISTANCE_LIMIT;
+		case 8: return X_OVERLAP_PERCENT;
+		case 9: return Y_OVERLAP_PERCENT;
+		case 10: return UNIFY_VELOCITY_LIMIT_X;
+		case 11: return UNIFY_VELOCITY_LIMIT_Y;
+		case 12: return VELOCITY_LIMIT_INCREASE_X;
+		case 13: return VELOCITY_LIMIT_INCREASE_Y;
+		case 14: return AGE_MIN;
+		case 15: return VELOCITY_X_MAX;
+		case 16: return VELOCITY_Y_MAX;
+		case 17: return MAX_VELOCITY_CHANGE_X;
+		case 18: return MAX_VELOCITY_CHANGE_Y;
+		case 19: return MAX_WIDTH_HEIGHT_RATIO;
+		case 20: return MAX_WIDTH;
+		case 21: return MAX_HEIGHT;
+		case 22: return MAX_SCALED_VELOCITY_X;
+		case 23: return MAX_SCALED_VELOCITY_Y;
+                
+                
+		}
+                return 0;
+        }
 	
 }
