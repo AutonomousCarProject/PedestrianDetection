@@ -213,12 +213,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	}
 
 	private float kernel(float distance, float kernelBandwidth){
-		if(distance<kernelBandwidth){
-			return 1;
-		}
-		else{
-			return 0;
-		}
+		return (float)Math.exp((-Math.pow(distance, 2))/Math.pow(kernelBandwidth, 2));
 	}
 
 	public List<MovingBlob> getMovingBlobs(List<Blob> blobList){
