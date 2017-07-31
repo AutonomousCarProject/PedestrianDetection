@@ -130,9 +130,8 @@ public class BlobDetectionRender extends Application
 
                 List<Blob> blobs = blobDetect.getBlobs(image);
                 List<MovingBlob> movingBlobs = movingBlobDetect.getMovingBlobs(blobs);
-
-                List<MovingBlob> filteredBlobs = blobFilter
-                        .filterMovingBlobs(movingBlobDetect.getUnifiedBlobs(blobFilter.filterMovingBlobs(movingBlobs)));
+                
+                List<MovingBlob> filteredBlobs = blobFilter.filterMovingBlobs(movingBlobDetect.getUnifiedBlobs(blobFilter.filterMovingBlobs(movingBlobs)));
 
                 gc.setStroke(Color.DARKGOLDENROD);
                 gc.setLineWidth(4);
