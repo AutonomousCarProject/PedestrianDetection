@@ -37,6 +37,10 @@ public class Image implements IImage
         tile = flyCam.PixTile();
         System.out.println("tile: "+tile+" width: "+width+" height: "+height);
     }
+    
+    public Image(){
+    	this(0,0,0);
+    }
 
     @Override
     public void setAutoFreq(int autoFreq){  //How many frames are loaded before the calibrate is called (-1 never calls it)
@@ -329,6 +333,12 @@ public class Image implements IImage
         Pixel.blackMargin = average2 - blackRange;
         Pixel.whiteMargin = average2 + whiteRange;
 
+    }
+    
+    private int frameNo = 0;
+    @Override
+    public int getFrameNo(){
+    	return frameNo++;
     }
 
 }
