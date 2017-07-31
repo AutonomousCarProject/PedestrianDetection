@@ -49,7 +49,7 @@ public class Constant {
 	public static float MAX_WIDTH_HEIGHT_RATIO = .8f;
 	public static int MAX_WIDTH = 1300;
 	public static int MAX_HEIGHT = 1200;
-	public static float MIN_SCALED_VELOCITY_X = 0.75f;
+	public static float MIN_SCALED_VELOCITY_X = 0.6f;
 	public static int MIN_SCALED_VELOCITY_Y = 0;
 	
 	/*
@@ -115,8 +115,8 @@ public class Constant {
 		case 19: return MAX_WIDTH_HEIGHT_RATIO;
 		case 20: return MAX_WIDTH;
 		case 21: return MAX_HEIGHT;
-		case 22: return MAX_SCALED_VELOCITY_X;
-		case 23: return MAX_SCALED_VELOCITY_Y;
+		case 22: return MIN_SCALED_VELOCITY_X;
+		case 23: return MIN_SCALED_VELOCITY_Y;
                 
                 
 		}

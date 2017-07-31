@@ -10,8 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
 import global.Constant;
 
 public class MovingBlobDetection implements IMovingBlobDetection {
