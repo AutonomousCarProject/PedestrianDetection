@@ -36,19 +36,19 @@ public class Constant {
 	//regular filters
 
 	//Minimum age to not be filtered
-	public static int AGE_MIN = 3;
+	public static int AGE_MIN = 0;
 	
 	//Maximum 
-	public static int VELOCITY_X_MAX = 100;
+	public static int VELOCITY_X_MAX = 150;
 	public static int VELOCITY_Y_MAX = 50;
 	public static float MAX_VELOCITY_CHANGE_X = 5;
 	public static float MAX_VELOCITY_CHANGE_Y = 20;
 	//Unified Blob filters
 
 	//stuff
-	public static float MAX_WIDTH_HEIGHT_RATIO = .75f;
-	public static int MAX_WIDTH = 100000;
-	public static int MAX_HEIGHT = 100000;
+	public static float MAX_WIDTH_HEIGHT_RATIO = .8f;
+	public static int MAX_WIDTH = 1300;
+	public static int MAX_HEIGHT = 1200;
 	public static float MIN_SCALED_VELOCITY_X = 0.75f;
 	public static int MIN_SCALED_VELOCITY_Y = 0;
 	

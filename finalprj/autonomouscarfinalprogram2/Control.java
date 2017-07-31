@@ -204,7 +204,7 @@ public class Control extends LooiObject
         List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
         List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
 		//boxDrawer.draw2(currentImage, movingBlobs, fmovingBlobs);
-        boxDrawer.draw(currentImage,funifiedBlobs);
+        boxDrawer.draw2(currentImage, funifiedBlobs, unifiedBlobs);
 	        
     }   
     

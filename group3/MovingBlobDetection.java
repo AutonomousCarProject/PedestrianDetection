@@ -39,11 +39,11 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	float velocityLimitIncreaseX = c.VELOCITY_LIMIT_INCREASE_X;
 	float velocityLimitIncreaseY = c.VELOCITY_LIMIT_INCREASE_Y;
 
-	float kernelBandwidth = 6;
-	float maxDistBetweenPointsInCluster = 70;
+	float kernelBandwidth = 10;
+	float maxDistBetweenPointsInCluster = 80;
 	float xDistWeight = 1f;
-	float yDistWeight = 0.35f;
-	float vXWeight = 3f;
+	float yDistWeight = 0.25f;
+	float vXWeight = .75f;
 	float vYWeight = 0.25f;
 
 	public MovingBlobDetection() {
@@ -63,10 +63,10 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		} else {
 			distanceY = blob2.y-(point[1]+blob1.height);
 		}
-		distanceX = xDistWeight * Math.max(0,distanceX);
+		distanceX = xDistWeight * (float)(Math.pow(Math.max(0,distanceX), 2));
 		distanceY = yDistWeight * Math.max(0,distanceY);
 		//System.out.println("distanceX: " + distanceX + "   distanceY: " + distanceY);
-		float distanceVX = vXWeight * Math.abs(point[2]-blob2.velocityX);
+		float distanceVX = vXWeight * (float)Math.pow(Math.abs(point[2]-blob2.velocityX), 2);
 		float distanceVY = vYWeight * Math.abs(point[3]-blob2.velocityY);
 		return (float) Math.sqrt(distanceX*distanceX + distanceY*distanceY + distanceVX*distanceVX + distanceVY*distanceVY);
 	}

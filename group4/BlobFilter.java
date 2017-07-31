@@ -28,9 +28,9 @@ public class BlobFilter implements IMovingBlobReduction
 	//Maximum width to height ratio
 	private static final float MAX_WIDTH_HEIGHT_RATIO = 1;
 	//Maximum width
-	private static final int MAX_WIDTH = 200;
+	private static final int MAX_WIDTH = 100;
 	//Maximum height
-	private static final int MAX_HEIGHT = 400;
+	private static final int MAX_HEIGHT = 100;
 	//Maximum scaled x velocity
 	private static final float MAX_SCALED_VELOCITY_X = 30;
 	//Maximum scaled x velocity
