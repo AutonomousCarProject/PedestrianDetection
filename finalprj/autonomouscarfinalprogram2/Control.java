@@ -95,9 +95,11 @@ public class Control extends LooiObject
         
         frames.addFirst(firstFrame);
         
-        
-       /* 
-        yCoordinate = 10;
+    }
+    
+    protected void display()
+    {
+    	yCoordinate = 10;
         
         sliderWindow = new DraggingWindow(100,100,500,500,new Background(Color.WHITE));
         sliderWindow.add(sliderWindow.new ExitButton()); 
@@ -139,8 +141,7 @@ public class Control extends LooiObject
             }
         };
         toggleGraphics.setLayer(-999);
-        scrollBox.add(scrollBox.new ScrollBoxObject(toggleGraphics)); 
-    */
+        scrollBox.add(scrollBox.new ScrollBoxObject(toggleGraphics));
     }
     
     /**
@@ -176,7 +177,7 @@ public class Control extends LooiObject
         List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
         List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
         //boxDrawer.draw2(currentImage,fmovingBlobs,funifiedBlobs);
-        boxDrawer.draw(currentImage, unifiedBlobs);
+        boxDrawer.draw(currentImage, funifiedBlobs);
         
         
         IPixel[][] image = currentImage.getImage();
@@ -201,9 +202,9 @@ public class Control extends LooiObject
         List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
         List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
         List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
-
+        List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
 		//boxDrawer.draw2(currentImage, movingBlobs, fmovingBlobs);
-        boxDrawer.draw2(currentImage, unifiedBlobs, movingBlobs);
+        boxDrawer.draw2(currentImage,fmovingBlobs,funifiedBlobs);
 	        
     }   
     
