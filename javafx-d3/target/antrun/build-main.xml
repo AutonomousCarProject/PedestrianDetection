@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<project name="maven-antrun-" default="main"  >
-<target name="main">
-  <replace file=".classpath" value="JavaSE-1.8&quot;&gt;&#13; &lt;accessrules&gt;&#13; &lt;accessrule kind=&quot;accessible&quot; pattern=&quot;netscape/**&quot;/&gt;&#13; &lt;accessrule kind=&quot;accessible&quot; pattern=&quot;javafx/**&quot;/&gt;&#13; &lt;accessrule kind=&quot;accessible&quot; pattern=&quot;com/sun/javafx/**&quot;/&gt;&#13;&lt;/accessrules&gt;" token="JavaSE-1.8&quot;&gt;"></replace>
-</target>
-</project>
