@@ -2,6 +2,8 @@ package group2;
 
 import java.util.List;
 
+import fly2cam.IAutoExposure;
+import fly2cam.ToggleExposure;
 import group1.FileImage;
 import group1.IImage;
 import group1.IPixel;
@@ -24,12 +26,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
-public class BlobDetectionRender extends Application
+public class AlternatingBlobDetectionRender extends Application
 {
     boolean drawBlobs = true; // boolean for whether or not we draw blobs in the render class
     boolean filter = true; // enables or disables the blob filter
     boolean posterize = false; // enables or disables posterization
- 
+    private int offset = 0;
 
     public static void main(String... args)
     {
@@ -41,14 +43,15 @@ public class BlobDetectionRender extends Application
     {
 //         IImage -image = new JpgImage("src/testImage1.png");
 //        IImage image = new Image(0, 50, 0);
-        IImage image = new FileImage();
+        IImage image = new Image();
         
+        IAutoExposure autoExposure = new ToggleExposure(image);
         IBlobDetection blobDetect = new BlobDetection();
         IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
         IMovingBlobReduction blobFilter = new BlobFilter();
 
         IPixel[][] pixels = image.getImage();
-        final int scale = 2;
+        final int scale = 1;
 
         if (pixels.length == 0)
         {
@@ -59,38 +62,15 @@ public class BlobDetectionRender extends Application
         final int width = pixels[0].length;
         final int height = pixels.length;
 
-        Canvas canvas = new Canvas(width * scale, height * scale);
+        Canvas canvas = new Canvas(2 * width * scale, height * scale);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         image.setAutoFreq(15);
         
-
         AnimationTimer timer = new AnimationTimer() {
         	@Override
         	public void handle(long time)
-        	{
-        		/*
-        		if(lastTime != -1)
-        		{
-        			cumulativeTime += (time - lastTime);
-        		}
-        		
-        		lastTime = time;
-        		
-        		if(++currentFrame != framesPerCall && image instanceof FileImage)
-        		{
-        		    return;
-        		}
-        		
-        		currentFrame = 0;
-        		
-        		if(cumulativeTime >= calTime)
-        		{
-        			cumulativeTime = 0;
-        			image.autoColor();
-        		}
-        		*/
-        		
+        	{	
 		        image.readCam();
 		        IPixel[][] pixels = image.getImage();
 		
@@ -124,9 +104,11 @@ public class BlobDetectionRender extends Application
 		                    //@formatter:on
                         }
 
-                        gc.fillRect(i * scale, j * scale, scale, scale);
+                        gc.fillRect(i * scale + offset, j * scale, scale, scale);
                     }
                 }
+
+		        autoExposure.autoAdjust(image.getImage());
 
                 List<Blob> blobs = blobDetect.getBlobs(image);
                 List<MovingBlob> movingBlobs = movingBlobDetect.getMovingBlobs(blobs);
@@ -154,6 +136,8 @@ public class BlobDetectionRender extends Application
                         }
                     }
                 }
+                
+                offset = (offset + width) % (2 * width);
             }
         };
 
@@ -164,7 +148,7 @@ public class BlobDetectionRender extends Application
         Group rootNode = new Group();
         rootNode.getChildren().addAll(canvas);
 
-        Scene myScene = new Scene(rootNode, width * scale, height * scale);
+        Scene myScene = new Scene(rootNode);
         primaryStage.setScene(myScene);
 
         primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>()
