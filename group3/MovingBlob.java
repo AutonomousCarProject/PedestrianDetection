@@ -19,6 +19,8 @@ public class MovingBlob extends Blob
 
     // The time, in frames, that the MovingBlob has been off-screen.
     public int ageOffScreen;
+    
+    private int score = 0;
 
     /**
      * Creates a MovingBlob from a Blob. This is used when a previously unseen
@@ -76,7 +78,7 @@ public class MovingBlob extends Blob
      */
     public float getScaledVelocityX()
     {
-        return this.velocityX / (this.width + this.height);
+        return 100* this.velocityX / (this.width + this.height);
     }
 
     /**
@@ -120,5 +122,17 @@ public class MovingBlob extends Blob
         return "Moving blob: Color " + /* color.getColor() + */ " X: " + x + " Y: " + y + " vX: " + velocityX +
         		" vY: " + velocityY + " pX: " + predictedX + " pY: " + predictedY + " w: " + width + " h: " + height
         		+ " age: " + age + " ageoff: " + ageOffScreen;
+    }
+    public void incrementScore()
+    {
+        score++;
+    }
+    public void setScore(int score)
+    {
+        this.score = score;
+    }
+    public int getScore()
+    {
+        return score;
     }
 }

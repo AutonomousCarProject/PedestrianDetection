@@ -3,9 +3,9 @@ package group1;
 public interface IImage
 {
     IPixel[][] getImage();
-    void setImage(IPixel[][] image);
 	void readCam();
 	void finish();
+    default void setImage(IPixel[][] image){}
+    default int getFrameNo(){ return 0;}
 	void setAutoFreq(int autoFreq);
-	int getFrameNo();
 }
