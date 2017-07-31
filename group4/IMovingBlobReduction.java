@@ -6,5 +6,5 @@ import group3.MovingBlob;
 
 public interface IMovingBlobReduction
 {
-    List<MovingBlob> reduce(List<MovingBlob> blobs);
+    List<MovingBlob> filterMovingBlobs(List<MovingBlob> blobs);
 }
