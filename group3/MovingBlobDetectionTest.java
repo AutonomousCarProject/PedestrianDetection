@@ -34,13 +34,13 @@ public class MovingBlobDetectionTest implements IMovingBlobDetection {
 		}
 		System.out.println(list.get(1));
 		System.out.println(unifiedBlobs.get(1));
-		List<MovingBlob> filterList1 = filter.reduce(list);
-		List<MovingBlob> filterList2 = filter.reduce(unifiedBlobs);
-		System.out.println(filterList1.get(0));
+		//List<MovingBlob> filterList1 = filter.reduce(list);
+		//List<MovingBlob> filterList2 = filter.reduce(unifiedBlobs);
+		//System.out.println(filterList1.get(0));
 		System.out.println(list.size());
 		System.out.println(unifiedBlobs.size());
-		System.out.println(filterList1.size());
-		System.out.println(filterList2.size());
+		//System.out.println(filterList1.size());
+		//System.out.println(filterList2.size());
 
 		final long endTime = System.currentTimeMillis();
 

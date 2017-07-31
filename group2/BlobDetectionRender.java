@@ -139,8 +139,8 @@ public class BlobDetectionRender extends Application
                 List<Blob> blobs = blobDetect.getBlobs(image);
                 List<MovingBlob> movingBlobs = movingBlobDetect.getMovingBlobs(blobs);
 
-                List<MovingBlob> filteredBlobs = blobFilter
-                        .reduce(movingBlobDetect.getUnifiedBlobs(blobFilter.reduce(movingBlobs)));
+                //List<MovingBlob> filteredBlobs = blobFilter
+                //        .reduce(movingBlobDetect.getUnifiedBlobs(blobFilter.reduce(movingBlobs)));
 
                 gc.setStroke(Color.DARKGOLDENROD);
                 gc.setLineWidth(4);
@@ -149,10 +149,10 @@ public class BlobDetectionRender extends Application
                 {
                     if (filter)
                     {
-                        for (Blob blob : filteredBlobs)
+                        /*for (Blob blob : filteredBlobs)
                         {
                             gc.strokeRect(blob.x * scale, blob.y * scale, blob.width * scale, blob.height * scale);
-                        }
+                        }*/
                     }
                     else
                     {
