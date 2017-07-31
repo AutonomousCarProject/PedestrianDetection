@@ -37,11 +37,11 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	float velocityLimitIncreaseX = c.VELOCITY_LIMIT_INCREASE_X;
 	float velocityLimitIncreaseY = c.VELOCITY_LIMIT_INCREASE_Y;
 
-	float kernelBandwidth = 10;
-	float maxDistBetweenPointsInCluster = 80;
+	float kernelBandwidth = 1;
+	float maxDistBetweenPointsInCluster = 75;
 	float xDistWeight = 1f;
 	float yDistWeight = 0.25f;
-	float vXWeight = .75f;
+	float vXWeight = 1.5f;
 	float vYWeight = 0.25f;
 
 	public MovingBlobDetection() {
@@ -61,10 +61,10 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		} else {
 			distanceY = blob2.y-(point[1]+blob1.height);
 		}
-		distanceX = xDistWeight * (float)(Math.pow(Math.max(0,distanceX), 2));
+		distanceX = xDistWeight * (float)(Math.pow(Math.max(0,distanceX), 1));
 		distanceY = yDistWeight * Math.max(0,distanceY);
 		//System.out.println("distanceX: " + distanceX + "   distanceY: " + distanceY);
-		float distanceVX = vXWeight * (float)Math.pow(Math.abs(point[2]-blob2.velocityX), 2);
+		float distanceVX = vXWeight * (float)Math.pow(Math.abs(point[2]-blob2.velocityX), 3);
 		float distanceVY = vYWeight * Math.abs(point[3]-blob2.velocityY);
 		return (float) Math.sqrt(distanceX*distanceX + distanceY*distanceY + distanceVX*distanceVX + distanceVY*distanceVY);
 	}
@@ -140,6 +140,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 					}
 					if(canCombine){
 						pointSet2.add(point1);
+						map.remove(point1);
 						map.put(point1,pointSet2);
 					}
 				} else if(pointSet2==null){
@@ -151,6 +152,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 					}
 					if(canCombine){
 						pointSet1.add(point2);
+						map.remove(point2);
 						map.put(point2,pointSet1);
 					}
 				} else {
@@ -165,6 +167,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 					if(canCombine){
 						pointSet1.addAll(pointSet2);
 						for(int point: pointSet2){
+							map.remove(point)
 							map.put(point,pointSet1);
 						}
 					}
