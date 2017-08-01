@@ -185,7 +185,9 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		int i =0;
 		for(MovingBlob movingBlob:movingBlobs){
 			if(map.get(i)==null){
-				unifiedBlobs.add(movingBlob);
+				HashSet<MovingBlob> tempSet = new HashSet<>();
+				tempSet.add(movingBlob);
+				unifiedBlobs.add(new UnifiedBlob(tempSet));
 			}
 			i++;
 		}
