@@ -48,14 +48,12 @@ public class FlyCamera
 
     private static final int FC2_ERROR_OK = 0;
 
-    public void ActivateHDR()
+    public void SetHDR(long[] HDRShutters, long[] HDRGains)
     {
-        SafeWriteRegister(HDRCtrl, HDROn, "OH SHIT");
-        System.out.println(WriteRegister(0x1A14, 0xff));
         // Initialize HDR Registers
-        SafeWriteRegister(new long[][] { { HDRShutter1, 0x000 }, { HDRShutter2, 0x120 }, { HDRShutter3, 0x240 },
-                { HDRShutter4, 0x360 }, { HDRGain1, 0x000 }, { HDRGain2, 0x0E3 }, { HDRGain3, 0x1C6 },
-                { HDRGain4, 0x2A9 }, { HDRCtrl, HDROn } }, "Error writing HDR shutter/gain registers");
+        SafeWriteRegister(new long[][] {{ HDRShutter1, HDRShutters[0] }, { HDRShutter2, HDRShutters[1] }, { HDRShutter3, HDRShutters[2] }, { HDRShutter4, HDRShutters[3] },
+                                        { HDRGain1, HDRGains[0] }, { HDRGain2, HDRGains[1] }, { HDRGain3, HDRGains[2] }, { HDRGain4, HDRGains[3] },
+                                        { HDRCtrl, HDROn } }, "Error writing HDR shutter/gain registers");
     }
 
     private void SafeWriteRegister(long addr, long val, String err)
@@ -116,13 +114,6 @@ public class FlyCamera
     static
     {
         System.loadLibrary("FlyCamera");
-        
-        FlyCamera cam = new FlyCamera();
-        cam.Connect(FrameRate_15, 0, 0, 0);
-        cam.ActivateHDR();
-        
-        System.out.println(cam.SafeReadRegister(0x1A14, "you screwed up"));
-        System.exit(0);
     }
 
     public static String ErrorNumberText(int errno)
