@@ -105,6 +105,9 @@ public class LooiWindow
     private ArrayList<LooiObject> paintActiveLooiObjects = new ArrayList<>();
     private Graphics g;
     
+    private double topLayer = 0;
+    private double bottomLayer = 0;
+    
     private Comparator looiObjectSorter = new Comparator<LooiObject>()
     {
         public int compare(LooiObject a, LooiObject b) 
@@ -327,7 +330,6 @@ public class LooiWindow
             ArrayList<LooiObject> paintActiveLooiObjectsTemp = (ArrayList<LooiObject>)activeLooiObjects.clone();//Order the painting list. However, doing so here may compromise SLIGHTLY on the accuracy of the functionality. However, it will result in SLIGHTLY increased performance. No need to worry at all. I don't even know why I wrote this.
             paintActiveLooiObjectsTemp.sort(looiObjectSorter);
             step();
-            
             //step thread branch ends
             try{painter.join();}catch(Exception e){}
             paintActiveLooiObjects = paintActiveLooiObjectsTemp;
@@ -570,6 +572,11 @@ public class LooiWindow
     
     public int getViewHorizontalOffset(){return viewHorizontalOffset;}
     public int getViewVerticalOffset(){return viewVerticalOffset;}
+    
+    public void setTopLayer(double d){topLayer = d;}
+    public void setBottomLayer(double d){bottomLayer = d;}
+    public double getTopLayer(){return topLayer;}
+    public double getBottomLayer(){return bottomLayer;}
     /**
     * Activates a LooiObject so that looiStep() and looiPaint() are called at every step
     * @param looiObject The LooiObject to be activated
@@ -601,26 +608,7 @@ public class LooiWindow
     * layer
     * @return 
     */
-    public double getTopLayer()
-    {
-        
-        if(paintActiveLooiObjects != null && paintActiveLooiObjects.size() > 0)
-        {
-            return paintActiveLooiObjects.get(0).getLayer();
-        }
-        return 0;
-    }
-    /**
-    * Gets the layer of the LooiObject that has the most positive (bottom) 
-    * layer
-    * @return 
-    */
-    public double getBottomLayer()
-    {
-        if(paintActiveLooiObjects != null && paintActiveLooiObjects.size() > 0)
-            return paintActiveLooiObjects.get(paintActiveLooiObjects.size()-1).getLayer();
-        return 0;
-    }
+    
     /**
      * Pauses the game loop so that objects temporarily cease to update. This
      * should only be used for debugging purposes, since idk how you're going to

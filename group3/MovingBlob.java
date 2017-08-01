@@ -2,10 +2,14 @@ package group3;
 
 import group1.IPixel;
 import group2.Blob;
+import java.io.Serializable;
 
-public class MovingBlob extends Blob
+public class MovingBlob extends Blob implements Serializable
 {
 
+    private boolean isPedestrian = false;
+    public boolean isPedestrian(){return isPedestrian;}
+    public void setAsPedestrian(boolean tf){isPedestrian = tf;}
     // The X and Y components of the MovingBlob's velocity.
     public float velocityX, velocityY;
 

@@ -5,7 +5,6 @@
  */
 package com.looi.looi.gui_essentials;
 
-import com.looi.looi.LooiObject;
 import com.looi.looi.Point;
 import java.awt.Color;
 import java.awt.Font;
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 public class ScrollBox extends Rectangle
 {
     private ArrayList<ScrollBoxObject> scrollBoxObjects = new ArrayList<>();
-    private Scrollbar scrollbar;
+    private ScrollBar scrollBar;
     private double scrollPercentage = 0;//0-100
     private double virtualHeight;
     private double highestObjectY;
@@ -26,8 +25,9 @@ public class ScrollBox extends Rectangle
     public ScrollBox(double x, double y, double width, double height, Background background)
     {
         super(x,y,width,height,background);
-        createScrollbar();
+        add(scrollBar = createScrollBar());
     }
+    
     public void activate(Object...o)
     {
         super.activate(o);
@@ -55,9 +55,9 @@ public class ScrollBox extends Rectangle
             scrollBoxObjects.get(i).thisComponent().setLayer(scrollBoxObjects.get(i).thisComponent().getLayer() + difference);
         }
     }
-    protected void createScrollbar()
+    protected ScrollBar createScrollBar()
     {
-        add(scrollbar = new Scrollbar());
+        return new ScrollBar();
     }
     public void add(ScrollBoxObject g)
     {
@@ -155,20 +155,6 @@ public class ScrollBox extends Rectangle
             s.checkOutOfScrollBox();
         }
     }
-    public void setPosition(double x, double y)
-    {
-        double deltaX = x - this.getX();
-        double deltaY = y - this.getY();
-        
-        super.setPosition(x,y);
-        if(scrollBoxObjects == null)
-            return;
-        for(int i = 0; i < scrollBoxObjects.size(); i++)
-        {
-            ScrollBoxObject l = scrollBoxObjects.get(i);
-            l.setVirtualPosition(l.getVirtualX() + deltaX,l.getVirtualY() + deltaY);
-        }
-    }
     public class ScrollBoxObject
     {
         private GuiComponent thisComponent;
@@ -224,21 +210,21 @@ public class ScrollBox extends Rectangle
             
         }
     }
-    public class Scrollbar extends AstheticButton
+    public class ScrollBar extends AstheticButton
     {
         public static final double DEFAULT_WIDTH = 50;
         private boolean scrolling = false;
         private Point offsetFromMouse;
 
-        public Scrollbar(double x, double y, double width, double height, Background background, int buttonPressShadow, double depth) 
+        public ScrollBar(double x, double y, double width, double height, Background background, int buttonPressShadow, double depth) 
         {
             super(x,y,width,height,"",new Font("",Font.PLAIN,16),Color.BLACK,background,Color.BLACK,Color.BLACK,buttonPressShadow,depth);
         }
-        public Scrollbar()
+        public ScrollBar()
         {
             this(Color.LIGHT_GRAY,DEFAULT_WIDTH);
         }
-        public Scrollbar(Color myColor, double width)
+        public ScrollBar(Color myColor, double width)
         {
             super(ScrollBox.this.getWidth() - width,0,width,0,"",new Font("",Font.PLAIN,16),Color.BLACK,new Background(myColor),myColor,myColor,AstheticButton.DEFAULT_BUTTON_PRESS_SHADOW,0) ;
         }

@@ -178,6 +178,14 @@ public abstract class LooiObject implements Comparable<LooiObject>
     public void setLayer(double layer)
     {
         this.layer = layer;
+        if(layer > thisWindow().getBottomLayer())
+        {
+            thisWindow().setBottomLayer(layer);
+        }
+        if(layer < thisWindow().getTopLayer())
+        {
+            thisWindow.setTopLayer(layer); 
+        }
     }
     /**
      * Checks whether this LooiObject is present in this window's active looi

@@ -20,29 +20,37 @@ public class Slider extends Rectangle
             DEFAULT_SLIDER_WIDTH = 10,
             DEFAULT_SLIDER_HEIGHT = 10,
             DEFAULT_MAX_SLIDER_HEIGHT = 20,
-            DEFAULT_HORIZONTAL_MARGIN_FRACTION = .1;//.1 of width
+            DEFAULT_HORIZONTAL_MARGIN_FRACTION = .1,//.1 of width
+            DEFAULT_STARTING_FRACTION = .5;
     public static final Color 
             DEFAULT_TRACK_COLOR = Color.LIGHT_GRAY,
             DEFAULT_SLIDER_COLOR = Color.BLACK;
-    private double percentage = 50;
+    private double fraction = 0;
     private double trackHeight;
     private double horizontalMargin;
     private SliderObject sliderObject;
     private double sliderMinX;
     private double sliderMaxX;
     private Color sliderColor;
+    private Color sliderColorPressed;
     private Color trackColor;
     
-    public Slider(double x, double y, double width, double height, Background background, double horizontalMargin, double trackHeight, double sliderWidth, double sliderHeight, double maxSliderHeight, Color sliderColor, Color trackColor)
+    
+    public Slider(double x, double y, double width, double height, Background background, double horizontalMargin, double trackHeight, double sliderWidth, double sliderHeight, double maxSliderHeight, Color sliderColor, Color sliderColorPressed, Color trackColor)
     {
         super(x,y,width,height,background);
         setHorizontalMargin(horizontalMargin);
         setTrackHeight(trackHeight);
         add(sliderObject = new SliderObject(sliderWidth,sliderHeight,maxSliderHeight));
-        
         setSliderColor(sliderColor);
+        setSliderColorPressed(sliderColorPressed);
         setTrackColor(trackColor);
-        setMaxMin();
+        setMinMax();
+        slideToFraction(DEFAULT_STARTING_FRACTION);
+    }
+    public Slider(double x, double y, double width, double height, Background background, double horizontalMargin, double trackHeight, double sliderWidth, double sliderHeight, double maxSliderHeight, Color sliderColor, Color trackColor)
+    {
+        this(x,y,width,height,background,horizontalMargin,trackHeight,sliderWidth,sliderHeight,maxSliderHeight,sliderColor,sliderColor.darker(),trackColor);
     }
     public Slider(double x, double y, double width, double height, Background background, double horizontalMargin, double trackHeight, double sliderWidth, double sliderHeight, double maxSliderHeight)
     {
@@ -52,33 +60,42 @@ public class Slider extends Rectangle
     {
         this(x,y,width,height,background,DEFAULT_HORIZONTAL_MARGIN_FRACTION*width,DEFAULT_TRACK_HEIGHT,DEFAULT_SLIDER_WIDTH,DEFAULT_SLIDER_HEIGHT,DEFAULT_MAX_SLIDER_HEIGHT);
     }
+    public Slider(double x, double y, double width, double height, Background background, Color sliderColor)
+    {
+        this(x,y,width,height,background,DEFAULT_HORIZONTAL_MARGIN_FRACTION*width,DEFAULT_TRACK_HEIGHT,DEFAULT_SLIDER_WIDTH,DEFAULT_SLIDER_HEIGHT,DEFAULT_MAX_SLIDER_HEIGHT,sliderColor,DEFAULT_TRACK_COLOR);
+    }
     public double getHorizontalMargin(){return horizontalMargin;}
     public double getTrackHeight(){return trackHeight;}
-    public void setHorizontalMargin(double horizontalMargin){this.horizontalMargin = horizontalMargin;setMaxMin();}
-    public void setTrackHeight(double trackHeight){this.trackHeight = trackHeight;}
+    public void setHorizontalMargin(double horizontalMargin)
+    {
+        this.horizontalMargin = horizontalMargin;
+        setMinMax();
+    }
+    public void setTrackHeight(double trackHeight)
+    {
+        this.trackHeight = trackHeight;
+        setMinMax();
+    }
     public double getSliderMinX(){return sliderMinX;}
     public double getSliderMaxX(){return sliderMaxX;}
     public Color getSliderColor(){return sliderColor;}
     public void setSliderColor(Color sliderColor){this.sliderColor = sliderColor;}
+    public Color getSliderColorPressed(){return sliderColorPressed;}
+    public void setSliderColorPressed(Color c){sliderColorPressed = c;}
     public Color getTrackColor(){return trackColor;}
     public void setTrackColor(Color trackColor){this.trackColor = trackColor;}
     
-    protected void setMaxMin()
+    public void setPosition(double x, double y)
+    {
+        super.setPosition(x,y);
+        setMinMax();
+    }
+    
+    protected void setMinMax()
     {
         sliderMinX = getX() + getHorizontalMargin();
         sliderMaxX = getX() + getWidth() - getHorizontalMargin();
     }
-    public void setPosition(double x, double y)
-    {
-        super.setPosition(x, y);
-        setMaxMin();
-    }
-    public void setDimensions(double w, double h)
-    {
-        super.setDimensions(w,h);
-        setMaxMin();
-    }
-    
     protected void looiStep()
     {
         super.looiStep();
@@ -87,9 +104,8 @@ public class Slider extends Rectangle
         double sliderObjectX = sliderObject.getX();
         double sliderObjectProgress = sliderObjectX - sliderMinX;
         
-        
         //sliderObject.setPosition(startX + distance * percentage/100,getY() + getHeight()/2);
-        percentage = sliderObjectProgress/totalDistance * 100;
+        fraction = sliderObjectProgress/totalDistance;
     }
     protected void looiPaint()
     {
@@ -97,18 +113,18 @@ public class Slider extends Rectangle
         setColor(trackColor);
         fillRect(getX() + getHorizontalMargin(),getY() + getHeight()/2 - getTrackHeight()/2,getWidth() - getHorizontalMargin()*2, getTrackHeight());
     }
-    public void slideToPercentage(double percentage)
+    public void slideToFraction(double fraction)
     {
+        setMinMax();
+        if(fraction < 0)
+            fraction = 0;
+        else if(fraction > 1)
+            fraction = 1;
         
-        if(percentage < 0)
-            percentage = 0;
-        else if(percentage > 100)
-            percentage = 100;
-        
-        sliderObject.setPosition(percentage/100 * (getSliderMaxX() - getSliderMinX()) + getSliderMinX(),sliderObject.getY());
-        this.percentage = percentage;
+        sliderObject.setPosition(fraction * (getSliderMaxX() - getSliderMinX()) + getSliderMinX(),sliderObject.getY());
+        this.fraction = fraction;
     }
-    public double getPercentage(){return percentage;}
+    public double getFraction(){return fraction;}
     
     public class SliderObject extends GuiComponent
     {
@@ -123,8 +139,6 @@ public class Slider extends Rectangle
             this.width = width;
             this.height = height;
             this.maxHeight = maxHeight;
-            
-            
         }
         protected void looiStep()
         {
@@ -155,7 +169,15 @@ public class Slider extends Rectangle
             super.looiPaint();
             center = new Point(getX(),getY());
             points = findPoints();
-            setColor(sliderColor);
+            if(isPressed)
+            {
+                setColor(sliderColorPressed);
+            }
+            else
+            {
+                setColor(sliderColor);
+            }
+            
             fillPolygon(points);
         }
         protected Point[] findPoints()
