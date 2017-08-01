@@ -115,8 +115,8 @@ public class Constant {
 		case 19: return MAX_WIDTH_HEIGHT_RATIO;
 		case 20: return MAX_WIDTH;
 		case 21: return MAX_HEIGHT;
-		case 22: return MAX_SCALED_VELOCITY_X;
-		case 23: return MAX_SCALED_VELOCITY_Y;
+//		case 22: return MAX_SCALED_VELOCITY_X;
+//		case 23: return MAX_SCALED_VELOCITY_Y;
                 
                 
 		}
