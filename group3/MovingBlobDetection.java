@@ -91,6 +91,17 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			}
 		}
 	}
+	
+	private void matchUnifiedBlob(MovingBlob unifiedBlob, MovingBlob newBlob){		
+		//update information based on new position
+		unifiedBlob.x = newBlob.x;
+		unifiedBlob.y = newBlob.y;
+		unifiedBlob.width = newBlob.width;
+		unifiedBlob.height = newBlob.height;
+		unifiedBlob.age++;
+		unifiedBlob.ageOffScreen=0;
+		unifiedBlob.updatePredictedPosition();	
+	}
 
 	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
 		float[][] finalPoints = new float[movingBlobs.size()][4];
@@ -356,16 +367,9 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		movingBlob.velocityX /= 2;
 		movingBlob.velocityChangeX = Math.abs(tempVelX-movingBlob.velocityX);
 
-
-		//System.out.println("Velocity change x: " + movingBlob.velocityChangeX);
-
-
 		movingBlob.velocityY += movementY;
 		movingBlob.velocityY /= 2;
 		movingBlob.velocityChangeY = Math.abs(tempVelY-movingBlob.velocityY);
-		//System.out.println("Velocity change y: " + movingBlob.velocityChangeY);
-		//System.out.println("new velY: " + movingBlob.velocityY);
-
 	}
 
 	public List<MovingBlob> getMovingBlobs() {
