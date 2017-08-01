@@ -28,7 +28,7 @@ extern "C" {
 	JNIEXPORT jboolean JNICALL Java_fly2cam_FlyCamera_Connect
 	(JNIEnv *env, jobject thisObj, jint frameRate, jint exposure, jint shutter, jint gain) {
 		int why = 0, rose = 0, colz = 0, tile = 0, form = 0, sofar = 0, DebugShow = 0;
-		unsigned int nx, stride = 0;
+		int nx, stride = 0;
 		fc2Error nerror = FC2_ERROR_OK;
 		fc2PGRGuid camGuid; // only used to select the single camera
 		fc2Config info; // so we can look at what it thinks it will do
@@ -84,15 +84,15 @@ extern "C" {
 				if (nerror != FC2_ERROR_OK) break;
 				why++; // why = 27
 				if (sofar == FC2_FRAMERATE_7_5) {
-					propty.valueA = (unsigned int)FC2_FRAMERATE_7_5; // =2
+					propty.valueA = (int)FC2_FRAMERATE_7_5; // =2
 					propty.absValue = 7.5;
 				}
 				else if (sofar == FC2_FRAMERATE_15) {
-					propty.valueA = (unsigned int)FC2_FRAMERATE_15; // =3
+					propty.valueA = (int)FC2_FRAMERATE_15; // =3
 					propty.absValue = 15;
 				}
 				else if (sofar == FC2_FRAMERATE_30) {
-					propty.valueA = (unsigned int)FC2_FRAMERATE_30; // =4
+					propty.valueA = (int)FC2_FRAMERATE_30; // =4
 					propty.absValue = 30;
 				}
 				else break;
@@ -162,7 +162,7 @@ extern "C" {
 	JNIEXPORT jboolean JNICALL Java_fly2cam_FlyCamera_NextFrame
 	(JNIEnv *env, jobject thisObj, jbyteArray pixels) {
 		int tile, rx, cx, nx = 0, roff = 0, coff = 0, sofar = 0, colz = 0, why = 19;
-		unsigned int zx = 0;
+		int zx = 0;
 		fc2Error nerror = FC2_ERROR_OK;
 		jsize lxx = 0;
 		jbyte * Jpix = NULL;  jbyte * Ipix = NULL;
@@ -372,6 +372,55 @@ extern "C" {
 		propty4.type = FC2_GAIN; // 256 to 814
 		nerror = fc2GetProperty(theContext, &propty4);
 		return propty4.valueA;
+	}
+	
+	JNIEXPORT jint JNICALL Java_fly2cam_FlyCamera_ActivateHDR
+	(JNIEnv *env, jobject thisObj)
+	{
+		const int HDRCtrl = 0x1800;
+		const int HDRShutter1 = 0x1820;
+		const int HDRShutter2 = 0x1840;
+		const int HDRShutter3 = 0x1860;
+		const int HDRShutter4 = 0x1880;
+		const int HDRGain1 = 0x1824;
+		const int HDRGain2 = 0x1844;
+		const int HDRGain3 = 0x1864;
+		const int HDRGain4 = 0x1884;
+		const int HDROn = 0x82000000;
+		const int HDROff = 0x80000000;
+		
+		// Initialize HDR Registers
+		fc2Error error;
+		
+	    error = (fc2Error) WriteRegister(HDRShutter1, 0x000);
+	    error = (fc2Error) WriteRegister(HDRShutter2, 0x120);
+	    error = (fc2Error) WriteRegister(HDRShutter3, 0x240);
+	    error = (fc2Error) WriteRegister(HDRShutter4, 0x360);
+	
+	    error = (fc2Error) WriteRegister(HDRGain1, 0x000);
+	    error = (fc2Error) WriteRegister(HDRGain2, 0x0E3);
+	    error = (fc2Error) WriteRegister(HDRGain3, 0x1C6);
+	    error = (fc2Error) WriteRegister(HDRGain4, 0x2A9);
+
+		if(error != FC2_ERROR_OK) return (jint) error;
+		
+		// Toggle HDR
+	    error = (fc2Error) WriteRegister(HDRCtrl, HDROn);
+		if(error != FC2_ERROR_OK) return (jint) error;
+		
+		
+	}
+	
+	int WriteRegister(int reg, int val)
+	{
+		fc2Error error = FC2_ERROR_OK;
+		int toWrite;
+		
+		error = fc2ReadRegister(reg, &toWrite);
+		if(error != FC2_ERROR_OK) return (int) error;
+		
+		toWrite = val;
+		return (int) fc2WriteRegister(reg, toWrite, false);	
 	}
 
 #ifdef __cplusplus
