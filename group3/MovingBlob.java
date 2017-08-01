@@ -82,7 +82,7 @@ public class MovingBlob extends Blob implements Serializable
      */
     public float getScaledVelocityX()
     {
-        return this.velocityX / (this.width + this.height);
+        return 100* this.velocityX / (this.width + this.height);
     }
 
     /**
