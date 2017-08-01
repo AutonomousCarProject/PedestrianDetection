@@ -88,7 +88,7 @@ public class Control extends LooiObject
         }
         else
         {
-            // currentImage = new Image(1,1,1);
+            currentImage = new Image();
         }
         boxDrawer = new IImageBoxDrawer();
         boxDrawer.setUsingBasicColors(true);

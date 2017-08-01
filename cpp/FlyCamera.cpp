@@ -374,49 +374,51 @@ extern "C" {
 		return propty4.valueA;
 	}
 	
-	JNIEXPORT jint JNICALL Java_fly2cam_FlyCamera_ActivateHDR
-	(JNIEnv *env, jobject thisObj)
-	{
-		const int HDRCtrl = 0x1800;
-		const int HDRShutter1 = 0x1820;
-		const int HDRShutter2 = 0x1840;
-		const int HDRShutter3 = 0x1860;
-		const int HDRShutter4 = 0x1880;
-		const int HDRGain1 = 0x1824;
-		const int HDRGain2 = 0x1844;
-		const int HDRGain3 = 0x1864;
-		const int HDRGain4 = 0x1884;
-		const int HDROn = 0x82000000;
-		const int HDROff = 0x80000000;
-		
-		// Initialize HDR Registers
-		fc2Error error;
-		
-	    error = (fc2Error) WriteRegister(HDRShutter1, 0x000);
-	    error = (fc2Error) WriteRegister(HDRShutter2, 0x120);
-	    error = (fc2Error) WriteRegister(HDRShutter3, 0x240);
-	    error = (fc2Error) WriteRegister(HDRShutter4, 0x360);
-	
-	    error = (fc2Error) WriteRegister(HDRGain1, 0x000);
-	    error = (fc2Error) WriteRegister(HDRGain2, 0x0E3);
-	    error = (fc2Error) WriteRegister(HDRGain3, 0x1C6);
-	    error = (fc2Error) WriteRegister(HDRGain4, 0x2A9);
-
-		if(error != FC2_ERROR_OK) return (jint) error;
-		
-		// Toggle HDR
-	    error = (fc2Error) WriteRegister(HDRCtrl, HDROn);
-		if(error != FC2_ERROR_OK) return (jint) error;
-		
-		
-	}
+// 	JNIEXPORT jint JNICALL Java_fly2cam_FlyCamera_ActivateHDR
+// 	(JNIEnv *env, jobject thisObj)
+// 	{
+// 		const int HDRCtrl = 0x1800;
+// 		const int HDRShutter1 = 0x1820;
+// 		const int HDRShutter2 = 0x1840;
+// 		const int HDRShutter3 = 0x1860;
+// 		const int HDRShutter4 = 0x1880;
+// 		const int HDRGain1 = 0x1824;
+// 		const int HDRGain2 = 0x1844;
+// 		const int HDRGain3 = 0x1864;
+// 		const int HDRGain4 = 0x1884;
+// 		const int HDROn = 0x82000000;
+// 		const int HDROff = 0x80000000;
+// 		
+// 		// Initialize HDR Registers
+// 		fc2Error error;
+// 		
+// 	    error = (fc2Error) WriteRegister(HDRShutter1, 0x000);
+// 	    error = (fc2Error) WriteRegister(HDRShutter2, 0x120);
+// 	    error = (fc2Error) WriteRegister(HDRShutter3, 0x240);
+// 	    error = (fc2Error) WriteRegister(HDRShutter4, 0x360);
+// 	
+// 	    error = (fc2Error) WriteRegister(HDRGain1, 0x000);
+// 	    error = (fc2Error) WriteRegister(HDRGain2, 0x0E3);
+// 	    error = (fc2Error) WriteRegister(HDRGain3, 0x1C6);
+// 	    error = (fc2Error) WriteRegister(HDRGain4, 0x2A9);
+// 
+// 		if(error != FC2_ERROR_OK) return (jint) error;
+// 		
+// 		// Toggle HDR
+// 	    error = (fc2Error) WriteRegister(HDRCtrl, HDROn);
+// 		if(error != FC2_ERROR_OK) return (jint) error;	
+// 	}
 	
  	/*
 	 	FLYCAPTURE2_C_API fc2Error fc2WriteRegister (fc2Context context, unsigned int address, unsigned int value)
 		FLYCAPTURE2_C_API fc2Error fc2ReadRegister (fc2Context context, unsigned int address, unsigned int* pvalue)
     */
-	int WriteRegister(unsigned int address, unsigned int val)
+	JNIEXPORT jint JNICALL Java_fly2cam_FlyCamera_WriteRegister
+	(JNIEnv *env, jobject thisObj, jlong laddress, jlong lval)
 	{
+		unsigned int address = (unsigned int)(laddress);
+		unsigned int val = (unsigned int)(lval);
+		
 		fc2Error error = FC2_ERROR_OK;
 		
 		unsigned int* readVal;

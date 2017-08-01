@@ -40,8 +40,8 @@ public class BlobDetectionRender extends Application
     public void start(Stage primaryStage) throws Exception
     {
 //         IImage -image = new JpgImage("src/testImage1.png");
-//        IImage image = new Image(0, 50, 0);
-        IImage image = new FileImage();
+        IImage image = new Image(0, 0, 0);
+//        IImage image = new FileImage();
         
         IBlobDetection blobDetect = new BlobDetection();
         IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
