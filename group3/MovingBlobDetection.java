@@ -167,7 +167,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 					if(canCombine){
 						pointSet1.addAll(pointSet2);
 						for(int point: pointSet2){
-							map.remove(point)
+							map.remove(point);
 							map.put(point,pointSet1);
 						}
 					}
@@ -185,7 +185,9 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		int i =0;
 		for(MovingBlob movingBlob:movingBlobs){
 			if(map.get(i)==null){
-				unifiedBlobs.add(movingBlob);
+				HashSet<MovingBlob> tempSet = new HashSet<>();
+				tempSet.add(movingBlob);
+				unifiedBlobs.add(new UnifiedBlob(tempSet));
 			}
 			i++;
 		}
