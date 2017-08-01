@@ -14,6 +14,7 @@ import group1.IPixel;
 import com.looi.looi.gui_essentials.Window;
 import com.looi.looi.gui_essentials.ScrollBox.ScrollBoxObject;
 import com.looi.looi.gui_essentials.Window.ExitButton;
+import com.sun.org.apache.xpath.internal.functions.FuncUnparsedEntityURI;
 
 import global.Constant;
 import group1.FileImage;
@@ -192,7 +193,7 @@ public class Control extends LooiObject
         List<MovingBlob> fmatchedUnifiedBlobs = blobFilter.filterFilteredUnifiedBlobs(matchedUnifiedBlobs);
         
         //boxDrawer.draw2(currentImage, unifiedBlobs, fmovingBlobs);
-        boxDrawer.draw(currentImage, fmatchedUnifiedBlobs);
+        boxDrawer.draw(currentImage, funifiedBlobs);
         
         
         IPixel[][] image = currentImage.getImage();

@@ -45,8 +45,8 @@ public class UnifiedBlob extends MovingBlob {
 			
 			totalArea += movingBlob.width*movingBlob.height;
 		}
-
-		this.age = maxAge;
+		this.age=0;
+		//this.age = maxAge;
 		this.ageOffScreen = minAgeOffScreen;
 
 
