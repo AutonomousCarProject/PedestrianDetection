@@ -134,7 +134,7 @@ public class Control extends LooiObject
         pedestrianAccuracy = new AstheticButton(10, 100*text.length + 200, 150, 100, "Blob Accuracy", Color.BLUE) {
             @Override
             protected void action() {
-                scrollBox.add(scrollBox.new ScrollBoxObject(new Text(180, 100*text.length + 240, 100, 50, new Background(Color.WHITE), "" + Thresholds.getScore("blob_save_0.9426706187885655"))));
+                scrollBox.add(scrollBox.new ScrollBoxObject(new Text(180, 100*text.length + 240, 100, 50, new Background(Color.WHITE), "" + Thresholds.getScore("blob_save_size12"))));
             }
         };
         pedestrianAccuracy.setLayer(-999);

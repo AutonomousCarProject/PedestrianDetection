@@ -28,7 +28,7 @@ public class Thresholds {
         for(MovingBlob blob : blobs){
             if(blob.isPedestrian()) {
                 retain.add(blob);
-                System.out.println("PEDESTRIANS!!");
+                System.out.println("PEDESTRIANS!!    " + retain.size());
             }
             else miss.add(blob);
         }
@@ -40,6 +40,7 @@ public class Thresholds {
         Collection seen = filter.filterMovingBlobs(blobs);
         retain.retainAll(seen);
         miss.retainAll(seen);
+        System.out.println("size: "+seen.size());
 
         float accuracy = (float)retain.size() / (float)retainCount;
         if(retain.size()==0 && retainCount == 0) accuracy = 1;

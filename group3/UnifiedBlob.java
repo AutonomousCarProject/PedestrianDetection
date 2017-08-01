@@ -8,7 +8,7 @@ import group2.Blob;
 
 public class UnifiedBlob extends MovingBlob {
 
-	private static final long serialVersionUID = 5783526117689296428l;
+	private static final long serialVersionUID = 314159265;
 
 
 

@@ -49,7 +49,7 @@ public class BlobFilter implements IMovingBlobReduction
 	public List<MovingBlob> filterMovingBlobs(List<MovingBlob> blobs){
 		List<MovingBlob> ret = new LinkedList<>();
 		for(MovingBlob blob : blobs){
-			if(filterMovingBlob(blob)) ret.add(blob);
+			if(filterMovingBlob(blob) || (blob != blobs.get(0))) ret.add(blob);
 		}
 		return ret;
 	}
