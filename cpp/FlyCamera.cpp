@@ -6,6 +6,7 @@
 #include "FlyCapture2_C.h" // #includes "FlyCapture2Defs_C.h","FlyCapture2Platform_C.h"
 
 #include <stdio.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -221,7 +222,7 @@ extern "C" {
 				roff = (rx & 12) >> 1; // gotta take extra sensors off in pairs, half each side..
 									   // coff = cx&15; // skip over this many bytes each row to center image in frame
 				roff = roff*cx + ((cx & 12) >> 1); // skip over this many bytes before starting, ditto
-				camData = (unsigned char*)(((long)camData) + ((long)roff));
+				camData = (unsigned char*)(((int64_t)camData) + ((int64_t)roff));
 			}
 			why = ~why; // why = -20 // pixel array size != image data size (OK)..
 			if (sofar == nx) { // capture 1st pixel for comparison in Java debugger..
@@ -470,11 +471,12 @@ extern "C" {
 		if(error != FC2_ERROR_OK)
 		{
 		    jlongArray javaArray = (env)->NewLongArray((jint) 1);
-            (env)->SetLongArrayRegion(javaArray, 0, 1, new long[1] { error });
+		    int64_t arr[] = { error };
+            (env)->SetLongArrayRegion(javaArray, 0, 1, arr);
 			return javaArray;
 		}
 		
-		long longBuffer[length];
+		int64_t longBuffer[length];
 		for (int i = 0; i < length; i++)
         	longBuffer[i] = pBuffer[i];
 		

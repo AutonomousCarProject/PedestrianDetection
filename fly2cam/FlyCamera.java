@@ -116,6 +116,13 @@ public class FlyCamera
     static
     {
         System.loadLibrary("FlyCamera");
+        
+        FlyCamera cam = new FlyCamera();
+        cam.Connect(FrameRate_15, 0, 0, 0);
+        cam.ActivateHDR();
+        
+        System.out.println(cam.SafeReadRegister(0x1A14, "you screwed up"));
+        System.exit(0);
     }
 
     public static String ErrorNumberText(int errno)
