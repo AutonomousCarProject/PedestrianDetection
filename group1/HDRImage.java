@@ -47,7 +47,17 @@ public class HDRImage implements IImage {
 		}
 		//ow, that's a lot of time
 		//step 2: HDR
+		fuseImages();
+	}
 
+	@Override
+	public IPixel[][] getImage(){
+		return out;
+	}
+
+	@Override
+	public void finish() {
+		flyCam.Finish();
 	}
 
 	private void byteConvert(int index)
@@ -91,13 +101,24 @@ public class HDRImage implements IImage {
 		}
 	}
 
+	private static int getFancyS(short r, short g, short b){
+		return Math.max(r, Math.max(g, b)) - Math.min(r, Math.min(g, b));
+	}
+
 	private void fuseImages() {
 		//find saturation, then weighted average
 		//for every pixel
 		for(int i = 0; i < images[0].length; i++){
 			for(int j = 0; j < images[0][0].length; i++){
 				//weighted average of the saturation
-				
+				int sums[] = new int[3];
+				for(int p = 0; p < images.length; p++){
+					float sat = getFancyS(images[p][i][j][0], images[p][i][j][1], images[p][i][j][2]);
+					sums[0] += images[p][i][j][0] *  sat;
+					sums[1] += images[p][i][j][1] *  sat;
+					sums[2] += images[p][i][j][2] *  sat;
+				}
+				out[i][j] = new Pixel((short)Math.floor((float)sums[0] / ((float)images.length * 255)), (short)Math.floor((float)sums[1] / ((float)images.length * 255.0f)), (short)Math.floor((float)sums[1] / ((float)images.length * 255.0f)));
 			}
 		}
 	}
