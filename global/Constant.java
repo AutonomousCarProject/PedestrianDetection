@@ -16,18 +16,6 @@ public class Constant {
 	//maximum size difference in pixels between blobs that can be matched
 	public static int MAX_CHANGE_WIDTH = 29;
 	public static int MAX_CHANGE_HEIGHT = 34;
-	
-	//maximum distance between edges to unify
-	public static int X_EDGE_DISTANCE_LIMIT = 15;
-	public static int Y_EDGE_DISTANCE_LIMIT = 25;
-	public static float X_OVERLAP_PERCENT = 0.1f;
-	public static float Y_OVERLAP_PERCENT = 0.1f;
-	
-	//maximum difference in velocity to unify
-	public static int UNIFY_VELOCITY_LIMIT_X = 10;
-	public static int UNIFY_VELOCITY_LIMIT_Y = 25;
-	public static float VELOCITY_LIMIT_INCREASE_X = 0.75f;
-	public static float VELOCITY_LIMIT_INCREASE_Y = 0.3f;
 
 	/**
 	 * BlobFilter
@@ -72,14 +60,6 @@ public class Constant {
 		case 3: DISTANCE_LIMIT_Y = (int)a; break;
 		case 4: MAX_CHANGE_WIDTH  = (int)a; break;
 		case 5: MAX_CHANGE_HEIGHT = (int)a; break;
-		case 6: X_EDGE_DISTANCE_LIMIT = (int)a; break;
-		case 7: Y_EDGE_DISTANCE_LIMIT = (int)a; break;
-		case 8: X_OVERLAP_PERCENT = (float)a; break;
-		case 9: Y_OVERLAP_PERCENT  = (float)a; break;
-		case 10: UNIFY_VELOCITY_LIMIT_X = (int)a; break;
-		case 11: UNIFY_VELOCITY_LIMIT_Y = (int)a; break;
-		case 12: VELOCITY_LIMIT_INCREASE_X = (float)a; break;
-		case 13: VELOCITY_LIMIT_INCREASE_Y = (float)a; break;
 		case 14: AGE_MIN  = (int)a; break;
 		case 15: VELOCITY_X_MAX = (int)a; break;
 		case 16: VELOCITY_Y_MAX = (int)a; break;
@@ -99,14 +79,6 @@ public class Constant {
 		case 3: return DISTANCE_LIMIT_Y;
 		case 4: return MAX_CHANGE_WIDTH;
 		case 5: return MAX_CHANGE_HEIGHT;
-		case 6: return X_EDGE_DISTANCE_LIMIT;
-		case 7: return Y_EDGE_DISTANCE_LIMIT;
-		case 8: return X_OVERLAP_PERCENT;
-		case 9: return Y_OVERLAP_PERCENT;
-		case 10: return UNIFY_VELOCITY_LIMIT_X;
-		case 11: return UNIFY_VELOCITY_LIMIT_Y;
-		case 12: return VELOCITY_LIMIT_INCREASE_X;
-		case 13: return VELOCITY_LIMIT_INCREASE_Y;
 		case 14: return AGE_MIN;
 		case 15: return VELOCITY_X_MAX;
 		case 16: return VELOCITY_Y_MAX;
