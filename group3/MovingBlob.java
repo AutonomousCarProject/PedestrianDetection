@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 public class MovingBlob extends Blob implements Serializable
 {
-    private static final long serialVersionUID = 2489237489723;
+    private static final long serialVersionUID = 31415926;
     private boolean isPedestrian = false;
     public boolean isPedestrian(){return isPedestrian;}
     public void setAsPedestrian(boolean tf){isPedestrian = tf;}
