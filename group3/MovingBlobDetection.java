@@ -17,7 +17,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 
 	//list of all moving blobs that have been recently tracked
 	private List<MovingBlob> movingBlobs;
-	private List<MovingBlob> unifiedBlobs;
+	private List<MovingBlob> filteredUnifiedBlobs;
 	
 	//maximum time before unmatched MovingBlob is deleted
 	int maxTimeOffScreen = c.MAX_TIME_OFF_SCREEN;
@@ -48,7 +48,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
-		unifiedBlobs = new LinkedList<>();
+		filteredUnifiedBlobs = new LinkedList<>();
 	}
 	
 	public List<MovingBlob> getMovingBlobs(List<Blob> blobList){
@@ -56,12 +56,37 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		return movingBlobs;
 	}
 	
-	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> blobList){
-		unifiedBlobs = updateUnifiedBlobs(blobList);
-		return unifiedBlobs;
+	public List<MovingBlob> updateFilteredUnifiedBlobs(List<MovingBlob> blobList){
+		MovingBlob[][] pairs = new MovingBlob[blobList.size()*filteredUnifiedBlobs.size()][2];
+		int j = 0;
+		for(int i1=0;i1<blobList.size();i1++){
+			for(int i2=i1+1;i2<blobList.size();i2++){
+				pairs[j][0] = filteredUnifiedBlobs.get(i1);
+				pairs[j][1] = blobList.get(i2);
+				j++;
+			}
+		}
+		Arrays.sort(pairs,new Comparator<MovingBlob[]>(){
+			@Override
+			public int compare(MovingBlob[] o1, MovingBlob[] o2) {
+				float distanceX1 = Math.abs(o1[0].predictedX-(o1[1].x+o1[1].width/2));
+				float distanceY1 = Math.abs(o1[0].predictedY-(o1[1].y+o1[1].height/2));
+				float distance1 = (float)Math.sqrt(distanceX1*distanceX1+distanceY1*distanceY1);
+				float distanceX2 = Math.abs(o2[0].predictedX-(o2[1].x+o2[1].width/2));
+				float distanceY2 = Math.abs(o2[0].predictedY-(o2[1].y+o2[1].height/2));
+				float distance2 = (float)Math.sqrt(distanceX2*distanceX2+distanceY2*distanceY2);
+				int answer = (int) Math.signum(distance1-distance2);
+				return answer;
+			}
+
+		});
+		
+		for(int i =0; i<pairs.length;i++){
+			
+		}
 	}
 
-	public List<MovingBlob> updateUnifiedBlobs(List<MovingBlob> movingBlobs){
+	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
 		float[][] finalPoints = new float[movingBlobs.size()][4];
 
 		int index = 0;
