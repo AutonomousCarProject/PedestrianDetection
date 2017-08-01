@@ -83,4 +83,16 @@ public class BlobFilter implements IMovingBlobReduction
 				blob.getDensity() > 2;
 	}
 	
+	public List<MovingBlob> filterFilteredUnifiedBlobs(List<MovingBlob> blobs){
+		List<MovingBlob> ret = new LinkedList<>();
+		for(MovingBlob blob : blobs){
+			if(filterFilteredUnifiedBlob(blob)) ret.add(blob);
+		}
+		return ret;
+	}
+	
+	private boolean filterFilteredUnifiedBlob(MovingBlob blob){
+		return blob.age > 6 && blob.ageOffScreen < 1;
+	}
+	
 }

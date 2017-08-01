@@ -21,23 +21,12 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	
 	//maximum time before unmatched MovingBlob is deleted
 	int maxTimeOffScreen = c.MAX_TIME_OFF_SCREEN;
+	int maxTimeOffScreenUnified = 3;
 	//maximum distance in pixels between blobs that can be matched
 	int distanceLimitX = c.DISTANCE_LIMIT_X;
 	int distanceLimitY = c.DISTANCE_LIMIT_Y;
 	int widthChangeLimit = c.MAX_CHANGE_WIDTH;
 	int heightChangeLimit = c.MAX_CHANGE_HEIGHT;
-
-	//maximum distance between edges to unify
-	int xEdgeDistanceLimit = c.X_EDGE_DISTANCE_LIMIT;
-	int yEdgeDistanceLimit = c.Y_EDGE_DISTANCE_LIMIT;
-	float xOverlapPercent = c.X_OVERLAP_PERCENT;
-	float yOverlapPercent = c.Y_OVERLAP_PERCENT;
-
-	//maximum difference in velocity to unify
-	int unifyVelocityLimitX = c.UNIFY_VELOCITY_LIMIT_X;
-	int unifyVelocityLimitY = c.UNIFY_VELOCITY_LIMIT_Y;
-	float velocityLimitIncreaseX = c.VELOCITY_LIMIT_INCREASE_X;
-	float velocityLimitIncreaseY = c.VELOCITY_LIMIT_INCREASE_Y;
 
 	float kernelBandwidth = 20;
 	float maxDistBetweenPointsInCluster = 60;
@@ -45,7 +34,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	float yDistWeight = 0.25f;
 	float vXWeight = 1.5f;
 	float vYWeight = 0.25f;
-	float distanceUnifyMatchLimit = 10;
+	
+	float distanceUnifyMatchLimit = 35;
 
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
@@ -57,50 +47,10 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		return movingBlobs;
 	}
 	
-	public List<MovingBlob> updateFilteredUnifiedBlobs(List<MovingBlob> blobList){
-		MovingBlob[][] pairs = new MovingBlob[blobList.size()*filteredUnifiedBlobs.size()][2];
-		int j = 0;
-		for(int i1=0;i1<blobList.size();i1++){
-			for(int i2=i1+1;i2<blobList.size();i2++){
-				pairs[j][0] = filteredUnifiedBlobs.get(i1);
-				pairs[j][1] = blobList.get(i2);
-				j++;
-			}
-		}
-		Arrays.sort(pairs,new Comparator<MovingBlob[]>(){
-			@Override
-			public int compare(MovingBlob[] o1, MovingBlob[] o2) {
-				float distanceX1 = Math.abs(o1[0].predictedX-(o1[1].x+o1[1].width/2));
-				float distanceY1 = Math.abs(o1[0].predictedY-(o1[1].y+o1[1].height/2));
-				float distance1 = (float)Math.sqrt(distanceX1*distanceX1+distanceY1*distanceY1);
-				float distanceX2 = Math.abs(o2[0].predictedX-(o2[1].x+o2[1].width/2));
-				float distanceY2 = Math.abs(o2[0].predictedY-(o2[1].y+o2[1].height/2));
-				float distance2 = (float)Math.sqrt(distanceX2*distanceX2+distanceY2*distanceY2);
-				int answer = (int) Math.signum(distance1-distance2);
-				return answer;
-			}
-
-		});
+	public List<MovingBlob> getFilteredUnifiedBlobs(List<MovingBlob> blobList){
+		updateFilteredUnifiedBlobs(blobList);
+		return filteredUnifiedBlobs;
 		
-		for(int i =0; i<pairs.length;i++){
-			float distanceX = Math.abs(pairs[i][0].predictedX-(pairs[i][1].x+pairs[i][1].width/2));
-			float distanceY = Math.abs(pairs[i][0].predictedY-(pairs[i][1].y+pairs[i][1].height/2));
-			float distance = (float)Math.sqrt(distanceX*distanceX+distanceY*distanceY);
-			if(distance<distanceUnifyMatchLimit){
-				matchUnifiedBlob(pairs[i][0],pairs[i][1]);
-			}
-		}
-	}
-	
-	private void matchUnifiedBlob(MovingBlob unifiedBlob, MovingBlob newBlob){		
-		//update information based on new position
-		unifiedBlob.x = newBlob.x;
-		unifiedBlob.y = newBlob.y;
-		unifiedBlob.width = newBlob.width;
-		unifiedBlob.height = newBlob.height;
-		unifiedBlob.age++;
-		unifiedBlob.ageOffScreen=0;
-		unifiedBlob.updatePredictedPosition();	
 	}
 
 	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
@@ -272,6 +222,80 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 
 	private float kernel(float distance, float kernelBandwidth){
 		return (float)Math.exp((-Math.pow(distance, 2))/Math.pow(kernelBandwidth, 2));
+	}
+	
+	public void updateFilteredUnifiedBlobs(List<MovingBlob> blobList){
+		MovingBlob[][] pairs = new MovingBlob[blobList.size()*filteredUnifiedBlobs.size()][2];
+		int j = 0;
+		for(int i1=0;i1<filteredUnifiedBlobs.size();i1++){
+			for(int i2=0;i2<blobList.size();i2++){
+				pairs[j][0] = filteredUnifiedBlobs.get(i1);
+				pairs[j][1] = blobList.get(i2);
+				j++;
+			}
+		}
+		Arrays.sort(pairs,new Comparator<MovingBlob[]>(){
+			@Override
+			public int compare(MovingBlob[] o1, MovingBlob[] o2) {
+				float distanceX1 = Math.abs(o1[0].predictedX-(o1[1].x+o1[1].width/2));
+				float distanceY1 = Math.abs(o1[0].predictedY-(o1[1].y+o1[1].height/2));
+				float distance1 = (float)Math.sqrt(distanceX1*distanceX1+distanceY1*distanceY1);
+				float distanceX2 = Math.abs(o2[0].predictedX-(o2[1].x+o2[1].width/2));
+				float distanceY2 = Math.abs(o2[0].predictedY-(o2[1].y+o2[1].height/2));
+				float distance2 = (float)Math.sqrt(distanceX2*distanceX2+distanceY2*distanceY2);
+				int answer = (int) Math.signum(distance1-distance2);
+				return answer;
+			}
+
+		});
+		HashSet<MovingBlob> oldBlobs = new HashSet<>(filteredUnifiedBlobs);
+		HashSet<MovingBlob> newBlobs = new HashSet<>(blobList);
+
+		for(int i =0; i<pairs.length;i++){
+			float distanceX = Math.abs(pairs[i][0].predictedX-(pairs[i][1].x+pairs[i][1].width/2));
+			float distanceY = Math.abs(pairs[i][0].predictedY-(pairs[i][1].y+pairs[i][1].height/2));
+			float distance = (float)Math.sqrt(distanceX*distanceX+distanceY*distanceY);
+			if(distance<distanceUnifyMatchLimit && oldBlobs.contains(pairs[i][0]) && newBlobs.contains(pairs[i][1])){
+				matchUnifiedBlob(pairs[i][0],pairs[i][1]);
+				oldBlobs.remove(pairs[i][0]);
+				newBlobs.remove(pairs[i][1]);
+			}
+		}
+		
+		for(MovingBlob blob : oldBlobs){
+			updateUnmatchedUnifiedBlob(blob);
+		}
+		
+		for(MovingBlob blob : newBlobs){
+			filteredUnifiedBlobs.add(blob);
+		}
+		
+	}
+	
+	private void matchUnifiedBlob(MovingBlob unifiedBlob, MovingBlob newBlob){		
+		//update information based on new position
+		unifiedBlob.x = newBlob.x;
+		unifiedBlob.y = newBlob.y;
+		unifiedBlob.width = newBlob.width;
+		unifiedBlob.height = newBlob.height;
+		unifiedBlob.age++;
+		unifiedBlob.ageOffScreen=0;
+		unifiedBlob.updatePredictedPosition();	
+	}
+	
+	private void updateUnmatchedUnifiedBlob(MovingBlob movingBlob){
+		if(movingBlob.ageOffScreen>=maxTimeOffScreenUnified){
+			//removes blob if it has been gone too long
+			this.filteredUnifiedBlobs.remove(movingBlob);
+		} else {
+			//update position based on most recent velocity
+			movingBlob.x += movingBlob.velocityX;
+			movingBlob.y += movingBlob.velocityY;
+
+			movingBlob.age++;
+			movingBlob.ageOffScreen++;
+			movingBlob.updatePredictedPosition();
+		}
 	}
 
 	private void updateMovingBlobs(List<Blob> blobList){
