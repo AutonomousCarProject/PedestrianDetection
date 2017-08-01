@@ -48,26 +48,26 @@ public class FlyCamera
 
     private static final int FC2_ERROR_OK = 0;
 
+    private void safeRegWrite(long addr, long val, String err) {
+        if(WriteRegister(addr, val) != FC2_ERROR_OK) throw new IllegalStateException(err);
+    }
+
+    private void safeRegWrite(long addrsVals[][], String err) {
+        for(long addrVal[] : addrsVals) {
+            int error;
+            if((error = WriteRegister(addrVal[0], addrVal[1])) != FC2_ERROR_OK) throw new IllegalStateException(err + " " + error);
+        }
+    }
+
     public void ActivateHDR()
     {
+        safeRegWrite(HDRCtrl, HDROn, "OH SHIT");
+        System.out.println(WriteRegister(0x1A14, 0xff));
         // Initialize HDR Registers
-        int error;
-
-        error = WriteRegister(HDRShutter1, 0x000);
-        error = WriteRegister(HDRShutter2, 0x120);
-        error = WriteRegister(HDRShutter3, 0x240);
-        error = WriteRegister(HDRShutter4, 0x360);
-                
-        error = WriteRegister(HDRGain1, 0x000);
-        error = WriteRegister(HDRGain2, 0x0E3);
-        error = WriteRegister(HDRGain3, 0x1C6);
-        error = WriteRegister(HDRGain4, 0x2A9);
-
-        if (error != FC2_ERROR_OK) throw new IllegalStateException("Error writing HDR shutter/gain registers");
-
-        // Toggle HDR
-        error = WriteRegister(HDRCtrl, HDROn);
-        if (error != FC2_ERROR_OK) throw new IllegalStateException("Error writing HDR control register");;
+        safeRegWrite(new long[][]{  {HDRShutter1, 0x000}, {HDRShutter2, 0x120}, {HDRShutter3, 0x240}, {HDRShutter4, 0x360},
+                                    {HDRGain1, 0x000}, {HDRGain2, 0x0E3}, {HDRGain3, 0x1C6}, {HDRGain4, 0x2A9},
+                                    {HDRCtrl, HDROn}},
+                                "Error writing HDR shutter/gain registers");
     }
 
     public native int WriteRegister(long address, long val);
