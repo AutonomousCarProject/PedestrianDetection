@@ -35,7 +35,7 @@ public class VariableSlider<E extends Number> extends Slider
     protected void looiStep()
     {
         super.looiStep();
-        setter.set((E)(Double)(super.getPercentage()/100.0 * (max - min) + min));
+        setter.set((E)(Double)(super.getFraction() * (max - min) + min));
         
         
     }
@@ -46,7 +46,7 @@ public class VariableSlider<E extends Number> extends Slider
     	
     	DecimalFormat df = new DecimalFormat();
     	df.setMaximumFractionDigits(2);
-    	drawString(df.format(super.getPercentage()/100.0 * (max - min) + min),getX() + getWidth()/2,getY() -20);
+    	drawString(df.format(getFraction() * (max - min) + min),getX() + getWidth()/2,getY() -20);
     }
     public void scrollToSupplierValue()
     {
@@ -60,7 +60,7 @@ public class VariableSlider<E extends Number> extends Slider
         
         //System.out.println("(" + doubleVal +"-"+ min+")/("+max+"-" + min+") * 100" + " -Peter");
         //System.out.println(percentage + " -Peter");
-        super.slideToPercentage(percentage); 
+        super.slideToFraction(getFraction()); 
         //slideToPercentage(0);
         
     }

@@ -3,15 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+//*****
 package group5;
 
+import com.looi.looi.LooiObject;
+import com.looi.looi.LooiWindow;
+import com.looi.looi.Point;
 import group1.IImage;
 import group1.IPixel;
-import group2.IBlobDetection;
-import group2.Blob;
 import group3.MovingBlob;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -25,25 +28,34 @@ import java.util.List;
 public class IImageBoxDrawer implements IImageDrawing
 {
     public static final int DEFAULT_LINE_THICKNESS = 1;
-    public static final Color DEFAULT_STILL_COLOR = Color.RED;
-    public static final Color DEFAULT_FAST_COLOR = Color.RED;
+    public static final Color DEFAULT_COLOR = Color.YELLOW;
     public static final double DEFAULT_MAX_VELOCITY = 5;
     
     
     private BufferedImage currentImage;
     private boolean useBasicColors = false;
-    private Color stillColor;
-    private Color fastColor;
+    private Color rectangleColor;
     private double maxVelocity;
-    public IImageBoxDrawer(Color still, Color fast, double maxVelocity)
+    private boolean drawAdvancedInformation = false;
+    private Rectangle[] rectangles = new Rectangle[0];
+    private int lineThickness;
+    public IImageBoxDrawer(Color rectangleColor, double maxVelocity, int lineThickness)
     {
-        this.stillColor = still;
-        this.fastColor = fast;
+        this.rectangleColor = rectangleColor;
         this.maxVelocity = maxVelocity;
+        this.lineThickness = lineThickness;
     }
     public IImageBoxDrawer()
     {
-        this(DEFAULT_STILL_COLOR,DEFAULT_FAST_COLOR,DEFAULT_MAX_VELOCITY);
+        this(DEFAULT_COLOR,DEFAULT_MAX_VELOCITY,DEFAULT_LINE_THICKNESS);
+    }
+    public boolean isDrawingAdvancedInformation()
+    {
+        return drawAdvancedInformation;
+    }
+    public void setDrawAdvancedInformation(boolean b)
+    {
+        drawAdvancedInformation = b;
     }
     public BufferedImage getCurrentImage()
     {
@@ -58,14 +70,19 @@ public class IImageBoxDrawer implements IImageDrawing
     {
         useBasicColors = b;
     }
+    public Color getRectangleColor(){return rectangleColor;}
+    public void blobsToRectangles(IImage image, List<MovingBlob> iBlobs)
+    {
+        rectangles = findRectangles(image,iBlobs);
+    }
     public void draw(IImage image, List<MovingBlob> iBlobs)
     {
-        Rectangle[] rectangles = findRectangles(image,iBlobs);
+        
         BufferedImage b = new BufferedImage(image.getImage()[0].length,image.getImage().length,BufferedImage.TYPE_INT_ARGB);
         setPixels(b,image.getImage());
         
         
-        drawLines(rectangles,b,stillColor,fastColor,DEFAULT_LINE_THICKNESS);
+        drawLines(rectangles,b);
         currentImage = b;
     }
     public void draw2(IImage image, List<MovingBlob> iBlobs,List<MovingBlob> iBlobs2)
@@ -76,8 +93,8 @@ public class IImageBoxDrawer implements IImageDrawing
          setPixels(b,image.getImage());
          
          
-         drawLines(rectangles,b,Color.RED,Color.RED,DEFAULT_LINE_THICKNESS);
-         drawLines(rectangles2, b, Color.BLUE, Color.BLUE, DEFAULT_LINE_THICKNESS);
+         drawLines(rectangles,b);
+         drawLines(rectangles2, b);
          currentImage = b;
     }
     protected Color findColor(Color min, Color max, double percent)
@@ -116,8 +133,17 @@ public class IImageBoxDrawer implements IImageDrawing
             points[2] = new Point(b.x+b.width,b.y+b.height);
             points[3] = new Point(b.x,b.y+b.height);
             
-            rectangles[i] = new Rectangle(points,b);
+            rectangles[i] = new Rectangle(points,b,this.rectangleColor,lineThickness);
         }
+        return rectangles;
+    }
+    
+    public int getLineThickness()
+    {
+        return lineThickness;
+    }
+    public Rectangle[] getRectangles()
+    {
         return rectangles;
     }
     protected void setPixels(BufferedImage b, IPixel[][] pixels)
@@ -216,14 +242,25 @@ public class IImageBoxDrawer implements IImageDrawing
         }
         
     }
-    protected void drawLines(Rectangle[] rects, BufferedImage image, Color still, Color moving, int lineThickness)
+    protected void drawLines(Rectangle[] rects, BufferedImage image)
     {
         Graphics2D g = (Graphics2D)image.getGraphics();
-        BasicStroke bs = new BasicStroke(lineThickness);
+        
         for(Rectangle r : rects)
         {
+            BasicStroke bs = new BasicStroke(r.getThickness());
+            g.setFont(new Font("",Font.PLAIN,10));
+            if(drawAdvancedInformation)
+            {
+                g.setColor(Color.BLACK); 
+                g.drawString("Age: " + r.getBlob().age+"",(int)(r.getPoints()[0].getX()-2),(int)(r.getPoints()[0].getY() - 2));
+                g.setColor(Color.BLACK); 
+                g.drawString("AgeOffScreen: " + r.getBlob().ageOffScreen+"",(int)(r.getPoints()[0].getX()-2),(int)(r.getPoints()[0].getY() - 12));
+            }
+            
             for(int i = 0; i < 4; i++)
             {
+                
                 int indexOfNextPoint;
                 if(i == 3)
                 {
@@ -240,16 +277,18 @@ public class IImageBoxDrawer implements IImageDrawing
                 
                 double velocity = Math.sqrt( (r.getBlob().velocityX)*(r.getBlob().velocityX) + (r.getBlob().velocityY)*(r.getBlob().velocityY) );
                 
-                Color lineColor = findColor(still,moving,r.getBlob().age/maxVelocity);
+                //Color lineColor = findColor(still,moving,r.getBlob().age/maxVelocity);
+                Color lineColor = r.getColor();
                 
                 g.setColor(lineColor);
                 g.drawLine((int)start.getX(),(int)start.getY(),(int)end.getX(),(int)end.getY());
+                
             }
         }
     }
     
     
-    public class Point
+    /*public class Point
     {
         private float x,y;
         public Point(float x, float y)
@@ -259,15 +298,19 @@ public class IImageBoxDrawer implements IImageDrawing
         }
         public float getX(){return x;}
         public float getY(){return y;}
-    }
+    }*/
     public class Rectangle
     {
         private Point[] points;
         private MovingBlob b;
-        public Rectangle(Point[] points, MovingBlob b)
+        private Color color;
+        private int thickness;
+        public Rectangle(Point[] points, MovingBlob b, Color color, int thickness)
         {
             this.points = points;
             this.b = b;
+            this.color = color;
+            this. thickness = thickness;
         }
         public Point[] getPoints()
         {
@@ -276,6 +319,33 @@ public class IImageBoxDrawer implements IImageDrawing
         public MovingBlob getBlob()
         {
             return b;
+        }
+        public int getThickness()
+        {
+            return thickness;
+        }
+        public void setThickness(int thickness)
+        {
+            this.thickness = thickness;
+        }
+        public Color getColor()
+        {
+            return color;
+        }
+        public void setColor(Color c)
+        {
+            this.color = c;
+        }
+        public Point[] getScaledPoints()
+        {
+            
+            Point[] points = new Point[this.points.length];
+            for(int i = 0; i < this.points.length; i++)
+            {
+                points[i] = new Point(this.points[i].getX()/currentImage.getWidth() * LooiWindow.getMainWindow().getInternalWidth(),this.points[i].getY()/currentImage.getHeight() * LooiWindow.getMainWindow().getInternalHeight());
+                //System.out.println(this.points[i].getX()/currentImage.getWidth()*LooiWindow.getMainWindow().getInternalWidth() + " | " + LooiWindow.getMainWindow().getInternalMouseX());
+            }
+            return points;
         }
     }
     

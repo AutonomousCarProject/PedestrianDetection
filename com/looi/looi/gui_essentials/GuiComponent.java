@@ -17,8 +17,8 @@ public abstract class GuiComponent extends LooiObject
     private double y;
     public GuiComponent()
     {
-        x = 0;
-        y = 0;
+        setPosition(0,0);
+        goToFront();
     }
     public GuiComponent(double x, double y)
     {
@@ -55,7 +55,11 @@ public abstract class GuiComponent extends LooiObject
     {
         super.add(g);
         g.setPosition(x+g.getX(),y+g.getY());
-        g.setLayer(getLayer()-1);
+        if(g.getLayer() > getLayer())
+        {
+            g.setLayer(getLayer()-1);
+        }
+        
         
     }
     public void remove(GuiComponent g)
