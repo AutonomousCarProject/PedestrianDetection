@@ -48,54 +48,64 @@ public class FlyCamera
 
     private static final int FC2_ERROR_OK = 0;
 
-    private void safeRegWrite(long addr, long val, String err) {
-        if(WriteRegister(addr, val) != FC2_ERROR_OK) throw new IllegalStateException(err);
-    }
-
-    private void safeRegWrite(long addrsVals[][], String err) {
-        for(long addrVal[] : addrsVals) {
-            int error;
-            if((error = WriteRegister(addrVal[0], addrVal[1])) != FC2_ERROR_OK) throw new IllegalStateException(err + " " + error);
-        }
-    }
-
     public void ActivateHDR()
     {
-        safeRegWrite(HDRCtrl, HDROn, "OH SHIT");
+        SafeWriteRegister(HDRCtrl, HDROn, "OH SHIT");
         System.out.println(WriteRegister(0x1A14, 0xff));
         // Initialize HDR Registers
-        safeRegWrite(new long[][]{  {HDRShutter1, 0x000}, {HDRShutter2, 0x120}, {HDRShutter3, 0x240}, {HDRShutter4, 0x360},
-                                    {HDRGain1, 0x000}, {HDRGain2, 0x0E3}, {HDRGain3, 0x1C6}, {HDRGain4, 0x2A9},
-                                    {HDRCtrl, HDROn}},
-                                "Error writing HDR shutter/gain registers");
+        SafeWriteRegister(new long[][] { { HDRShutter1, 0x000 }, { HDRShutter2, 0x120 }, { HDRShutter3, 0x240 },
+                { HDRShutter4, 0x360 }, { HDRGain1, 0x000 }, { HDRGain2, 0x0E3 }, { HDRGain3, 0x1C6 },
+                { HDRGain4, 0x2A9 }, { HDRCtrl, HDROn } }, "Error writing HDR shutter/gain registers");
     }
-    
-    public long SafeReadRegister(long address)
+
+    private void SafeWriteRegister(long addr, long val, String err)
+    {
+        if (WriteRegister(addr, val) != FC2_ERROR_OK)
+        {
+            throw new IllegalStateException(err + " (error code: " + -val + ").");
+        }
+    }
+
+    private void SafeWriteRegister(long addrsVals[][], String err)
+    {
+        for (long addrVal[] : addrsVals)
+        {
+            int error;
+            if ((error = WriteRegister(addrVal[0], addrVal[1])) != FC2_ERROR_OK)
+            {
+                throw new IllegalStateException(err + " (error code: " + -error + ").");
+            }
+        }
+    }
+
+    public long SafeReadRegister(long address, String err)
     {
         long val = ReadRegister(address);
-        
-        if(val < 0)
+
+        if (val < 0)
         {
-            throw new IllegalStateException("Error occurred reading register (error code " + -val + ").");
+            throw new IllegalStateException(err + " (error code: " + -val + ").");
         }
-        
+
         return val;
     }
-    
-    public long[] SafeReadRegisterBlock(long addressHigh, long addressLow)
+
+    public long[] SafeReadRegisterBlock(long addressHigh, long addressLow, String err)
     {
         long[] vals = ReadRegisterBlock(addressHigh, addressLow);
-        
-        if(vals.length == 1 && vals[0] < 0)
+
+        if (vals.length == 1 && vals[0] < 0)
         {
-            throw new IllegalStateException("Error occurred reading register block (error code " + -vals[0] + ").");
+            throw new IllegalStateException(err + " (error code: " + -vals[0] + ").");
         }
-        
+
         return vals;
     }
 
     public native int WriteRegister(long address, long val);
+
     public native long ReadRegister(long address);
+
     public native long[] ReadRegisterBlock(long addressHigh, long addressLow);
 
     public native boolean NextFrame(byte[] pixels); // fills pixels, false if
