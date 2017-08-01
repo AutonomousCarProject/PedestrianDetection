@@ -12,6 +12,14 @@ import java.util.Scanner;
 
 public abstract class Log
 {
+    static
+    {
+        File folder = new File("logs");
+        if(!folder.exists())
+        {
+            folder.mkdir();
+        }
+    }
     private static SimpleDateFormat file = new SimpleDateFormat("'logs/'yyyy-mm-dd_hh:mm:ss'.log'");
     private static SimpleDateFormat line = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
     private static LogStream los = new LogStream(file.format(new Date()));
