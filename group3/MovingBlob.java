@@ -135,4 +135,6 @@ public class MovingBlob extends Blob
     {
         return score;
     }
+    
+    public float getDensity(){return -1;}
 }

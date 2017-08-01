@@ -37,8 +37,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	float velocityLimitIncreaseX = c.VELOCITY_LIMIT_INCREASE_X;
 	float velocityLimitIncreaseY = c.VELOCITY_LIMIT_INCREASE_Y;
 
-	float kernelBandwidth = 1;
-	float maxDistBetweenPointsInCluster = 75;
+	float kernelBandwidth = 20;
+	float maxDistBetweenPointsInCluster = 60;
 	float xDistWeight = 1f;
 	float yDistWeight = 0.25f;
 	float vXWeight = 1.5f;
@@ -61,7 +61,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		} else {
 			distanceY = blob2.y-(point[1]+blob1.height);
 		}
-		distanceX = xDistWeight * (float)(Math.pow(Math.max(0,distanceX), 1));
+		distanceX = xDistWeight * (float)(Math.pow(Math.max(0,distanceX), 2));
 		distanceY = yDistWeight * Math.max(0,distanceY);
 		//System.out.println("distanceX: " + distanceX + "   distanceY: " + distanceY);
 		float distanceVX = vXWeight * (float)Math.pow(Math.abs(point[2]-blob2.velocityX), 3);
@@ -167,7 +167,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 					if(canCombine){
 						pointSet1.addAll(pointSet2);
 						for(int point: pointSet2){
-							map.remove(point)
+							map.remove(point);
 							map.put(point,pointSet1);
 						}
 					}
@@ -198,6 +198,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		float weightTotal = 0;
 		for(MovingBlob blob:movingBlobs){
 			float distance = distBetweenBlobs(point, movingBlob, blob);
+			//float weight1 = (blob.width*blob.height)/(float)Math.pow(this.kernelBandwidth, 2);
 			float weight = kernel(distance, this.kernelBandwidth);
 
 			weightTotal += weight;

@@ -2,6 +2,7 @@ package group4;
 
 import global.Constant;
 import group3.MovingBlob;
+import group3.UnifiedBlob;
 import group4.IMovingBlobReduction;
 
 import java.util.Comparator;
@@ -61,7 +62,7 @@ public class BlobFilter implements IMovingBlobReduction
 				Math.abs(blob.velocityX) < Constant.VELOCITY_X_MAX &&
 				blob.velocityChangeX < Constant.MAX_VELOCITY_CHANGE_X &&
 				blob.velocityChangeY < Constant.MAX_VELOCITY_CHANGE_Y &&
-				(float)blob.width/(float)blob.height < 1.3;
+				(float)blob.width/(float)blob.height < 1.3 && (float)blob.width*(float)blob.height > 40;
 				
 	}
 	
@@ -74,10 +75,12 @@ public class BlobFilter implements IMovingBlobReduction
 	}
 	
 	private boolean filterUnifiedBlob(MovingBlob blob){
+		System.out.println(blob.getDensity());
 		return (float)blob.width / (float)blob.height < Constant.MAX_WIDTH_HEIGHT_RATIO &&
 				blob.width < Constant.MAX_WIDTH &&
 				blob.height < Constant.MAX_HEIGHT &&
 				Math.abs(blob.getScaledVelocityX()) > Constant.MIN_SCALED_VELOCITY_X &&
-				Math.abs(blob.getScaledVelocityY()) > Constant.MIN_SCALED_VELOCITY_Y;
+				Math.abs(blob.getScaledVelocityY()) > Constant.MIN_SCALED_VELOCITY_Y &&
+				blob.getDensity() > 2;
 	}
 }
