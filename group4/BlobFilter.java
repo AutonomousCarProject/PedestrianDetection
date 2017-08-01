@@ -75,7 +75,6 @@ public class BlobFilter implements IMovingBlobReduction
 	}
 	
 	private boolean filterUnifiedBlob(MovingBlob blob){
-		System.out.println(blob.getDensity());
 		return (float)blob.width / (float)blob.height < Constant.MAX_WIDTH_HEIGHT_RATIO &&
 				blob.width < Constant.MAX_WIDTH &&
 				blob.height < Constant.MAX_HEIGHT &&
@@ -83,4 +82,5 @@ public class BlobFilter implements IMovingBlobReduction
 				Math.abs(blob.getScaledVelocityY()) > Constant.MIN_SCALED_VELOCITY_Y &&
 				blob.getDensity() > 2;
 	}
+	
 }

@@ -17,6 +17,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 
 	//list of all moving blobs that have been recently tracked
 	private List<MovingBlob> movingBlobs;
+	private List<MovingBlob> unifiedBlobs;
+	
 	//maximum time before unmatched MovingBlob is deleted
 	int maxTimeOffScreen = c.MAX_TIME_OFF_SCREEN;
 	//maximum distance in pixels between blobs that can be matched
@@ -46,35 +48,20 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
+		unifiedBlobs = new LinkedList<>();
+	}
+	
+	public List<MovingBlob> getMovingBlobs(List<Blob> blobList){
+		updateMovingBlobs(blobList);
+		return movingBlobs;
+	}
+	
+	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> blobList){
+		unifiedBlobs = updateUnifiedBlobs(blobList);
+		return unifiedBlobs;
 	}
 
-	private float distBetweenBlobs(float[] point,MovingBlob blob1,MovingBlob blob2){
-		float distanceX;
-		float distanceY;
-		if(point[0]>blob2.x){
-			distanceX = point[0]-(blob2.x+blob2.width);
-		} else {
-			distanceX = blob2.x-(point[0]+blob1.width);
-		}
-		if(point[1]>blob2.y){
-			distanceY = point[1]-(blob2.y+blob2.height);
-		} else {
-			distanceY = blob2.y-(point[1]+blob1.height);
-		}
-		distanceX = xDistWeight * (float)(Math.pow(Math.max(0,distanceX), 2));
-		distanceY = yDistWeight * Math.max(0,distanceY);
-		//System.out.println("distanceX: " + distanceX + "   distanceY: " + distanceY);
-		float distanceVX = vXWeight * (float)Math.pow(Math.abs(point[2]-blob2.velocityX), 3);
-		float distanceVY = vYWeight * Math.abs(point[3]-blob2.velocityY);
-		return (float) Math.sqrt(distanceX*distanceX + distanceY*distanceY + distanceVX*distanceVX + distanceVY*distanceVY);
-	}
-
-	private float distBetweenPoints(float[] point1,float[] point2){
-		return (float)Math.sqrt(Math.pow(xDistWeight*(point1[0]-point2[0]), 2)+Math.pow(yDistWeight*(point1[1]-point2[1]), 2)+
-				Math.pow(vXWeight*(point1[2]-point2[2]), 2)+Math.pow(vYWeight*(point1[3]-point2[3]), 2));
-	}
-
-	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
+	public List<MovingBlob> updateUnifiedBlobs(List<MovingBlob> movingBlobs){
 		float[][] finalPoints = new float[movingBlobs.size()][4];
 
 		int index = 0;
@@ -193,7 +180,32 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		}
 		return unifiedBlobs;
 	}
+	
+	private float distBetweenBlobs(float[] point,MovingBlob blob1,MovingBlob blob2){
+		float distanceX;
+		float distanceY;
+		if(point[0]>blob2.x){
+			distanceX = point[0]-(blob2.x+blob2.width);
+		} else {
+			distanceX = blob2.x-(point[0]+blob1.width);
+		}
+		if(point[1]>blob2.y){
+			distanceY = point[1]-(blob2.y+blob2.height);
+		} else {
+			distanceY = blob2.y-(point[1]+blob1.height);
+		}
+		distanceX = xDistWeight * (float)(Math.pow(Math.max(0,distanceX), 2));
+		distanceY = yDistWeight * Math.max(0,distanceY);
+		//System.out.println("distanceX: " + distanceX + "   distanceY: " + distanceY);
+		float distanceVX = vXWeight * (float)Math.pow(Math.abs(point[2]-blob2.velocityX), 3);
+		float distanceVY = vYWeight * Math.abs(point[3]-blob2.velocityY);
+		return (float) Math.sqrt(distanceX*distanceX + distanceY*distanceY + distanceVX*distanceVX + distanceVY*distanceVY);
+	}
 
+	private float distBetweenPoints(float[] point1,float[] point2){
+		return (float)Math.sqrt(Math.pow(xDistWeight*(point1[0]-point2[0]), 2)+Math.pow(yDistWeight*(point1[1]-point2[1]), 2)+
+				Math.pow(vXWeight*(point1[2]-point2[2]), 2)+Math.pow(vYWeight*(point1[3]-point2[3]), 2));
+	}
 
 	private float[] shift(float[] point, MovingBlob movingBlob, List<MovingBlob> movingBlobs){
 		float[] shift = {0,0,0,0};
@@ -220,11 +232,6 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		return (float)Math.exp((-Math.pow(distance, 2))/Math.pow(kernelBandwidth, 2));
 	}
 
-	public List<MovingBlob> getMovingBlobs(List<Blob> blobList){
-		updateMovingBlobs(blobList);
-		return movingBlobs;
-	}
-
 	private void updateMovingBlobs(List<Blob> blobList){
 		//set of unmatched movingblobs (all are unmatched at start of frame)
 		HashSet<MovingBlob> movingBlobSet = new HashSet<>(getMovingBlobs());
@@ -233,7 +240,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		//queue with shortest distance pairs of movingblobs and blobs in front
 		PriorityQueue<BlobPair> queue = new PriorityQueue<>();
 		for(Blob blob:blobList){
-			for(MovingBlob movingBlob:getMovingBlobs()){
+			for(MovingBlob movingBlob:this.movingBlobs){
 				//creates pairs in queue of blobs & moving blobs with same color within 100 pixels
 				if(blob.color.getColor()==movingBlob.color.getColor()){
 					float distanceX = Math.abs(movingBlob.predictedX-(blob.x+blob.width/2));
@@ -268,9 +275,10 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		for(MovingBlob movingBlob:movingBlobSet){
 			updateUnmatched(movingBlob);
 		}
+		
 		//creates new MovingBlobs for unmatched blobs
 		for(Blob blob:blobSet){
-			getMovingBlobs().add(new MovingBlob(blob));
+			this.movingBlobs.add(new MovingBlob(blob));
 		}
 	}
 
@@ -287,7 +295,6 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	}
 
 	private void updateUnmatched(MovingBlob movingBlob){
-
 		if(movingBlob.ageOffScreen>=maxTimeOffScreen){
 			//removes blob if it has been gone too long
 			getMovingBlobs().remove(movingBlob);
@@ -332,9 +339,5 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 
 	public List<MovingBlob> getMovingBlobs() {
 		return movingBlobs;
-	}
-
-	public void setMovingBlobs(List<MovingBlob> movingBlobs) {
-		this.movingBlobs = movingBlobs;
 	}
 }
