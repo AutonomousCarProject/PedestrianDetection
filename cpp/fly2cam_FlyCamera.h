@@ -59,7 +59,7 @@ JNIEXPORT jint JNICALL Java_fly2cam_FlyCamera_WriteRegister
 JNIEXPORT jlong JNICALL Java_fly2cam_FlyCamera_ReadRegister
   (JNIEnv *, jobject, jlong);
 JNIEXPORT jlongArray JNICALL Java_fly2cam_FlyCamera_ReadRegisterBlock
-  (JNIEnv *, jobject, jlong, jlong)
+  (JNIEnv *, jobject, jlong, jlong);
   
 
 #ifdef __cplusplus
