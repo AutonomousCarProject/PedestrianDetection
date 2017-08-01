@@ -1,11 +1,16 @@
 package group3;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
 
 import group2.Blob;
 
 public class UnifiedBlob extends MovingBlob {
+
+	private static final long serialVersionUID = 5783526117689296428l;
+
+
 
 	public UnifiedBlob(Set<MovingBlob> movingBlobs) {
 		super();
@@ -53,5 +58,7 @@ public class UnifiedBlob extends MovingBlob {
 		
 		this.updatePredictedPosition();
 	}
+
+	public UnifiedBlob() {}
 
 }

@@ -35,7 +35,7 @@ public class FileImage implements IImage
         image = new Pixel[height][width];
 
         tile = flyCam.PixTile();
-        System.out.println("tile: "+tile+" width: "+width+" height: "+height);
+        //System.out.println("tile: "+tile+" width: "+width+" height: "+height);
 
     }
 
@@ -63,7 +63,7 @@ public class FileImage implements IImage
 
         if(autoCount > autoFreq && autoFreq > -1) {
             autoConvertWeighted();
-            System.out.println("Calibrating");
+            //System.out.println("Calibrating");
             autoCount = 0;
         }
         else{

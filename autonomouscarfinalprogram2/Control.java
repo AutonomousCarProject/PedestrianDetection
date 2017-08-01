@@ -6,6 +6,7 @@
 //*****
 package autonomouscarfinalprogram2;
 
+import AIGroup.Thresholds;
 import ai_data_creation.BlobSelector;
 import com.looi.looi.LooiObject;
 import com.looi.looi.Point;
@@ -104,7 +105,7 @@ public class Control extends LooiObject
 
         String text[] = {"Age Min","Velocity X Max", "Velocity Y Max",
                 "Max Velocity Change X", "Max Velocity Change Y", "Max Width Height Ratio", "Max Width",
-                "Max Height", "Max Scaled Velocity X", "Max Scaled Velocity Y", };
+                "Max Height", "Max Scaled Velocity X", "Max Scaled Velocity Y"};
 
 
         // displays text
@@ -133,7 +134,7 @@ public class Control extends LooiObject
         pedestrianAccuracy = new AstheticButton(10, 100*text.length + 200, 150, 100, "Blob Accuracy", Color.BLUE) {
             @Override
             protected void action() {
-                new Text(10, 100*text.length + 300, 150, 100, new Background(Color.WHITE), "hello"/*Thresholds.calculateAccuracy()*/).looiPaint();
+                scrollBox.add(scrollBox.new ScrollBoxObject(new Text(180, 100*text.length + 240, 100, 50, new Background(Color.WHITE), "" + Thresholds.getScore("blob_save_0.9426706187885655"))));
             }
         };
         pedestrianAccuracy.setLayer(-999);

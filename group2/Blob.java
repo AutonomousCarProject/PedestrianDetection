@@ -11,6 +11,7 @@ public class Blob
 
     public static int currentId = 0;
 
+    public Blob() {}
     public Blob(int width, int height, int x, int y, IPixel color)
     {
         set(width, height, x, y, color);
