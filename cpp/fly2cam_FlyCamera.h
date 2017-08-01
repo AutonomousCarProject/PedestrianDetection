@@ -52,8 +52,8 @@ JNIEXPORT jint JNICALL Java_fly2cam_FlyCamera_GetGain
 
 JNIEXPORT jint JNICALL Java_fly2cam_FlyCamera_ActivateHDR
   (JNIEnv *, jobject);
-_fc2Error WriteRegister
-  	(int reg, int val);
+int WriteRegister
+  	(unsigned int, unsigned int);
 
 
 #ifdef __cplusplus

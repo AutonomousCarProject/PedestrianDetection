@@ -28,7 +28,7 @@ extern "C" {
 	JNIEXPORT jboolean JNICALL Java_fly2cam_FlyCamera_Connect
 	(JNIEnv *env, jobject thisObj, jint frameRate, jint exposure, jint shutter, jint gain) {
 		int why = 0, rose = 0, colz = 0, tile = 0, form = 0, sofar = 0, DebugShow = 0;
-		int nx, stride = 0;
+		unsigned int nx, stride = 0;
 		fc2Error nerror = FC2_ERROR_OK;
 		fc2PGRGuid camGuid; // only used to select the single camera
 		fc2Config info; // so we can look at what it thinks it will do
@@ -162,7 +162,7 @@ extern "C" {
 	JNIEXPORT jboolean JNICALL Java_fly2cam_FlyCamera_NextFrame
 	(JNIEnv *env, jobject thisObj, jbyteArray pixels) {
 		int tile, rx, cx, nx = 0, roff = 0, coff = 0, sofar = 0, colz = 0, why = 19;
-		int zx = 0;
+		unsigned int zx = 0;
 		fc2Error nerror = FC2_ERROR_OK;
 		jsize lxx = 0;
 		jbyte * Jpix = NULL;  jbyte * Ipix = NULL;
@@ -411,16 +411,20 @@ extern "C" {
 		
 	}
 	
-	int WriteRegister(int reg, int val)
+ 	/*
+	 	FLYCAPTURE2_C_API fc2Error fc2WriteRegister (fc2Context context, unsigned int address, unsigned int value)
+		FLYCAPTURE2_C_API fc2Error fc2ReadRegister (fc2Context context, unsigned int address, unsigned int* pvalue)
+    */
+	int WriteRegister(unsigned int address, unsigned int val)
 	{
 		fc2Error error = FC2_ERROR_OK;
-		int toWrite;
 		
-		error = fc2ReadRegister(reg, &toWrite);
+		unsigned int* readVal;
+		error = fc2ReadRegister(&theContext, address, readVal);
 		if(error != FC2_ERROR_OK) return (int) error;
 		
-		toWrite = val;
-		return (int) fc2WriteRegister(reg, toWrite, false);	
+		*readVal = val;
+		return (int) fc2WriteRegister(&theContext, address, val);	
 	}
 
 #ifdef __cplusplus
