@@ -45,6 +45,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	float yDistWeight = 0.25f;
 	float vXWeight = 1.5f;
 	float vYWeight = 0.25f;
+	float distanceUnifyMatchLimit = 10;
 
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
@@ -82,7 +83,12 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		});
 		
 		for(int i =0; i<pairs.length;i++){
-			
+			float distanceX = Math.abs(pairs[i][0].predictedX-(pairs[i][1].x+pairs[i][1].width/2));
+			float distanceY = Math.abs(pairs[i][0].predictedY-(pairs[i][1].y+pairs[i][1].height/2));
+			float distance = (float)Math.sqrt(distanceX*distanceX+distanceY*distanceY);
+			if(distance<distanceUnifyMatchLimit){
+				matchUnifiedBlob(pairs[i][0],pairs[i][1]);
+			}
 		}
 	}
 
