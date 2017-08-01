@@ -22,7 +22,8 @@ public class FlyCamera {
   public native int GetShutter();
   public native int SetGain(int gain);
   public native int GetGain();
-  
+  public native int ActivateHDR();
+ 
   public native boolean NextFrame(byte[] pixels); // fills pixels, false if can't
   public native void Finish(); // required at end to prevent memory leaks
 
