@@ -421,13 +421,69 @@ extern "C" {
 		
 		fc2Error error = FC2_ERROR_OK;
 		
-		unsigned int* readVal;
-		error = fc2ReadRegister(&theContext, address, readVal);
+		unsigned int readVal;
+		error = fc2ReadRegister(theContext, address, &readVal);
 		if(error != FC2_ERROR_OK) return (int) error;
 		
-		*readVal = val;
-		return (int) fc2WriteRegister(&theContext, address, val);	
+		readVal = val;
+		return (int) fc2WriteRegister(theContext, address, val);	
 	}
+	
+// 	fc2WriteRegisterBlock (fc2Context context, unsigned short addressHigh,
+// 	unsigned int addressLow, const unsigned int ∗ pBuffer, unsigned int length)
+// 
+// 	JNIEXPORT jint JNICALL Java_fly2cam_FlyCamera_WriteRegisterBlock
+// 	(JNIEnv *env, jobject thisObj, jlong addressHigh, jlong addressLow, jlongArray toWrite)
+// 	{
+// 		unsigned int address = (unsigned int)(addressHigh - addressLow)
+// 		long longBuffer[length];
+// 		for (int i = 0; i < length; i++)
+//         	longBuffer[i] = pBuffer[i];
+//         		
+// 	}
+	
+	
+	JNIEXPORT jlong JNICALL Java_fly2cam_FlyCamera_ReadRegister
+	(JNIEnv *env, jobject thisObj, jlong laddress)
+	{
+		unsigned int address = (unsigned int)(laddress);
+		
+		fc2Error error = FC2_ERROR_OK;
+		
+		unsigned int readVal;
+		error = fc2ReadRegister(theContext, address, &readVal);
+		if(error != FC2_ERROR_OK) return -((jlong) error);
+
+		return ((jlong) readVal);
+	}
+	
+	JNIEXPORT jlongArray JNICALL Java_fly2cam_FlyCamera_ReadRegisterBlock
+	(JNIEnv *env, jobject thisObj, jlong addressHigh, jlong addressLow)
+	{
+		unsigned int length = (unsigned int)(addressHigh - addressLow);
+		
+		unsigned int pBuffer[length];
+		
+		fc2Error error = FC2_ERROR_OK;
+		
+		error = fc2ReadRegisterBlock(&theContext, addressHigh, addressLow, pBuffer, length);
+		if(error != FC2_ERROR_OK)
+		{
+		    jlongArray javaArray = (env)->NewLongArray((jint) 1);
+            (env)->SetLongArrayRegion(javaArray, 0, 1, new long[1] { error });
+			return javaArray;
+		}
+		
+		long longBuffer[length];
+		for (int i = 0; i < length; i++)
+        	longBuffer[i] = pBuffer[i];
+		
+	    jlongArray javaArray = (env)->NewLongArray((jint) length);
+        (env)->SetLongArrayRegion(javaArray, 0, length, longBuffer);
+		
+		return javaArray;
+	}
+	
 
 #ifdef __cplusplus
 }

@@ -69,8 +69,34 @@ public class FlyCamera
         error = WriteRegister(HDRCtrl, HDROn);
         if (error != FC2_ERROR_OK) throw new IllegalStateException("Error writing HDR control register");;
     }
+    
+    public long SafeReadRegister(long address)
+    {
+        long val = ReadRegister(address);
+        
+        if(val < 0)
+        {
+            throw new IllegalStateException("Error occurred reading register (error code " + -val + ").");
+        }
+        
+        return val;
+    }
+    
+    public long[] SafeReadRegisterBlock(long addressHigh, long addressLow)
+    {
+        long[] vals = ReadRegisterBlock(addressHigh, addressLow);
+        
+        if(vals.length == 1 && vals[0] < 0)
+        {
+            throw new IllegalStateException("Error occurred reading register block (error code " + -vals[0] + ").");
+        }
+        
+        return vals;
+    }
 
     public native int WriteRegister(long address, long val);
+    public native long ReadRegister(long address);
+    public native long[] ReadRegisterBlock(long addressHigh, long addressLow);
 
     public native boolean NextFrame(byte[] pixels); // fills pixels, false if
                                                     // can't
