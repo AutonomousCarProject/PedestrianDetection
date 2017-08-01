@@ -1,5 +1,7 @@
 package group1;
 
+import java.awt.Image;
+
 //Defines basic implementation for pixel
 public class Pixel implements IPixel
 { // 0-765
@@ -111,7 +113,8 @@ public class Pixel implements IPixel
             color = 1;
         else if (b > r && b > g) color = 2;
     }
-
+    
+    
     /*
      * public void convert(){ //luminance = sum of rgb luma = (short)(red +
      * green + blue);

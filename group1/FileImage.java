@@ -63,10 +63,13 @@ public class FileImage implements IImage
 
         if(autoCount > autoFreq && autoFreq > -1) {
             autoConvertV2();
+            filteredConvert();
             autoCount = 0;
         }
         else{
-            byteConvert();
+       		byteConvert();
+            filteredConvert();
+            //byteConvert();
         }
     }
 /*
@@ -393,6 +396,65 @@ public class FileImage implements IImage
         Pixel.whiteMargin = average2 + whiteRange;
     	
     }
+    
+ 	private void filteredConvert() //low-pass filtering
+	{
+ 		
+		double redAvg = 0, blueAvg = 0, greenAvg = 0;
+		double r, g, b;
+		//double[][] kernel = {{0.1111, 0.1111, 0.1111}, {0.1111, 0.1111, 0.1111}, {0.1111, 0.1111, 0.1111}};
+		//double[][] kernel = {{1, 1, 1}, {1 ,1 ,1}, {1, 1, 1}};
+		double multiplier = 1.0/9.0;
+		
+		
+		
+		for(int i = 1 ; i < image.length - 1 ; i++) {
+			
+			for(int j = 1 ; j < image[0].length - 1 ; j++) {
+				
+				
+				for(int h = -1 ; h < 2 ; h++) {
+					
+					for(int k = -1 ; k < 2 ; k++) {
+						
+						r = image[i+h][j+k].getRed();
+						b = image[i+h][j+k].getBlue();
+						g = image[i+h][j+k].getGreen();
+						
+						
+						redAvg += r * multiplier;
+						blueAvg += b * multiplier;
+						greenAvg += g * multiplier;
+						
+						
+						/*
+						redAvg += r * kernel[h+1][k+1];
+						blueAvg += b * kernel[h+1][k+1];
+						greenAvg += g * kernel[h+1][k+1];
+						*/
+						
+					}
+					
+				}
+				
+				/*
+				redAvg = redAvg/9;
+				blueAvg = blueAvg/9;
+				greenAvg = greenAvg/9;
+				*/
+				
+				image[i][j].setRGB((short)redAvg, (short)blueAvg, (short)greenAvg);
+				redAvg = 0;
+				blueAvg = 0;
+				greenAvg = 0;
+				
+			}
+			
+		}
+
+		
+		
+	}
 
     public float autoThreshold(Pixel[][] image) //takes rgb image, returns float threshold
     {
