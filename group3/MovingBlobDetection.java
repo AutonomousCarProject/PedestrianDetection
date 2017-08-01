@@ -28,14 +28,14 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	int widthChangeLimit = c.MAX_CHANGE_WIDTH;
 	int heightChangeLimit = c.MAX_CHANGE_HEIGHT;
 
-	float kernelBandwidth = 20;
+	float kernelBandwidth = 15;
 	float maxDistBetweenPointsInCluster = 63;
 	float xDistWeight = 1f;
 	float yDistWeight = 0.25f;
-	float vXWeight = 2.5f;
+	float vXWeight = 1.5f;
 	float vYWeight = 0.25f;
 	
-	float distanceUnifyMatchLimit = 45;
+	float distanceUnifyMatchLimit = 60;
 
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
