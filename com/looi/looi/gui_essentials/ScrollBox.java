@@ -80,6 +80,19 @@ public class ScrollBox extends Rectangle
         }
         hideAndShowScrollBoxObjects();
     }
+    public void setPosition(double x, double y)
+    {
+        double deltaX = x - this.getX();
+        double deltaY = y - this.getY();
+        super.setPosition(x,y);
+
+        if(scrollBoxObjects == null) return;
+        for(ScrollBoxObject s : scrollBoxObjects)
+        {
+            s.setVirtualPosition(s.getVirtualX() + deltaX , s.getVirtualY() + deltaY);
+        }
+    }
+
     protected void findHighLowAndHeight()
     {
         if(scrollBoxObjects.isEmpty())

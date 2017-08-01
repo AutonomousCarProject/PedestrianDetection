@@ -9,11 +9,11 @@ package autonomouscarfinalprogram2;
 import ai_data_creation.BlobSelector;
 import com.looi.looi.LooiObject;
 import com.looi.looi.Point;
+import com.looi.looi.gui_essentials.*;
 import com.looi.looi.gui_essentials.Button;
 import com.looi.looi.gui_essentials.Rectangle;
-import com.looi.looi.gui_essentials.ScrollBox;
-import group1.IPixel;
 import com.looi.looi.gui_essentials.Window;
+import group1.IPixel;
 
 import global.Constant;
 import group1.FileImage;
@@ -23,6 +23,8 @@ import group3.MovingBlob;
 import group3.MovingBlobDetection;
 import group4.BlobFilter;
 import group5.IImageBoxDrawer;
+
+import java.awt.*;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,7 @@ public class Control extends LooiObject
     private FileImage currentImage;
     
     private Button toggleGraphics;
+    private Button pedestrianAccuracy;
     private ScrollBox scrollBox;
     private Window sliderWindow;
     
@@ -59,24 +62,18 @@ public class Control extends LooiObject
     
     private int yCoordinate;
     
-    private LoadTextBox ltb;
-    
     List<Blob> knownBlobs;
     List<MovingBlob> movingBlobs;
     List<MovingBlob> fmovingBlobs;
     List<MovingBlob> unifiedBlobs;
     
-    private Point lassoStart;
-    private Point lassoEnd;
-    private Point[] lassoSelection;
-    
     private BlobSelector blobSelector;
     public Control(int frameDelay, boolean useCamera)
     {
-        ArrayList<VariableSlider> variableSliders = new ArrayList<>();
         blobDetection = new BlobDetection();
         movingBlobDetection = new MovingBlobDetection();
         blobFilter = new BlobFilter();
+
         if(!useCamera)
         {
             currentImage = new FileImage();
@@ -85,6 +82,7 @@ public class Control extends LooiObject
         {
             //currentImage = new Image(1,1,1); 
         }
+
         boxDrawer = new IImageBoxDrawer();
         boxDrawer.setUsingBasicColors(true);
 
@@ -96,12 +94,50 @@ public class Control extends LooiObject
         IPixel[][] firstFrame = currentImage.getImage();
         
         frames = new ArrayDeque<IPixel[][]>(5);
-        
+
         frames.addFirst(firstFrame);
         blobSelector = new BlobSelector(boxDrawer,this);
-        
-       
-        
+
+        sliderWindow = new DraggingWindow(100, 100, 500, 500, new Background(Color.WHITE));
+        sliderWindow.add(sliderWindow.new ExitButton());
+        sliderWindow.add(scrollBox = new ScrollBox(25, 100, 450, 375, new Background(new Color(250, 250, 255))));
+
+        String text[] = {"Age Min","Velocity X Max", "Velocity Y Max",
+                "Max Velocity Change X", "Max Velocity Change Y", "Max Width Height Ratio", "Max Width",
+                "Max Height", "Max Scaled Velocity X", "Max Scaled Velocity Y", };
+
+
+        // displays text
+        for(int i = 0; i < text.length; i++) {
+            //displays text
+            scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150, i*100+20, 100, 30, new Background(Color.WHITE), text[i])));
+            //displays Constant Editors
+            scrollBox.add(scrollBox.new ScrollBoxObject(
+                                    new ConstantEditor(10,i*100+20,100,50, new Background(Color.WHITE), "" + Constant.getVariable(i+14),
+                                                        Text.ONLY_AVAILIBLE_FONT, Color.BLACK, 10,5, 0, i+14))); //constantIndex is i + 14 to start at BlobFilter constants in Constant class
+        }
+
+        scrollBox.add(scrollBox.new ScrollBoxObject(new SaveButton(10,100*text.length,150,100,"Save",new Color(150,200,40))));
+
+        toggleGraphics = new AstheticButton(10,100*text.length+100,135,100,"Toggle Graphics",Color.GRAY)
+        {
+            @Override
+            protected void action()
+            {
+                boxDrawer.setUsingBasicColors(!boxDrawer.isUsingBasicColors());
+            }
+        };
+        toggleGraphics.setLayer(-999);
+        scrollBox.add(scrollBox.new ScrollBoxObject(toggleGraphics));
+
+        pedestrianAccuracy = new AstheticButton(10, 100*text.length + 200, 150, 100, "Blob Accuracy", Color.BLUE) {
+            @Override
+            protected void action() {
+                new Text(10, 100*text.length + 300, 150, 100, new Background(Color.WHITE), "hello"/*Thresholds.calculateAccuracy()*/).looiPaint();
+            }
+        };
+        pedestrianAccuracy.setLayer(-999);
+        scrollBox.add(scrollBox.new ScrollBoxObject(pedestrianAccuracy));
     }
     
     
@@ -152,8 +188,6 @@ public class Control extends LooiObject
             boxDrawer.blobsToRectangles(currentImage, movingBlobs);
         }
         boxDrawer.draw(currentImage, unifiedBlobs);
-        
-    	
     }
     public List<MovingBlob> getUnifiedBlobs()
     {
