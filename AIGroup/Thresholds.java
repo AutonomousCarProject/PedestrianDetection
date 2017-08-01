@@ -52,7 +52,7 @@ public class Thresholds {
 
     public static List<MovingBlob> getFrame(String filename){
         List<MovingBlob> blobs = new LinkedList<>();
-        
+
         try{
             FileInputStream fis = new FileInputStream(filename);
             ObjectInputStream ois = new ObjectInputStream(fis);
