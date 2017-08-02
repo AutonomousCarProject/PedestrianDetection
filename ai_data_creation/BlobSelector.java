@@ -160,6 +160,7 @@ public class BlobSelector extends LooiObject
         FileOutputStream fos = new FileOutputStream(name);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
         oos.writeObject(control.getUnifiedBlobs()); 
+        System.out.println("Serialization size: " + control.getMovingBlobs().size());
         
         ArrayList<String> existingLines = new ArrayList<>();
         try
@@ -283,14 +284,14 @@ public class BlobSelector extends LooiObject
         {
             r.setColor(originalRectangleColor); 
             r.setThickness(originalLineThickness);
-            r.getBlob().setAsPedestrian(false);
+            r.getMovingBlob().setAsPedestrian(false);
         }
         for(Rectangle r : this.selectedRectangles)
         {
             //System.out.println(r);
             r.setColor(selectedColor);
             r.setThickness(newLineThickness);
-            r.getBlob().setAsPedestrian(true); 
+            r.getMovingBlob().setAsPedestrian(true); 
         }
     }
     public interface InputAction<E,J>
