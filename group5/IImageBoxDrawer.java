@@ -75,7 +75,7 @@ public class IImageBoxDrawer implements IImageDrawing
     {
         rectangles = findRectangles(image,iBlobs);
     }
-    public void draw(IImage image, List<? extends Blob> iBlobs)
+    public void draw(IImage image)
     {
         
         BufferedImage b = new BufferedImage(image.getImage()[0].length,image.getImage().length,BufferedImage.TYPE_INT_ARGB);
