@@ -15,6 +15,7 @@ public class FlyCamera {
   private final String fiName = "src/group1/fly0cam/FlyCapped.By8";
 
 
+
   public int rose, // actual number of rows = FlyCap2.fc2Image.rows/2
       colz, // actual number of columns = FlyCap2.fc2Image.cols/2
       tile, // see FlyCapture2Defs.fc2BayerTileFormat
