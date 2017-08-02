@@ -6,11 +6,11 @@
 //*****
 package group5;
 
-import com.looi.looi.LooiObject;
 import com.looi.looi.LooiWindow;
 import com.looi.looi.Point;
 import group1.IImage;
 import group1.IPixel;
+import group2.Blob;
 import group3.MovingBlob;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -71,11 +71,11 @@ public class IImageBoxDrawer implements IImageDrawing
         useBasicColors = b;
     }
     public Color getRectangleColor(){return rectangleColor;}
-    public void blobsToRectangles(IImage image, List<MovingBlob> iBlobs)
+    public void blobsToRectangles(IImage image, List<? extends Blob> iBlobs)
     {
         rectangles = findRectangles(image,iBlobs);
     }
-    public void draw(IImage image, List<MovingBlob> iBlobs)
+    public void draw(IImage image, List<? extends Blob> iBlobs)
     {
         
         BufferedImage b = new BufferedImage(image.getImage()[0].length,image.getImage().length,BufferedImage.TYPE_INT_ARGB);
@@ -119,13 +119,13 @@ public class IImageBoxDrawer implements IImageDrawing
         if(newBlue < 0) newBlue = 0;
         return new Color(newRed,newGreen,newBlue);
     }
-    protected Rectangle[] findRectangles(IImage image, List<MovingBlob> iBlobs)
+    protected Rectangle[] findRectangles(IImage image, List<? extends Blob> iBlobs)
     {
         //...
         Rectangle[] rectangles = new Rectangle[iBlobs.size()];
         for(int i = 0; i < iBlobs.size(); i++)
         {
-            MovingBlob b = iBlobs.get(i);
+            Blob b = iBlobs.get(i);
             Point[] points = new Point[4];
 
             points[0] = new Point(b.x,b.y);
@@ -253,9 +253,9 @@ public class IImageBoxDrawer implements IImageDrawing
             if(drawAdvancedInformation)
             {
                 g.setColor(Color.BLACK); 
-                g.drawString("Age: " + r.getBlob().age+"",(int)(r.getPoints()[0].getX()-2),(int)(r.getPoints()[0].getY() - 2));
+                g.drawString("Age: " + r.getMovingBlob().age+"",(int)(r.getPoints()[0].getX()-2),(int)(r.getPoints()[0].getY() - 2));
                 g.setColor(Color.BLACK); 
-                g.drawString("AgeOffScreen: " + r.getBlob().ageOffScreen+"",(int)(r.getPoints()[0].getX()-2),(int)(r.getPoints()[0].getY() - 12));
+                g.drawString("AgeOffScreen: " + r.getMovingBlob().ageOffScreen+"",(int)(r.getPoints()[0].getX()-2),(int)(r.getPoints()[0].getY() - 12));
             }
             
             for(int i = 0; i < 4; i++)
@@ -275,7 +275,7 @@ public class IImageBoxDrawer implements IImageDrawing
                 
                 g.setStroke(bs);
                 
-                double velocity = Math.sqrt( (r.getBlob().velocityX)*(r.getBlob().velocityX) + (r.getBlob().velocityY)*(r.getBlob().velocityY) );
+                double velocity = Math.sqrt( (r.getMovingBlob().velocityX)*(r.getMovingBlob().velocityX) + (r.getMovingBlob().velocityY)*(r.getMovingBlob().velocityY) );
                 
                 //Color lineColor = findColor(still,moving,r.getBlob().age/maxVelocity);
                 Color lineColor = r.getColor();
@@ -302,10 +302,10 @@ public class IImageBoxDrawer implements IImageDrawing
     public class Rectangle
     {
         private Point[] points;
-        private MovingBlob b;
+        private Blob b;
         private Color color;
         private int thickness;
-        public Rectangle(Point[] points, MovingBlob b, Color color, int thickness)
+        public Rectangle(Point[] points, Blob b, Color color, int thickness)
         {
             this.points = points;
             this.b = b;
@@ -316,9 +316,16 @@ public class IImageBoxDrawer implements IImageDrawing
         {
             return points;
         }
-        public MovingBlob getBlob()
+        public Blob getBlob()
         {
+            
             return b;
+        }
+        public MovingBlob getMovingBlob()
+        {
+            if(b instanceof MovingBlob)
+                return (MovingBlob)b;
+            return new MovingBlob(b);
         }
         public int getThickness()
         {
