@@ -72,10 +72,24 @@ public class FileImage implements IImage
         else{
         	byteConvert();
         }
-        getMedianFilteredImage();
+        image = convertImage(getGaussianBlurredImage(getMedianFilteredImage()));
     }
     
-    public void getMedianFilteredImage(){
+    public IPixel[][] convertImage(Pixel[][] imageToConvert){
+    	IPixel[][] newImage = new Pixel[imageToConvert.length][imageToConvert[0].length];
+		for(int b1=0;b1<imageToConvert.length;b1++){
+			for(int b2=0;b2<imageToConvert[0].length;b2++){
+				Pixel p = imageToConvert[b1][b2];
+				p.simpleConvert();
+				newImage[b1][b2] = p;
+			}
+		}
+		return newImage;
+    }
+    
+    
+    
+    public IPixel[][] getMedianFilteredImage(){
        
     	IPixel[][] filteredImage = new Pixel[image.length][image[0].length];
     	int windowSize = 3;
@@ -109,13 +123,7 @@ public class FileImage implements IImage
     			}	
     		}
     	}
-    	Pixel[][] fBlurredImage = getGaussianBlurredImage(filteredImage);
-		for(int b1=0;b1<fBlurredImage.length;b1++){
-			for(int b2=0;b2<fBlurredImage[0].length;b2++){
-				fBlurredImage[b1][b2].simpleConvert();
-			}
-		}
-    	image = fBlurredImage;
+    	return filteredImage;
     }
     
     public Pixel[][] getGaussianBlurredImage(IPixel[][] rImage){
