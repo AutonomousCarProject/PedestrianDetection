@@ -173,7 +173,6 @@ public class Control extends LooiObject
 	protected void updateWhileUnpaused(){
 		currentImage.readCam();
 		previousFrame++;
-		System.out.println(currentImage.getImage()[0][0]);
 
 		if(currentImage.getFrameNo()==previousFrame){
 			previousFrame = 0;

@@ -19,8 +19,8 @@ public class FileImage implements IImage
     private final int whiteRange = Constant.WHITE_RANGE;
 
     private int tile;
-    private int autoCount = 0;
-    private int autoFreq = 0;
+    private int autoFreq = 15;
+    private int autoCount = autoFreq+1;
 
     // 307200
     // private byte[] camBytes = new byte[2457636];
@@ -65,21 +65,20 @@ public class FileImage implements IImage
 
 
         if(autoCount > autoFreq && autoFreq > -1) {
-            getMedianFilteredImage();
-            System.out.println("Calibrating");
+        	autoConvertWeighted();
+            //System.out.println("Calibrating");
             autoCount = 0;
         }
         else{
-            byteConvert();
+        	byteConvert();
         }
+        getMedianFilteredImage();
     }
     
     public void getMedianFilteredImage(){
-    	autoConvertWeighted();
-        
        
     	IPixel[][] filteredImage = new Pixel[image.length][image[0].length];
-    	int windowSize = 5;
+    	int windowSize = 3;
     	
     	for(int i=0; i<filteredImage.length; i++){
     		for(int j=0; j<filteredImage[0].length; j++){
@@ -106,19 +105,60 @@ public class FileImage implements IImage
 	    			
 	    			int half = windowSize*windowSize/2;
 	    			Pixel pixel = new Pixel(reds[half], greens[half], blues[half]);
-	    			pixel.simpleConvert();
 	    			filteredImage[i][j] = pixel;
-    			}
-    			
+    			}	
     		}
     	}
-    	image = filteredImage;
-    	/*
-    	for(int i=0;i<image.length;i++){
-    		for(int j=0;j<image.length;j++){
-    			image[i][j] = filteredImage[i][j];
+    	Pixel[][] fBlurredImage = getGaussianBlurredImage(filteredImage);
+		for(int b1=0;b1<fBlurredImage.length;b1++){
+			for(int b2=0;b2<fBlurredImage[0].length;b2++){
+				fBlurredImage[b1][b2].simpleConvert();
+			}
+		}
+    	image = fBlurredImage;
+    }
+    
+    public Pixel[][] getGaussianBlurredImage(IPixel[][] rImage){
+    	Pixel[][] blurImage = new Pixel[rImage.length][rImage[0].length];
+    	float[][] blurMatrix = new float[][]{{1f/9, 1f/9, 1f/9},
+    										{1f/9, 1f/9, 1f/9},
+    										{1f/9, 1f/9, 1f/9}};
+    	
+    	int edge = (int)blurMatrix.length/2;
+    	for(int i=0; i<blurImage.length; i++){
+    		for(int j=0; j<blurImage[0].length; j++){
+    			if(i<edge || j<edge || i>blurImage.length-edge-1 || j>blurImage[0].length-edge-1){
+    				blurImage[i][j] = new Pixel((short)0, (short)0, (short)0);
+    			}
+    			else{
+    				short red = 0;
+	    			short green = 0;
+	    			short blue = 0;
+	    			
+	    			int half = blurMatrix.length/2;
+	    			IPixel[][] pixelSquare = new IPixel[blurMatrix.length][blurMatrix.length];
+	    			for(int i1=0; i1<blurMatrix.length; i1++){
+	    				for(int i2=0; i2<blurMatrix.length; i2++){
+	    					pixelSquare[i1][i2] = rImage[i+i1-half][j+i2-half];
+	    				}
+	    			}
+	    			
+	    			
+	    			for(int w=0; w<blurMatrix.length; w++){
+	    				for(int q=0; q<blurMatrix.length; q++){
+	    					red += (short)(pixelSquare[w][q].getRed()*blurMatrix[w][q]);
+	    					green += (short)(pixelSquare[w][q].getGreen()*blurMatrix[w][q]);
+	    					blue += (short)(pixelSquare[w][q].getBlue()*blurMatrix[w][q]);
+	    				}
+	    			}
+	    			
+	    			blurImage[i][j] = new Pixel(red, green, blue);
+    			}	
     		}
-    	}*/
+    	}
+    	
+    	return blurImage;
+    										 
     }
 
     public void finish()
