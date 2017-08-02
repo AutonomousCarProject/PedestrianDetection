@@ -10,9 +10,7 @@ import com.looi.looi.gui_essentials.AstheticButton;
 import com.looi.looi.gui_essentials.Background;
 import com.looi.looi.gui_essentials.Button;
 import com.looi.looi.gui_essentials.ScrollBox;
-import group1.IPixel;
-import group1.Image;
-import group1.Pixel;
+import group1.*;
 import com.looi.looi.gui_essentials.TextBox;
 import com.looi.looi.gui_essentials.Window;
 import com.looi.looi.gui_essentials.ScrollBox.ScrollBoxObject;
@@ -21,8 +19,6 @@ import com.looi.looi.gui_essentials.Window.ExitButton;
 import fly2cam.AutoExposure;
 import fly2cam.IAutoExposure;
 import global.Constant;
-import group1.FileImage;
-import group1.IImage;
 import group2.Blob;
 import group2.BlobDetection;
 import group3.MovingBlob;
@@ -53,21 +49,9 @@ public class Control extends LooiObject
     private ScrollBox scrollBox;
     private Window sliderWindow;
 
-    private BufferedImage testBI = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
-    {
-        for (int r = 0; r < testBI.getHeight(); r++)
-        {
-            for (int c = 0; c < testBI.getWidth(); c++)
-            {
-                int p = (255/* alpha */ << 24) | (255 << 16) | (255 << 8) | 255;
-                testBI.setRGB(c, r, p);
-            }
-        }
-    }
-
     private int previousFrame;
     private int currentFrame;
-    public static boolean keepGoing;
+    public static boolean keepGoing = true;
 
     private ArrayDeque<IPixel[][]> frames;
     private ArrayList<IPixel[][]> frameList;
@@ -88,7 +72,9 @@ public class Control extends LooiObject
         }
         else
         {
-            currentImage = new Image();
+            //just evenly dispersed for now
+            currentImage = new HDRImage(0, new long[] { 0x001, 0x142, 0x284, 0x3C6 }, new long[] { 0x100, 0x1BA, 0x274, 0x32E });
+            //currentImage = new Image();
         }
         boxDrawer = new IImageBoxDrawer();
         boxDrawer.setUsingBasicColors(true);
