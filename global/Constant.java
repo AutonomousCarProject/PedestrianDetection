@@ -29,6 +29,8 @@ public class Constant {
 	//Maximum 
 	public static int VELOCITY_X_MAX = 150;
 	public static int VELOCITY_Y_MAX = 30;
+	public static int VELOCITY_X_MIN = 5;
+	public static int VELOCITY_Y_MIN = 0;
 	public static float MAX_VELOCITY_CHANGE_X = 15;
 	public static float MAX_VELOCITY_CHANGE_Y = 20;
 	//Unified Blob filters

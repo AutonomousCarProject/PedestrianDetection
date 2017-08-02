@@ -29,13 +29,15 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	int heightChangeLimit = c.MAX_CHANGE_HEIGHT;
 
 	float kernelBandwidth = 15;
-	float maxDistBetweenPointsInCluster = 63;
+	float maxDistBetweenPointsInCluster = 80;
 	float xDistWeight = 1f;
 	float yDistWeight = 0.25f;
 	float vXWeight = 1.5f;
 	float vYWeight = 0.25f;
 	
 	float distanceUnifyMatchLimit = 60;
+	float percentWidthChangeUnifyMatchLimit = 0.3f;
+	float percentHeightChangeUnifyMatchLimit = 0.3f;
 
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
@@ -255,7 +257,11 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			float distanceX = Math.abs(pairs[i][0].predictedX-(pairs[i][1].x+pairs[i][1].width/2));
 			float distanceY = Math.abs(pairs[i][0].predictedY-(pairs[i][1].y+pairs[i][1].height/2));
 			float distance = (float)Math.sqrt(distanceX*distanceX+distanceY*distanceY);
-			if(distance<distanceUnifyMatchLimit && oldBlobs.contains(pairs[i][0]) && newBlobs.contains(pairs[i][1])){
+			float percentWChange = Math.abs(pairs[i][0].width-pairs[i][1].width)/Math.max(pairs[i][0].width,pairs[i][1].width);
+			float percentHChange = Math.abs(pairs[i][0].width-pairs[i][1].width)/Math.max(pairs[i][0].width,pairs[i][1].width);
+			if(distance<distanceUnifyMatchLimit && percentWChange<percentWidthChangeUnifyMatchLimit 
+					&& percentHChange<percentHeightChangeUnifyMatchLimit
+					&& oldBlobs.contains(pairs[i][0]) && newBlobs.contains(pairs[i][1])){
 				matchUnifiedBlob(pairs[i][0],pairs[i][1]);
 				oldBlobs.remove(pairs[i][0]);
 				newBlobs.remove(pairs[i][1]);
