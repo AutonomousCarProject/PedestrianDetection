@@ -7,6 +7,10 @@ package autonomouscarfinalprogram2;
 
 import com.looi.looi.LooiObject;
 import com.looi.looi.MiscellaneousMethods;
+
+import group3.JavaFxD3SingleDemo;
+import javafx.application.Application;
+
 import java.awt.event.KeyEvent;
 
 /**
@@ -16,6 +20,8 @@ import java.awt.event.KeyEvent;
 public class Hotkeys extends LooiObject
 {
 	public Control control;
+	public JavaFxD3SingleDemo test;
+	
     public Hotkeys(Control c)
     {
         control = c;
@@ -37,6 +43,10 @@ public class Hotkeys extends LooiObject
         if(e.getKeyCode() == KeyEvent.VK_LEFT)
         {
         	control.incrementCurrentFrame(1);
+        }
+        if(e.getKeyCode() == KeyEvent.VK_G)
+        {
+        	Application.launch(JavaFxD3SingleDemo.class);
         }
     } 
 }

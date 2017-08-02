@@ -2,6 +2,9 @@ package group3;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
@@ -12,24 +15,39 @@ import org.treez.javafxd3.javafx.JavaFxD3Browser;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
+import javafx.scene.Group;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
+import javafx.animation.AnimationTimer;
+import javafx.application.Application;
+import javafx.event.EventHandler;
 
+import group1.FileImage;
+import group1.IImage;
+import group1.IPixel;
+import group1.Image;
+import group1.Pixel;
 import group2.Blob;
+import group2.BlobDetection;
 import group2.TestBlobDetection;
 import group2.TestPixel;
-import group4.BlobFilter;
 import group2.IBlobDetection;
+import group3.IMovingBlobDetection;
+import group3.MovingBlob;
+import group3.MovingBlobDetection;
+import group3.MovingBlobDetectionTest;
+import group4.BlobFilter;
+import group4.IMovingBlobReduction;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Demonstrates how d3.js can be used with a JavaFx WebView
  *
  */
-public class JavaFxD3SingleDemo extends Application implements IMovingBlobDetection {
+public class JavaFxD3SingleDemo extends Application {
 
 	//#region ATTRIBUTES
 
@@ -52,17 +70,9 @@ public class JavaFxD3SingleDemo extends Application implements IMovingBlobDetect
 	 * @param args
 	 */
 
-	public JavaFxD3SingleDemo() {
-		movingBlobs = new LinkedList<>();
-	}
-	
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 		launch(args);
-		
-		MovingBlobDetection movingTest = new MovingBlobDetection();
-		
-		System.out.println(movingTest.distanceLimitX);
-	}*/
+	}
 
 	public void start(Stage stage) {
 
@@ -86,24 +96,66 @@ public class JavaFxD3SingleDemo extends Application implements IMovingBlobDetect
 		stage.setScene(scene);
 		stage.show();
 		
+		IImage image = new FileImage();
+		image.setAutoFreq(15);
+		
+		AnimationTimer timer = new AnimationTimer() {
+        	@Override
+        	public void handle(long time)
+        	{
+        		image.readCam();
+        		
+                IBlobDetection blobDetect = new BlobDetection();
+                IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
+                IMovingBlobReduction blobFilter = new BlobFilter();
+
+                List<Blob> blobs = blobDetect.getBlobs(image);
+                List<MovingBlob> movingBlobs = movingBlobDetect.getMovingBlobs(blobs);
+        		
+        		for (Blob blob : blobs)
+                {
+                	System.out.println(blob.x);
+                    //gc.strokeRect(blob.x * scale, blob.y * scale, blob.width * scale, blob.height * scale);
+                }
+        	}
+		};
+		
+		timer.start();
+		
 	}
 	
-	private void blobData() {
-		MovingBlobDetection movingTest = new MovingBlobDetection();
+	private float[] blobData() {
+		MovingBlobDetection movingBlobsDetection = new MovingBlobDetection();
+		MovingBlob movingBlobs = new MovingBlob();
 		
-		System.out.println(movingTest.distanceLimitX);
+		List<MovingBlob> movingBlobsList = new LinkedList<>();
+		
+		/*System.out.println(movingBlobsDetection.distanceLimitX);
+		
+		System.out.println(movingBlobs.x);
+		
+		float[] point = {movingBlobs.x, movingBlobs.y, movingBlobs.velocityX, movingBlobs.velocityY};
+		
+		System.out.println(Arrays.toString(point));
+		
+		float[][] finalPoints = new float[movingBlobsList.size()][4];
+		
+		System.out.println(Arrays.toString(finalPoints));*/
+		
+		float values[] = {movingBlobsDetection.distanceLimitX, movingBlobsDetection.distanceLimitY, 
+						  movingBlobsDetection.velocityLimitIncreaseX, movingBlobsDetection.velocityLimitIncreaseY};
+		
+		return values;
 	}
 
 	private void createD3Example() {
 
 		D3 d3 = browser.getD3();	
 		
-		blobData();
+		//blobData();
 
 		Double[] data = { 4.0, 8.0, 15.0, 16.0, 23.0, 42.0 };
-		
-		//System.out.println(Arrays.toString(data));
-
+				
 		Double width = 420.0;
 		Double barHeight = 20.0;
 		Double maxX = Collections.max(Arrays.asList(data));
@@ -117,12 +169,12 @@ public class JavaFxD3SingleDemo extends Application implements IMovingBlobDetect
 
 		Selection svg = d3.select(".svg") //
 				.attr("width", width) //
-				.attr("height", barHeight * data.length);
+				.attr("height", barHeight * blobData().length);
 
 		String transformExpression = "function(d, i) { return \"translate(0,\" + i *" + barHeight + " + \")\"; }";
 
 		Selection bar = svg.selectAll("g") //
-				.data(data) //
+				.data(blobData()) //
 				.enter() //
 				.append("g") //
 				.attrExpression("transform", transformExpression);
