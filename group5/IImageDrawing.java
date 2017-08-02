@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface IImageDrawing
 {
-    void draw(IImage image, List<MovingBlob> iBlobs);
+    void draw(IImage image, List<? extends Blob> iBlobs);
 }
