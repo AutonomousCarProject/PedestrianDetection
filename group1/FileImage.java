@@ -1,6 +1,9 @@
 package group1;
 
 import group1.fly0cam.FlyCamera;
+
+import java.util.Arrays;
+
 import global.Constant;
 
 //Defines image as an 2d array of pixels
@@ -17,7 +20,7 @@ public class FileImage implements IImage
 
     private int tile;
     private int autoCount = 0;
-    private int autoFreq = 15;
+    private int autoFreq = 0;
 
     // 307200
     // private byte[] camBytes = new byte[2457636];
@@ -62,13 +65,60 @@ public class FileImage implements IImage
 
 
         if(autoCount > autoFreq && autoFreq > -1) {
-            autoConvertWeighted();
+            getMedianFilteredImage();
             System.out.println("Calibrating");
             autoCount = 0;
         }
         else{
             byteConvert();
         }
+    }
+    
+    public void getMedianFilteredImage(){
+    	autoConvertWeighted();
+        
+       
+    	IPixel[][] filteredImage = new Pixel[image.length][image[0].length];
+    	int windowSize = 5;
+    	
+    	for(int i=0; i<filteredImage.length; i++){
+    		for(int j=0; j<filteredImage[0].length; j++){
+    			if(i>filteredImage.length-windowSize || j>filteredImage[0].length-windowSize){
+    				filteredImage[i][j] = new Pixel((short)0, (short)0, (short)0);
+    			}
+    			else{
+    				short[] reds = new short[windowSize*windowSize];
+    				short[] greens = new short[windowSize*windowSize];
+    				short[] blues = new short[windowSize*windowSize];
+	    			
+	    			
+	    			for(int w=0; w<windowSize; w++){
+	    				for(int q=0; q<windowSize; q++){
+	    					reds[w*windowSize + q] = image[i+w][j+q].getRed();
+	    					greens[w*windowSize + q] = image[i+w][j+q].getGreen();
+	    					blues[w*windowSize + q] = image[i+w][j+q].getBlue();
+	    				}
+	    			}
+	    			
+	    			Arrays.sort(reds);
+	    			Arrays.sort(greens);
+	    			Arrays.sort(blues);
+	    			
+	    			int half = windowSize*windowSize/2;
+	    			Pixel pixel = new Pixel(reds[half], greens[half], blues[half]);
+	    			pixel.simpleConvert();
+	    			filteredImage[i][j] = pixel;
+    			}
+    			
+    		}
+    	}
+    	image = filteredImage;
+    	/*
+    	for(int i=0;i<image.length;i++){
+    		for(int j=0;j<image.length;j++){
+    			image[i][j] = filteredImage[i][j];
+    		}
+    	}*/
     }
 
     public void finish()

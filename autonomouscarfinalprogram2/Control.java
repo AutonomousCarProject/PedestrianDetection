@@ -173,6 +173,7 @@ public class Control extends LooiObject
 	protected void updateWhileUnpaused(){
 		currentImage.readCam();
 		previousFrame++;
+		System.out.println(currentImage.getImage()[0][0]);
 
 		if(currentImage.getFrameNo()==previousFrame){
 			previousFrame = 0;
@@ -194,7 +195,7 @@ public class Control extends LooiObject
 		//boxDrawer.draw2(currentImage, unifiedBlobs, fmovingBlobs);
 		//boxDrawer.draw(currentImage, funifiedBlobs);
 		//boxDrawer.draw2(currentImage, unifiedBlobs, fmovingBlobs);
-		boxDrawer.draw(currentImage, fmatchedUnifiedBlobs);
+		boxDrawer.draw(currentImage, funifiedBlobs);
 
 
 		IPixel[][] image = currentImage.getImage();

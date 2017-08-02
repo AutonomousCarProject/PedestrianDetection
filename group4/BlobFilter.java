@@ -92,7 +92,7 @@ public class BlobFilter implements IMovingBlobReduction
 	}
 	
 	private boolean filterFilteredUnifiedBlob(MovingBlob blob){
-		return blob.age > 1 && blob.ageOffScreen < 2;
+		return blob.age > 6 && blob.ageOffScreen < 2;
 	}
 	
 }
