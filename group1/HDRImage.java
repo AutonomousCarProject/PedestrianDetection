@@ -17,17 +17,23 @@ public class HDRImage implements IImage {
 	private short[][][][] images;
 	private IPixel[][] out;
 
+	private long[] HDRShutters;
+
 	private int tile;
 
 	public static final int GAIN_MIN = 256;
 	public static final int GAIN_MAX = 814;
 	public static final int SHUTTER_MIN = 1;
 	public static final int SHUTTER_MAX = 966;
+	public static final double SHUTTER_MS_PER_INC = .0000339;
+
+	private static final double K = 0.25;
 
 	public HDRImage(int exposure, long[] HDRShutters, long[] HDRGains) {
 		flyCam.Connect(frameRate, exposure, 0, 0);
 
 		flyCam.SetHDR(HDRShutters, HDRGains);
+		this.HDRShutters = HDRShutters;
 
 		int res = flyCam.Dimz();
 		height = res >> 16;
@@ -111,22 +117,34 @@ public class HDRImage implements IImage {
 		return Math.max(r, Math.max(g, b)) - Math.min(r, Math.min(g, b));
 	}
 
+	private static float getFancyL(short r, short g, short b){
+		return 0.212f * r + 0.7152f * g + 0.0722f * b;
+	}
+
 	private void fuseImages() {
 		//find saturation, then weighted average
 		//for every pixel
 		for(int i = 0; i < images[0].length; i++){
 			for(int j = 0; j < images[0][0].length; j++){
-				//weighted average of the saturation
-				int sums[] = new int[3];
-				for(int p = 0; p < images.length; p++){
-					float sat = getFancyS(images[p][i][j][0], images[p][i][j][1], images[p][i][j][2]);
-					sums[0] += images[p][i][j][0] *  sat;
-					sums[1] += images[p][i][j][1] *  sat;
-					sums[2] += images[p][i][j][2] *  sat;
+				// Do fancy math
+				// http://s3.amazonaws.com/academia.edu.documents/34722931/05936115.pdf?AWSAccessKeyId=AKIAIWOWYYGZ2Y53UL3A&Expires=1501706715&Signature=V1h%2BEMGNlikLGbP%2F5TM83zUuGiA%3D&response-content-disposition=inline%3B%20filename%3DMultiple_Exposure_Fusion_for_High_Dynami.pdf
+
+				double[] sumUp = new double[3];
+				double[] sumDown = new double[3];
+
+				for(int n = 0; n < images.length; n++){
+					sumUp[0] += getWeight(images[n][i][j][0] / 255.0, n, images.length) * images[n][i][j][0];
+					sumUp[1] += getWeight(images[n][i][j][1] / 255.0, n, images.length) * images[n][i][j][1];
+					sumUp[2] += getWeight(images[n][i][j][2] / 255.0, n, images.length) * images[n][i][j][2];
+
+					sumDown[0] += getWeight(images[n][i][j][0] / 255.0, n, images.length);
+					sumDown[1] += getWeight(images[n][i][j][1] / 255.0, n, images.length);
+					sumDown[2] += getWeight(images[n][i][j][2] / 255.0, n, images.length);
 				}
-				out[i][j] = new Pixel(  (short)Math.floor((float)sums[0] / (float)(images.length * 255)),
-										(short)Math.floor((float)sums[1] / (float)(images.length * 255)),
-										(short)Math.floor((float)sums[1] / (float)(images.length * 255)));
+
+				//System.out.println(sumUp[0] / sumDown[0]);
+
+				out[i][j] = new Pixel((short)((sumUp[0] / sumDown[0])), (short)((sumUp[1] / sumDown[1])), (short)((sumUp[2] / sumDown[2])));
 			}
 		}
 	}
@@ -136,5 +154,10 @@ public class HDRImage implements IImage {
 	public int getFrameNo()
 	{
 		return frameNo++;
+	}
+
+	private static double getWeight(double color, double exposureNum, double numExposures) {
+		//final double c = Math.pow(exposureNum / numExposures, 0.3);
+		return Math.exp(-Math.pow((color), 2) / K);
 	}
 }
