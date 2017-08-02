@@ -60,6 +60,8 @@ public class BlobFilter implements IMovingBlobReduction
 		return blob.age >= Constant.AGE_MIN &&
 				Math.abs(blob.velocityY) < Constant.VELOCITY_Y_MAX &&
 				Math.abs(blob.velocityX) < Constant.VELOCITY_X_MAX &&
+				Math.abs(blob.velocityY) > Constant.VELOCITY_Y_MIN &&
+				Math.abs(blob.velocityX) > Constant.VELOCITY_X_MIN &&
 				blob.velocityChangeX < Constant.MAX_VELOCITY_CHANGE_X &&
 				blob.velocityChangeY < Constant.MAX_VELOCITY_CHANGE_Y &&
 				(float)blob.width/(float)blob.height < 1.3 && (float)blob.width*(float)blob.height > 40;
@@ -92,7 +94,7 @@ public class BlobFilter implements IMovingBlobReduction
 	}
 	
 	private boolean filterFilteredUnifiedBlob(MovingBlob blob){
-		return blob.age > 1 && blob.ageOffScreen < 2;
+		return blob.age > 2 && blob.ageOffScreen < 1;
 	}
 	
 }
