@@ -1,10 +1,13 @@
 package group3;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
@@ -41,7 +44,6 @@ import group3.MovingBlobDetection;
 import group3.MovingBlobDetectionTest;
 import group4.BlobFilter;
 import group4.IMovingBlobReduction;
-
 
 /**
  * Demonstrates how d3.js can be used with a JavaFx WebView
@@ -99,10 +101,22 @@ public class JavaFxD3SingleDemo extends Application {
 		IImage image = new FileImage();
 		image.setAutoFreq(15);
 		
+		
+		ArrayList<Integer> blobX = new ArrayList<Integer>();
+		ArrayList<Integer> blobY = new ArrayList<Integer>();
+		ArrayList<Integer> blobWidth = new ArrayList<Integer>();
+		ArrayList<Integer> blobHeight = new ArrayList<Integer>();
+				
+		ArrayList<ArrayList<Integer>> blobValues = new ArrayList<ArrayList<Integer>>();
+		
 		AnimationTimer timer = new AnimationTimer() {
+			
         	@Override
         	public void handle(long time)
         	{
+        		//System.out.println(time);
+        		//blobInfo[0] = 10;
+        		
         		image.readCam();
         		
                 IBlobDetection blobDetect = new BlobDetection();
@@ -111,14 +125,29 @@ public class JavaFxD3SingleDemo extends Application {
 
                 List<Blob> blobs = blobDetect.getBlobs(image);
                 List<MovingBlob> movingBlobs = movingBlobDetect.getMovingBlobs(blobs);
-        		
+                
         		for (Blob blob : blobs)
                 {
-                	System.out.println(blob.x);
-                    //gc.strokeRect(blob.x * scale, blob.y * scale, blob.width * scale, blob.height * scale);
+        			
+        			blobX.add(blob.x);
+        			blobY.add(blob.y);
+        			blobWidth.add(blob.width);
+        			blobHeight.add(blob.height);
+        			
                 }
+        		
+        		blobValues.add(blobX);
+        		blobValues.add(blobY);
+        		blobValues.add(blobWidth);
+        		blobValues.add(blobHeight);
+        		
+        		System.out.println(blobValues.toArray()[0]);
+
         	}
+        	
 		};
+		
+		//System.out.println(Arrays.toString(blobInfo));
 		
 		timer.start();
 		
