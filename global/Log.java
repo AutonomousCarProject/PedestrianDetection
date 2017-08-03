@@ -12,7 +12,15 @@ import java.util.Scanner;
 
 public abstract class Log
 {
-    private static SimpleDateFormat file = new SimpleDateFormat("'logs/'yyyy-mm-dd_hh:mm:ss'.log'");
+    static
+    {
+        File folder = new File("logs");
+        if(!folder.exists())
+        {
+            folder.mkdir();
+        }
+    }
+    private static SimpleDateFormat file = new SimpleDateFormat("'logs\\'yyyy-mm-dd_hh-mm-ss'.log'");
     private static SimpleDateFormat line = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
     private static LogStream los = new LogStream(file.format(new Date()));
     
@@ -96,9 +104,14 @@ public abstract class Log
             {
                 try
                 {
+                    File file = new File(s);
+                    if(!file.exists())
+                    {
+                        file.createNewFile();
+                    }
                     fos = new FileOutputStream(new File(s));
                 }
-                catch (FileNotFoundException e)
+                catch (IOException e)
                 {
                     throw new RuntimeException(e);
                 }

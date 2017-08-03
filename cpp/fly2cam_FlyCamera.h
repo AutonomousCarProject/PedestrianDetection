@@ -50,6 +50,17 @@ JNIEXPORT jint JNICALL Java_fly2cam_FlyCamera_SetGain
 JNIEXPORT jint JNICALL Java_fly2cam_FlyCamera_GetGain
   (JNIEnv *, jobject);
 
+// JNIEXPORT jint JNICALL Java_fly2cam_FlyCamera_ActivateHDR
+//   (JNIEnv *, jobject);
+// int WriteRegister
+//   	(unsigned int, unsigned int);
+JNIEXPORT jint JNICALL Java_fly2cam_FlyCamera_WriteRegister
+  (JNIEnv *, jobject, jlong, jlong);
+JNIEXPORT jlong JNICALL Java_fly2cam_FlyCamera_ReadRegister
+  (JNIEnv *, jobject, jlong);
+JNIEXPORT jlongArray JNICALL Java_fly2cam_FlyCamera_ReadRegisterBlock
+  (JNIEnv *, jobject, jlong, jlong);
+  
 
 #ifdef __cplusplus
 }

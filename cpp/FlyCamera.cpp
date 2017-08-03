@@ -6,6 +6,7 @@
 #include "FlyCapture2_C.h" // #includes "FlyCapture2Defs_C.h","FlyCapture2Platform_C.h"
 
 #include <stdio.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -84,15 +85,15 @@ extern "C" {
 				if (nerror != FC2_ERROR_OK) break;
 				why++; // why = 27
 				if (sofar == FC2_FRAMERATE_7_5) {
-					propty.valueA = (unsigned int)FC2_FRAMERATE_7_5; // =2
+					propty.valueA = (int)FC2_FRAMERATE_7_5; // =2
 					propty.absValue = 7.5;
 				}
 				else if (sofar == FC2_FRAMERATE_15) {
-					propty.valueA = (unsigned int)FC2_FRAMERATE_15; // =3
+					propty.valueA = (int)FC2_FRAMERATE_15; // =3
 					propty.absValue = 15;
 				}
 				else if (sofar == FC2_FRAMERATE_30) {
-					propty.valueA = (unsigned int)FC2_FRAMERATE_30; // =4
+					propty.valueA = (int)FC2_FRAMERATE_30; // =4
 					propty.absValue = 30;
 				}
 				else break;
@@ -221,7 +222,7 @@ extern "C" {
 				roff = (rx & 12) >> 1; // gotta take extra sensors off in pairs, half each side..
 									   // coff = cx&15; // skip over this many bytes each row to center image in frame
 				roff = roff*cx + ((cx & 12) >> 1); // skip over this many bytes before starting, ditto
-				camData = (unsigned char*)(((long)camData) + ((long)roff));
+				camData = (unsigned char*)(((int64_t)camData) + ((int64_t)roff));
 			}
 			why = ~why; // why = -20 // pixel array size != image data size (OK)..
 			if (sofar == nx) { // capture 1st pixel for comparison in Java debugger..
@@ -373,6 +374,118 @@ extern "C" {
 		nerror = fc2GetProperty(theContext, &propty4);
 		return propty4.valueA;
 	}
+	
+// 	JNIEXPORT jint JNICALL Java_fly2cam_FlyCamera_ActivateHDR
+// 	(JNIEnv *env, jobject thisObj)
+// 	{
+// 		const int HDRCtrl = 0x1800;
+// 		const int HDRShutter1 = 0x1820;
+// 		const int HDRShutter2 = 0x1840;
+// 		const int HDRShutter3 = 0x1860;
+// 		const int HDRShutter4 = 0x1880;
+// 		const int HDRGain1 = 0x1824;
+// 		const int HDRGain2 = 0x1844;
+// 		const int HDRGain3 = 0x1864;
+// 		const int HDRGain4 = 0x1884;
+// 		const int HDROn = 0x82000000;
+// 		const int HDROff = 0x80000000;
+// 		
+// 		// Initialize HDR Registers
+// 		fc2Error error;
+// 		
+// 	    error = (fc2Error) WriteRegister(HDRShutter1, 0x000);
+// 	    error = (fc2Error) WriteRegister(HDRShutter2, 0x120);
+// 	    error = (fc2Error) WriteRegister(HDRShutter3, 0x240);
+// 	    error = (fc2Error) WriteRegister(HDRShutter4, 0x360);
+// 	
+// 	    error = (fc2Error) WriteRegister(HDRGain1, 0x000);
+// 	    error = (fc2Error) WriteRegister(HDRGain2, 0x0E3);
+// 	    error = (fc2Error) WriteRegister(HDRGain3, 0x1C6);
+// 	    error = (fc2Error) WriteRegister(HDRGain4, 0x2A9);
+// 
+// 		if(error != FC2_ERROR_OK) return (jint) error;
+// 		
+// 		// Toggle HDR
+// 	    error = (fc2Error) WriteRegister(HDRCtrl, HDROn);
+// 		if(error != FC2_ERROR_OK) return (jint) error;	
+// 	}
+	
+ 	/*
+	 	FLYCAPTURE2_C_API fc2Error fc2WriteRegister (fc2Context context, unsigned int address, unsigned int value)
+		FLYCAPTURE2_C_API fc2Error fc2ReadRegister (fc2Context context, unsigned int address, unsigned int* pvalue)
+    */
+	JNIEXPORT jint JNICALL Java_fly2cam_FlyCamera_WriteRegister
+	(JNIEnv *env, jobject thisObj, jlong laddress, jlong lval)
+	{
+		unsigned int address = (unsigned int)(laddress);
+		unsigned int val = (unsigned int)(lval);
+		
+		fc2Error error = FC2_ERROR_OK;
+		
+		unsigned int readVal;
+		error = fc2ReadRegister(theContext, address, &readVal);
+		if(error != FC2_ERROR_OK) return (int) error;
+		
+		readVal = val;
+		return (int) fc2WriteRegister(theContext, address, val);	
+	}
+	
+// 	fc2WriteRegisterBlock (fc2Context context, unsigned short addressHigh,
+// 	unsigned int addressLow, const unsigned int ∗ pBuffer, unsigned int length)
+// 
+// 	JNIEXPORT jint JNICALL Java_fly2cam_FlyCamera_WriteRegisterBlock
+// 	(JNIEnv *env, jobject thisObj, jlong addressHigh, jlong addressLow, jlongArray toWrite)
+// 	{
+// 		unsigned int address = (unsigned int)(addressHigh - addressLow)
+// 		long longBuffer[length];
+// 		for (int i = 0; i < length; i++)
+//         	longBuffer[i] = pBuffer[i];
+//         		
+// 	}
+	
+	
+	JNIEXPORT jlong JNICALL Java_fly2cam_FlyCamera_ReadRegister
+	(JNIEnv *env, jobject thisObj, jlong laddress)
+	{
+		unsigned int address = (unsigned int)(laddress);
+		
+		fc2Error error = FC2_ERROR_OK;
+		
+		unsigned int readVal;
+		error = fc2ReadRegister(theContext, address, &readVal);
+		if(error != FC2_ERROR_OK) return -((jlong) error);
+
+		return ((jlong) readVal);
+	}
+	
+	JNIEXPORT jlongArray JNICALL Java_fly2cam_FlyCamera_ReadRegisterBlock
+	(JNIEnv *env, jobject thisObj, jlong addressHigh, jlong addressLow)
+	{
+		unsigned int length = (unsigned int)(addressHigh - addressLow);
+		
+		unsigned int pBuffer[length];
+		
+		fc2Error error = FC2_ERROR_OK;
+		
+		error = fc2ReadRegisterBlock(&theContext, addressHigh, addressLow, pBuffer, length);
+		if(error != FC2_ERROR_OK)
+		{
+		    jlongArray javaArray = (env)->NewLongArray((jint) 1);
+		    int64_t arr[] = { error };
+            (env)->SetLongArrayRegion(javaArray, 0, 1, arr);
+			return javaArray;
+		}
+		
+		int64_t longBuffer[length];
+		for (int i = 0; i < length; i++)
+        	longBuffer[i] = pBuffer[i];
+		
+	    jlongArray javaArray = (env)->NewLongArray((jint) length);
+        (env)->SetLongArrayRegion(javaArray, 0, length, longBuffer);
+		
+		return javaArray;
+	}
+	
 
 #ifdef __cplusplus
 }

@@ -1,6 +1,9 @@
 package group1;
 
 import group1.fly0cam.FlyCamera;
+
+import java.util.Arrays;
+
 import global.Constant;
 
 //Defines image as an 2d array of pixels
@@ -14,10 +17,14 @@ public class FileImage implements IImage
     private final float greyRatio = Constant.GREY_RATIO;
     private final int blackRange = Constant.BLACK_RANGE;
     private final int whiteRange = Constant.WHITE_RANGE;
+    private final int lightDark = Constant.LIGHT_DARK_THRESHOLD;
 
     private int tile;
-    private int autoCount = 0;
     private int autoFreq = 15;
+
+    private double multiplier = 1.0/9.0;
+    private int autoCount = autoFreq+1;
+
 
     // 307200
     // private byte[] camBytes = new byte[2457636];
@@ -62,13 +69,113 @@ public class FileImage implements IImage
 
 
         if(autoCount > autoFreq && autoFreq > -1) {
+
             autoConvertWeighted();
+            //filteredConvert();
             System.out.println("Calibrating");
             autoCount = 0;
         }
         else{
-            byteConvert();
+       		byteConvert();
+            filteredConvert();
+            //byteConvert();
+
         }
+        image = convertImage(getMedianFilteredImage());
+    }
+    
+    public IPixel[][] convertImage(Pixel[][] imageToConvert){
+    	IPixel[][] newImage = new Pixel[imageToConvert.length][imageToConvert[0].length];
+		for(int b1=0;b1<imageToConvert.length;b1++){
+			for(int b2=0;b2<imageToConvert[0].length;b2++){
+				Pixel p = imageToConvert[b1][b2];
+				p.simpleConvert();
+				newImage[b1][b2] = p;
+			}
+		}
+		return newImage;
+    }
+    
+    
+    
+    public Pixel[][] getMedianFilteredImage(){
+       
+    	Pixel[][] filteredImage = new Pixel[image.length][image[0].length];
+    	int windowSize = 3;
+    	
+    	for(int i=0; i<filteredImage.length; i++){
+    		for(int j=0; j<filteredImage[0].length; j++){
+    			if(i>filteredImage.length-windowSize || j>filteredImage[0].length-windowSize){
+    				filteredImage[i][j] = new Pixel((short)0, (short)0, (short)0);
+    			}
+    			else{
+    				short[] reds = new short[windowSize*windowSize];
+    				short[] greens = new short[windowSize*windowSize];
+    				short[] blues = new short[windowSize*windowSize];
+	    			
+	    			
+	    			for(int w=0; w<windowSize; w++){
+	    				for(int q=0; q<windowSize; q++){
+	    					reds[w*windowSize + q] = image[i+w][j+q].getRed();
+	    					greens[w*windowSize + q] = image[i+w][j+q].getGreen();
+	    					blues[w*windowSize + q] = image[i+w][j+q].getBlue();
+	    				}
+	    			}
+	    			
+	    			Arrays.sort(reds);
+	    			Arrays.sort(greens);
+	    			Arrays.sort(blues);
+	    			
+	    			int half = windowSize*windowSize/2;
+	    			Pixel pixel = new Pixel(reds[half], greens[half], blues[half]);
+	    			filteredImage[i][j] = pixel;
+    			}	
+    		}
+    	}
+    	return filteredImage;
+    }
+    
+    public Pixel[][] getGaussianBlurredImage(IPixel[][] rImage){
+    	Pixel[][] blurImage = new Pixel[rImage.length][rImage[0].length];
+    	float[][] blurMatrix = new float[][]{{1f/9, 1f/9, 1f/9},
+    										{1f/9, 1f/9, 1f/9},
+    										{1f/9, 1f/9, 1f/9}};
+    	
+    	int edge = (int)blurMatrix.length/2;
+    	for(int i=0; i<blurImage.length; i++){
+    		for(int j=0; j<blurImage[0].length; j++){
+    			if(i<edge || j<edge || i>blurImage.length-edge-1 || j>blurImage[0].length-edge-1){
+    				blurImage[i][j] = new Pixel((short)0, (short)0, (short)0);
+    			}
+    			else{
+    				short red = 0;
+	    			short green = 0;
+	    			short blue = 0;
+	    			
+	    			int half = blurMatrix.length/2;
+	    			IPixel[][] pixelSquare = new IPixel[blurMatrix.length][blurMatrix.length];
+	    			for(int i1=0; i1<blurMatrix.length; i1++){
+	    				for(int i2=0; i2<blurMatrix.length; i2++){
+	    					pixelSquare[i1][i2] = rImage[i+i1-half][j+i2-half];
+	    				}
+	    			}
+	    			
+	    			
+	    			for(int w=0; w<blurMatrix.length; w++){
+	    				for(int q=0; q<blurMatrix.length; q++){
+	    					red += (short)(pixelSquare[w][q].getRed()*blurMatrix[w][q]);
+	    					green += (short)(pixelSquare[w][q].getGreen()*blurMatrix[w][q]);
+	    					blue += (short)(pixelSquare[w][q].getBlue()*blurMatrix[w][q]);
+	    				}
+	    			}
+	    			
+	    			blurImage[i][j] = new Pixel(red, green, blue);
+    			}	
+    		}
+    	}
+    	
+    	return blurImage;
+    										 
     }
 
     public void finish()
@@ -217,8 +324,7 @@ public class FileImage implements IImage
         final int divisor = (width * height);
 
 
-        //autoThreshold variables
-        int threshold = 381;
+        //autoThreshold variable
         int avg; //0-765
         int r, b, g;
         int lesserSum = 0;
@@ -227,6 +333,7 @@ public class FileImage implements IImage
         int greaterCount = 0;
         int lesserMean;
         int greaterMean;
+        double redAvg = 0, blueAvg = 0, greenAvg = 0;
 
         int pos = 0;
         if (tile == 1) {
@@ -243,7 +350,7 @@ public class FileImage implements IImage
 
                     avg = (r + b + g);
 
-                    if (avg < threshold) {
+                    if (avg < lightDark) {
 
                         lesserSum += avg;
                         lesserCount++;
@@ -253,6 +360,39 @@ public class FileImage implements IImage
                         greaterSum += avg;
                         greaterCount++;
 
+                    }
+                    
+                    if(i > 0 && j > 0 && i < height - 1 && j < width - 1){
+                    	
+	                    	for(int h = -1 ; h < 2 ; h++) {
+	        					
+	        					for(int k = -1 ; k < 2 ; k++) {
+	        						
+	        						r = image[i+h][j+k].getRed();
+	        						b = image[i+h][j+k].getBlue();
+	        						g = image[i+h][j+k].getGreen();
+	        						
+	        						
+	        						redAvg += (double)r * multiplier;
+	        						blueAvg += (double)b * multiplier;
+	        						greenAvg += (double)g * multiplier;
+	        						
+	        						
+	        						/*
+	        						redAvg += r * kernel[h+1][k+1];
+	        						blueAvg += b * kernel[h+1][k+1];
+	        						greenAvg += g * kernel[h+1][k+1];
+	        						*/
+	        						
+	        					}
+	        					
+	        				}
+	                    	
+	                    	image[i][j].setRGB((short)redAvg, (short)blueAvg, (short)greenAvg);
+	        				redAvg = 0;
+	        				blueAvg = 0;
+	        				greenAvg = 0;
+                    	
                     }
 
 
@@ -277,7 +417,7 @@ public class FileImage implements IImage
 
                     avg = (r + b + g);
 
-                    if (avg < threshold) {
+                    if (avg < lightDark) {
 
                         lesserSum += avg;
                         lesserCount++;
@@ -288,6 +428,37 @@ public class FileImage implements IImage
                         greaterCount++;
 
                     }
+                    
+                    if(i > 0 && j > 0 && i < height - 1 && j < width - 1){
+                    	
+	                    	for(int h = -1 ; h < 2 ; h++) {
+	        					
+	        					for(int k = -1 ; k < 2 ; k++) {
+	        						
+	        						r = image[i+h][j+k].getRed();
+	        						b = image[i+h][j+k].getBlue();
+	        						g = image[i+h][j+k].getGreen();
+	        						
+	        						
+	        						redAvg += (double)r * multiplier;
+	        						blueAvg += (double)b * multiplier;
+	        						greenAvg += (double)g * multiplier;
+	        						
+	        						
+	        						/*
+	        						redAvg += r * kernel[h+1][k+1];
+	        						blueAvg += b * kernel[h+1][k+1];
+	        						greenAvg += g * kernel[h+1][k+1];
+	        						*/
+	        						
+	        					}
+	        					
+	        				}
+                    	
+	                    	image[i][j].setRGB((short)redAvg, (short)blueAvg, (short)greenAvg);
+	        				redAvg = 0;
+	        				blueAvg = 0;
+	        				greenAvg = 0;
 
                 }
 
@@ -300,9 +471,8 @@ public class FileImage implements IImage
 
         lesserMean = lesserSum / lesserCount;
         greaterMean = greaterSum / greaterCount;
-        threshold = (lesserMean + greaterMean) >> 1;
 
-        average2 = threshold;
+        average2 = (lesserMean + greaterMean) >> 1;
         average = average2 / 3;
 
 
@@ -335,6 +505,64 @@ public class FileImage implements IImage
         Pixel.blackMargin = average2 - blackRange;
         Pixel.whiteMargin = average2 + whiteRange;
 
+    	
     }
+    }
+    
+ 	private void filteredConvert() //low-pass filtering
+	{
+ 		
+		double redAvg = 0, blueAvg = 0, greenAvg = 0;
+		double r, g, b;
+		
+		
+		for(int i = 1 ; i < image.length - 1 ; i++) {
+			
+			for(int j = 1 ; j < image[0].length - 1 ; j++) {
+				
+				
+				for(int h = -1 ; h < 2 ; h++) {
+					
+					for(int k = -1 ; k < 2 ; k++) {
+						
+						r = image[i+h][j+k].getRed();
+						b = image[i+h][j+k].getBlue();
+						g = image[i+h][j+k].getGreen();
+						
+						
+						redAvg += r * multiplier;
+						blueAvg += b * multiplier;
+						greenAvg += g * multiplier;
+						
+						
+						/*
+						redAvg += r * kernel[h+1][k+1];
+						blueAvg += b * kernel[h+1][k+1];
+						greenAvg += g * kernel[h+1][k+1];
+						*/
+						
+					}
+					
+				}
+				
+				/*
+				redAvg = redAvg/9;
+				blueAvg = blueAvg/9;
+				greenAvg = greenAvg/9;
+				*/
+				
+				image[i][j].setRGB((short)redAvg, (short)blueAvg, (short)greenAvg);
+				redAvg = 0;
+				blueAvg = 0;
+				greenAvg = 0;
+				
+			}
+			
+		}
+
+		
+		
+	}
+
 
 }

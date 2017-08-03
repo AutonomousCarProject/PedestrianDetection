@@ -327,7 +327,7 @@ public class LooiWindow
             ArrayList<LooiObject> paintActiveLooiObjectsTemp = (ArrayList<LooiObject>)activeLooiObjects.clone();//Order the painting list. However, doing so here may compromise SLIGHTLY on the accuracy of the functionality. However, it will result in SLIGHTLY increased performance. No need to worry at all. I don't even know why I wrote this.
             paintActiveLooiObjectsTemp.sort(looiObjectSorter);
             step();
-            
+
             //step thread branch ends
             try{painter.join();}catch(Exception e){}
             paintActiveLooiObjects = paintActiveLooiObjectsTemp;
