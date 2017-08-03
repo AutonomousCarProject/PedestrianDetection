@@ -189,7 +189,7 @@ public class BlobDetection implements IBlobDetection
             blob.width = bip.width();
             blob.height = bip.height();
             blob.x = bip.left;
-            blob.y = bip.right;
+            blob.y = bip.top;
             blob.color = bip.color;
             return blob;
         }

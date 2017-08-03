@@ -17,6 +17,8 @@ import com.looi.looi.gui_essentials.ScrollBox.ScrollBoxObject;
 import com.looi.looi.gui_essentials.Window.ExitButton;
 import com.sun.org.apache.xpath.internal.functions.FuncUnparsedEntityURI;
 
+import fly2cam.AutoExposure;
+import fly2cam.IAutoExposure;
 import global.Constant;
 import group2.Blob;
 import group2.BlobDetection;
@@ -61,7 +63,8 @@ public class Control extends LooiObject
 
     public Control(boolean useCamera)
     {
-        ArrayList<VariableSlider> variableSliders = new ArrayList<>();
+    	
+        //ArrayList<VariableSlider> variableSliders = new ArrayList<>();
         blobDetection = new BlobDetection();
         movingBlobDetection = new MovingBlobDetection();
         blobFilter = new BlobFilter();
@@ -93,7 +96,7 @@ public class Control extends LooiObject
         frameList = new ArrayList<>(frames); // maybe this needs to be removed?
                                              // it was there in a merge conflict
                                              // and I wasn't sure whether or not
-                                             // to delete it.
+       /*                                      // to delete it.
         yCoordinate = 10;
 
         sliderWindow = new DraggingWindow(100, 100, 500, 500, new Background(Color.WHITE));
@@ -149,7 +152,7 @@ public class Control extends LooiObject
         ltb = new LoadTextBox(10, 3010, 300, 40, new Background(Color.WHITE), "File Name", new Font("", Font.PLAIN, 16),
                 true, Color.BLACK, 10, 5, 0);
         scrollBox.add(scrollBox.new ScrollBoxObject(ltb));
-        ltb.addSliders(variableSliders); 
+        ltb.addSliders(variableSliders); */
 		 
 	}
 
