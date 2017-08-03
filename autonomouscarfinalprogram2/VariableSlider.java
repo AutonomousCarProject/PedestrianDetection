@@ -9,28 +9,42 @@ import java.text.DecimalFormat;
 import com.looi.looi.gui_essentials.Background;
 import com.looi.looi.gui_essentials.Slider;
 
+import com.looi.looi.gui_essentials.Window;
+import com.looi.looi.utilities.Supplier;
+
+
+
 /**
  *
  * @author peter_000
  */
-public class VariableSlider extends Slider
+
+public class VariableSlider<E extends Number> extends Slider
 {
+    
     private double max;
     private double min;
-    private Setter<Double> setter;
-    public VariableSlider(double x, double y, double width, double height, Background background, double min, double max, Setter<Double> setter)
+    private Setter<E> setter;
+    private Supplier<E> getter;
+    public VariableSlider(double x, double y, double width, double height, Background background, double min, double max, Setter<E> setter, Supplier<E> getter)
     {
         super(x,y,width,height, background);
         this.setter = setter;
+        this.getter = getter;
         this.max = max;
         this.min = min;
+        looiStep();
+
     }
     protected void looiStep()
     {
         super.looiStep();
-        setter.set(super.getPercentage()/100.0 * (max - min) + min);
+        setter.set((E)(Double)(super.getPercentage()/100.0 * (max - min) + min));
+        
+        
     }
-            
+        
+
     protected void looiPaint()
     {
     	super.looiPaint();
@@ -39,8 +53,24 @@ public class VariableSlider extends Slider
     	df.setMaximumFractionDigits(2);
     	drawString(df.format(super.getPercentage()/100.0 * (max - min) + min),getX() + getWidth()/2,getY() -20);
     }
-            
-    public static interface Setter<E>
+
+    public void scrollToSupplierValue()
+    {
+        scrollToValue(getter.get());
+    }
+    public void scrollToValue(E value)
+    {
+        
+        double doubleVal = (double)(Double)value;
+        double percentage = (doubleVal - min)/(max-min) * 100;
+        
+        //System.out.println("(" + doubleVal +"-"+ min+")/("+max+"-" + min+") * 100" + " -Peter");
+        //System.out.println(percentage + " -Peter");
+        super.slideToPercentage(percentage); 
+        //slideToPercentage(0);
+        
+    }
+    public static interface Setter<E extends Number>
     {
         public void set(E e);
     }

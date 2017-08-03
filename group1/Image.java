@@ -10,11 +10,13 @@ public class Image implements IImage
     public int width;
 
     private final int frameRate = 3;
-    private FlyCamera flyCam = new FlyCamera();
+
+    public FlyCamera flyCam = new FlyCamera();
     private final float greyRatio = Constant.GREY_RATIO;
     private final int blackRange = Constant.BLACK_RANGE;
     private final int whiteRange = Constant.WHITE_RANGE;
     private final int lightDark = Constant.LIGHT_DARK_THRESHOLD;
+
 
     private int tile;
     private int autoCount = 0;
@@ -25,6 +27,11 @@ public class Image implements IImage
     private byte[] camBytes;
     private IPixel[][] image;
 
+    public Image()
+    {
+        this(0, 0, 0);
+    }
+    
     public Image(int exposure, int shutter, int gain)
     {
         flyCam.Connect(frameRate, exposure, shutter, gain);
@@ -39,6 +46,7 @@ public class Image implements IImage
         System.out.println("tile: "+tile+" width: "+width+" height: "+height);
     }
 
+
     public Image()
     {
         flyCam.Connect(frameRate, 0, 0, 0);
@@ -52,6 +60,7 @@ public class Image implements IImage
         tile = flyCam.PixTile();
         System.out.println("tile: "+tile+" width: "+width+" height: "+height);
     }
+
 
     @Override
     public void setAutoFreq(int autoFreq){  //How many frames are loaded before the calibrate is called (-1 never calls it)
@@ -476,5 +485,15 @@ public class Image implements IImage
         Pixel.whiteMargin = average2 + whiteRange;
 
     }
+
     */
+
+
+    private int frameNo = 0;
+    @Override
+    public int getFrameNo()
+    {
+        return frameNo++;
+    }
+
 }

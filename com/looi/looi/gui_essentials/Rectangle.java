@@ -5,6 +5,8 @@
  */
 package com.looi.looi.gui_essentials;
 
+
+import com.looi.looi.LooiObject;
 import java.awt.Color;
 
 /**

@@ -17,8 +17,8 @@ public class Pixel implements IPixel
     private short blue;
 
 
-    static int greyMargin = 145;
-    static int blackMargin = 400;
+    static int greyMargin = 60;
+    static int blackMargin = 300;
     static int whiteMargin = 700; // 0-765
 
     public Pixel(short red, short green, short blue)
@@ -26,7 +26,7 @@ public class Pixel implements IPixel
         this.red = red;
         this.green = green;
         this.blue = blue;
-        simpleConvert();
+        //simpleConvert();
     }
 
     public void setRGB(short red, short green, short blue)
@@ -34,7 +34,7 @@ public class Pixel implements IPixel
         this.red = red;
         this.green = green;
         this.blue = blue;
-        simpleConvert();
+        //simpleConvert();
     }
 
     @Override
@@ -73,7 +73,7 @@ public class Pixel implements IPixel
         return blue;
     }
 
-    private void simpleConvert()
+    public void simpleConvert()
     {
         short ave = (short) (red + green + blue);
         int r = red * 3;
@@ -133,4 +133,8 @@ public class Pixel implements IPixel
      * if(gdiff > rdiff && gdiff > bdiff) color = 1; else if(bdiff > rdiff &&
      * bdiff > gdiff) color = 2; }
      */
+    
+    public String toString(){
+    	return this.red + " " + this.green + " " + this.blue;
+    }
 }
