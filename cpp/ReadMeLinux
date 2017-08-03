@@ -1,0 +1,45 @@
+To run this on Linux, you need the shared object (so) files libflycapture.so.2 and libflycapture-c.so.2, which can be extracted from the .deb files from the website of those who make the FlyCapture library. The two .deb files I had to get these from were:
+	libflycapture-2.11.3.121_amd64.deb
+	libflycapture-c-2.11.3.121_amd64.deb
+Naming may vary slightly.
+
+You also need to set up a set of links (easily done using ln -s): 
+	from libflycapture.so -> libflycapture.so.2 
+	and from libflycapture-c.so -> libflycapture.so.2
+	
+Finally, you need to install the following dependencies:
+1) libraw1394-11
+2) libgtkmm-2.4-dev
+3) libglademm-2.4-dev
+4) libgtkglextmm-x11-1.2-dev
+5) libusb-1.0-0 (version 1.0.17 or greater recommended)
+
+The README for FlyCapture gives the following command for Ubuntu 16.04:
+sudo apt-get install libraw1394-11 libgtkmm-2.4-dev libglademm-2.4-dev libgtkglextmm-x11-1.2-dev libusb-1.0-0
+
+The following command is what I used on my Fedora 24 system:
+sudo dnf install libraw1394 gtkmm24-devel libglademm24 gtkglextmm-devel libusb
+
+I think that some of these dependencies (#2, #3 and #4) aren't actually needed for the library but are for the GUI application, but I'm not sure. I have them all installed.
+
+You may need to do some setup of the raw1394 kernel module, and add a udev rule for your camera device. Since I don't have the camera hardware right now, I can't test it, but I will try to add more information once I have access to it.
+
+=========================================================================
+Some extra steps are also needed if you want to compile
+
+You will need the header files (in this directory):
+	fly2cam_FlyCamera.h (which is already here)
+	FlyCapture2_C.h
+	FlyCapture2Defs_C.h
+	FlyCapture2Platform_C.h
+I was able to extract the other three header files from libflycapture-c-2.11.3.121_amd64-dev.deb -- note that this is the "dev" version.
+
+You can now compile the shared object file. The command that I used is below. It may vary slightly based on your JDK install location, so edit those accordingly (those paths need to be there to find jni.h and jni-md.h).
+
+gcc -shared -o libFlyCamera.so -fPIC FlyCamera.cpp -L ./ -lflycapture -lflycapture-c -I . -I /usr/java/jdk1.8.0_91/include/ -I /usr/java/jdk1.8.0_91/include/linux/
+
+=========================================================================
+
+For any further information, read the "ReadMe" file.
+Note that since I don't actually have any camera hardware, I am unable to test this Linux build. 
+Sameer Suri
