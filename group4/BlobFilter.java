@@ -2,6 +2,7 @@ package group4;
 
 import global.Constant;
 import group3.MovingBlob;
+import group3.UnifiedBlob;
 import group4.IMovingBlobReduction;
 
 import java.util.Comparator;
@@ -29,9 +30,9 @@ public class BlobFilter implements IMovingBlobReduction
 	//Maximum width to height ratio
 	private static final float MAX_WIDTH_HEIGHT_RATIO = 1;
 	//Maximum width
-	private static final int MAX_WIDTH = 200;
+	private static final int MAX_WIDTH = 100;
 	//Maximum height
-	private static final int MAX_HEIGHT = 400;
+	private static final int MAX_HEIGHT = 100;
 	//Maximum scaled x velocity
 	private static final float MAX_SCALED_VELOCITY_X = 30;
 	//Maximum scaled x velocity
@@ -59,9 +60,11 @@ public class BlobFilter implements IMovingBlobReduction
 		return blob.age >= Constant.AGE_MIN &&
 				Math.abs(blob.velocityY) < Constant.VELOCITY_Y_MAX &&
 				Math.abs(blob.velocityX) < Constant.VELOCITY_X_MAX &&
+				Math.abs(blob.velocityY) > Constant.VELOCITY_Y_MIN &&
+				Math.abs(blob.velocityX) > Constant.VELOCITY_X_MIN &&
 				blob.velocityChangeX < Constant.MAX_VELOCITY_CHANGE_X &&
 				blob.velocityChangeY < Constant.MAX_VELOCITY_CHANGE_Y &&
-				(float)blob.width/(float)blob.height < 1.3;
+				(float)blob.width/(float)blob.height < 1.3 && (float)blob.width*(float)blob.height > 40;
 				
 	}
 	
@@ -78,6 +81,20 @@ public class BlobFilter implements IMovingBlobReduction
 				blob.width < Constant.MAX_WIDTH &&
 				blob.height < Constant.MAX_HEIGHT &&
 				Math.abs(blob.getScaledVelocityX()) > Constant.MIN_SCALED_VELOCITY_X &&
-				Math.abs(blob.getScaledVelocityY()) > Constant.MIN_SCALED_VELOCITY_Y;
+				Math.abs(blob.getScaledVelocityY()) > Constant.MIN_SCALED_VELOCITY_Y &&
+				blob.getDensity() > 2;
 	}
+	
+	public List<MovingBlob> filterFilteredUnifiedBlobs(List<MovingBlob> blobs){
+		List<MovingBlob> ret = new LinkedList<>();
+		for(MovingBlob blob : blobs){
+			if(filterFilteredUnifiedBlob(blob)) ret.add(blob);
+		}
+		return ret;
+	}
+	
+	private boolean filterFilteredUnifiedBlob(MovingBlob blob){
+		return blob.age > 2 && blob.ageOffScreen < 1;
+	}
+	
 }

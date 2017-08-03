@@ -1,6 +1,9 @@
 package group1;
 
 import group1.fly0cam.FlyCamera;
+
+import java.util.Arrays;
+
 import global.Constant;
 
 //Defines image as an 2d array of pixels
@@ -16,8 +19,8 @@ public class FileImage implements IImage
     private final int whiteRange = Constant.WHITE_RANGE;
 
     private int tile;
-    private int autoCount = 0;
     private int autoFreq = 15;
+    private int autoCount = autoFreq+1;
 
     // 307200
     // private byte[] camBytes = new byte[2457636];
@@ -62,13 +65,108 @@ public class FileImage implements IImage
 
 
         if(autoCount > autoFreq && autoFreq > -1) {
-            autoConvertWeighted();
-            System.out.println("Calibrating");
+        	autoConvertWeighted();
+            //System.out.println("Calibrating");
             autoCount = 0;
         }
         else{
-            byteConvert();
+        	byteConvert();
         }
+        image = convertImage(getMedianFilteredImage());
+    }
+    
+    public IPixel[][] convertImage(Pixel[][] imageToConvert){
+    	IPixel[][] newImage = new Pixel[imageToConvert.length][imageToConvert[0].length];
+		for(int b1=0;b1<imageToConvert.length;b1++){
+			for(int b2=0;b2<imageToConvert[0].length;b2++){
+				Pixel p = imageToConvert[b1][b2];
+				p.simpleConvert();
+				newImage[b1][b2] = p;
+			}
+		}
+		return newImage;
+    }
+    
+    
+    
+    public Pixel[][] getMedianFilteredImage(){
+       
+    	Pixel[][] filteredImage = new Pixel[image.length][image[0].length];
+    	int windowSize = 3;
+    	
+    	for(int i=0; i<filteredImage.length; i++){
+    		for(int j=0; j<filteredImage[0].length; j++){
+    			if(i>filteredImage.length-windowSize || j>filteredImage[0].length-windowSize){
+    				filteredImage[i][j] = new Pixel((short)0, (short)0, (short)0);
+    			}
+    			else{
+    				short[] reds = new short[windowSize*windowSize];
+    				short[] greens = new short[windowSize*windowSize];
+    				short[] blues = new short[windowSize*windowSize];
+	    			
+	    			
+	    			for(int w=0; w<windowSize; w++){
+	    				for(int q=0; q<windowSize; q++){
+	    					reds[w*windowSize + q] = image[i+w][j+q].getRed();
+	    					greens[w*windowSize + q] = image[i+w][j+q].getGreen();
+	    					blues[w*windowSize + q] = image[i+w][j+q].getBlue();
+	    				}
+	    			}
+	    			
+	    			Arrays.sort(reds);
+	    			Arrays.sort(greens);
+	    			Arrays.sort(blues);
+	    			
+	    			int half = windowSize*windowSize/2;
+	    			Pixel pixel = new Pixel(reds[half], greens[half], blues[half]);
+	    			filteredImage[i][j] = pixel;
+    			}	
+    		}
+    	}
+    	return filteredImage;
+    }
+    
+    public Pixel[][] getGaussianBlurredImage(IPixel[][] rImage){
+    	Pixel[][] blurImage = new Pixel[rImage.length][rImage[0].length];
+    	float[][] blurMatrix = new float[][]{{1f/9, 1f/9, 1f/9},
+    										{1f/9, 1f/9, 1f/9},
+    										{1f/9, 1f/9, 1f/9}};
+    	
+    	int edge = (int)blurMatrix.length/2;
+    	for(int i=0; i<blurImage.length; i++){
+    		for(int j=0; j<blurImage[0].length; j++){
+    			if(i<edge || j<edge || i>blurImage.length-edge-1 || j>blurImage[0].length-edge-1){
+    				blurImage[i][j] = new Pixel((short)0, (short)0, (short)0);
+    			}
+    			else{
+    				short red = 0;
+	    			short green = 0;
+	    			short blue = 0;
+	    			
+	    			int half = blurMatrix.length/2;
+	    			IPixel[][] pixelSquare = new IPixel[blurMatrix.length][blurMatrix.length];
+	    			for(int i1=0; i1<blurMatrix.length; i1++){
+	    				for(int i2=0; i2<blurMatrix.length; i2++){
+	    					pixelSquare[i1][i2] = rImage[i+i1-half][j+i2-half];
+	    				}
+	    			}
+	    			
+	    			
+	    			for(int w=0; w<blurMatrix.length; w++){
+	    				for(int q=0; q<blurMatrix.length; q++){
+	    					red += (short)(pixelSquare[w][q].getRed()*blurMatrix[w][q]);
+	    					green += (short)(pixelSquare[w][q].getGreen()*blurMatrix[w][q]);
+	    					blue += (short)(pixelSquare[w][q].getBlue()*blurMatrix[w][q]);
+	    				}
+	    			}
+	    			
+	    			blurImage[i][j] = new Pixel(red, green, blue);
+    			}	
+    		}
+    	}
+    	
+    	return blurImage;
+    										 
     }
 
     public void finish()

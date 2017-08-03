@@ -39,9 +39,9 @@ public class BlobDetectionRender extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        IBlobDetection blobDetect = new BlobDetection();
-        IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
-        IMovingBlobReduction blobFilter = new BlobFilter();
+        BlobDetection blobDetection = new BlobDetection();
+        MovingBlobDetection movingBlobDetection = new MovingBlobDetection();
+        BlobFilter blobFilter = new BlobFilter();
         
         // IImage image = new JpgImage("src/testImage1.png");
         IImage image = new FileImage();
@@ -132,15 +132,11 @@ public class BlobDetectionRender extends Application
                     }
                 }
 
-                IBlobDetection blobDetect = new BlobDetection();
-                IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
-                IMovingBlobReduction blobFilter = new BlobFilter();
-
-                List<Blob> blobs = blobDetect.getBlobs(image);
-                List<MovingBlob> movingBlobs = movingBlobDetect.getMovingBlobs(blobs);
-
-                List<MovingBlob> filteredBlobs = blobFilter
-                        .reduce(movingBlobDetect.getUnifiedBlobs(blobFilter.reduce(movingBlobs)));
+                List<Blob> knownBlobs = blobDetection.getBlobs(image);
+                List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
+                List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
+                List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
+                List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
 
                 gc.setStroke(Color.DARKGOLDENROD);
                 gc.setLineWidth(4);
@@ -149,14 +145,14 @@ public class BlobDetectionRender extends Application
                 {
                     if (filter)
                     {
-                        for (Blob blob : filteredBlobs)
+                        for (Blob blob : funifiedBlobs)
                         {
                             gc.strokeRect(blob.x * scale, blob.y * scale, blob.width * scale, blob.height * scale);
                         }
                     }
                     else
                     {
-                        for (Blob blob : blobs)
+                        for (Blob blob : unifiedBlobs)
                         {
                             gc.strokeRect(blob.x * scale, blob.y * scale, blob.width * scale, blob.height * scale);
                         }
