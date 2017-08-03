@@ -1,8 +1,9 @@
 package group1;
 
-import fly2cam.FlyCamera;
+import group1.fly0cam.FlyCamera;
 
 import java.awt.*;
+import java.util.Arrays;
 
 /**
  * Image class for HDR images, handles the sequence of four images sent by the camera using HDR
@@ -33,7 +34,7 @@ public class HDRImage implements IImage {
 	private static final double K = 0.25;
 
 	public HDRImage(int exposure, long[] HDRShutters, long[] HDRGains) {
-		flyCam.Connect(frameRate, exposure, 0, 0);
+		flyCam.Connect(frameRate);
 
 		//flyCam.SetHDR(HDRShutters, HDRGains);
 		this.HDRShutters = HDRShutters;
@@ -64,9 +65,11 @@ public class HDRImage implements IImage {
 		//ow, that's a lot of time
 		//step 2: HDR
 		fuseImages();
-		//step 3; MEAN SHIFT BITCHES WOOOOOOO
-		tempHue = MeanShiftImage.meanShift(tempHue, 10);
-		//step 4: convert doubles to color
+		//step 3: median filter
+		medianFilter();
+		//step 4; MEAN SHIFT BITCHES WOOOOOOO
+		//tempHue = MeanShiftImage.meanShift(tempHue, 10);
+		//step 5: convert doubles to color
 		for(int i = 0; i < tempHue.length; i++){
 			for(int o = 0; o < tempHue[0].length; o++){
 				final Color thing = new Color(Color.HSBtoRGB((float)tempHue[i][o], 1, 1));
@@ -167,5 +170,31 @@ public class HDRImage implements IImage {
 	private static double getWeight(double color, double exposureNum, double numExposures) {
 		//final double c = Math.pow(exposureNum / numExposures, 0.3);
 		return Math.exp(-Math.pow((color), 2) / K);
+	}
+
+	public void medianFilter(){
+		final int windowSize = 3;
+
+		for(int i=0; i<tempHue.length; i++){
+			for(int j=0; j<tempHue[0].length; j++){
+				if(i>tempHue.length-windowSize || j>tempHue[0].length-windowSize){
+					//tempHue[i][j] = new Pixel((short)0, (short)0, (short)0);
+				}
+				else{
+					double[] hues = new double[windowSize*windowSize];
+
+					for(int w=0; w<windowSize; w++){
+						for(int q=0; q<windowSize; q++){
+							hues[w*windowSize + q] = tempHue[i+w][j+q];
+						}
+					}
+
+					Arrays.sort(hues);
+
+					final int half = windowSize*windowSize/2;
+					tempHue[i][j] = hues[half];
+				}
+			}
+		}
 	}
 }

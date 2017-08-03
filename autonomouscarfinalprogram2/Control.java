@@ -85,7 +85,7 @@ public class Control extends LooiObject
             //currentImage = new Image();
         }
         boxDrawer = new IImageBoxDrawer();
-        boxDrawer.setUsingBasicColors(true);
+        boxDrawer.setUsingBasicColors(false);
         autoExposure = new AutoExposure(currentImage, 30);
 
         previousFrame = 0;

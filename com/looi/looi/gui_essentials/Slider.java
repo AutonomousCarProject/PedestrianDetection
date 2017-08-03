@@ -34,6 +34,8 @@ public class Slider extends Rectangle
     private Color sliderColor;
     private Color trackColor;
     
+    private double percentage;
+
 
     public Slider(double x, double y, double width, double height, Background background, double horizontalMargin, double trackHeight, double sliderWidth, double sliderHeight, double maxSliderHeight, Color sliderColor, Color trackColor)
     {

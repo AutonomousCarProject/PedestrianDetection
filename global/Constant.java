@@ -59,19 +59,6 @@ public class Constant {
 	public static float MIN_SCALED_VELOCITY_X = 1f;
 	public static int MIN_SCALED_VELOCITY_Y = 0;
 	
-	/*
-    Image
-    FileImage
-	 */
-	
-	//constants for color margin calibrations
-	//ratio of absolute average deviation to greyMargin
-	public static float GREY_RATIO = 0.75f;
-	
-	//how far to set black and white margins from mean
-	public static int BLACK_RANGE = 100;
-	public static int WHITE_RANGE = 200;
-	
 	public static void setVariable(int index, double a){
 		switch(index){
 		case 1: MAX_TIME_OFF_SCREEN = (int)a; break;

@@ -46,22 +46,6 @@ public class Image implements IImage
         System.out.println("tile: "+tile+" width: "+width+" height: "+height);
     }
 
-
-    public Image()
-    {
-        flyCam.Connect(frameRate, 0, 0, 0);
-
-        int res = flyCam.Dimz();
-        height = res >> 16;
-        width = res & 0x0000FFFF;
-
-        camBytes = new byte[height * width * 4];
-        image = new Pixel[height][width];
-        tile = flyCam.PixTile();
-        System.out.println("tile: "+tile+" width: "+width+" height: "+height);
-    }
-
-
     @Override
     public void setAutoFreq(int autoFreq){  //How many frames are loaded before the calibrate is called (-1 never calls it)
         this.autoFreq = autoFreq;
