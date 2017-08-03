@@ -24,6 +24,10 @@ public class SimpleOptim {
     private float increment[] = new float[threshNum];
 
     private float stepSize = 0.5f;
+    private float incrementRatio = 10f;
+
+    float max  = 0;
+    float thresholdsMax[] = new float[threshNum];
 
     public SimpleOptim(String filename) {
         this.filename = filename;
@@ -31,7 +35,9 @@ public class SimpleOptim {
         int count = 0;
         for (int i = 1; i <= threshLocSize; i++) {
             if (((threshLoc >> i) & 1) == 1) {
-                thresholds[count] = Constant.getVariable(i).floatValue();
+                float threshold = Constant.getVariable(i).floatValue();
+                thresholds[count] = threshold;
+                increment[count] = threshold/incrementRatio;
                 count++;
             }
         }
@@ -49,25 +55,27 @@ public class SimpleOptim {
 
     public void runForce(){
         blobs = Thresholds.getFrame(filename);
-        float max = 0;
-        int thresholdsMax[] = {0,0};
-        for(int i = 0; i < 200; i+=10){
-            for(int j = 0; j < 200; j+=10){
-                thresholds[0] = i;
-                thresholds[1] = j;
-                float score = getScore();
-                if(score > max) {
-                    thresholdsMax[0] = i;
-                    thresholdsMax[1] = j;
-                    max = score;
-                }
-            }
-        }
+        recurseForce(0);
+        System.out.println(max);
     }
 
-    private boolean recurseForce(int count){
-      //  for(int i = 0; i < )
-        return false;
+    private void recurseForce(int count){
+        for(float i = 0; i < increment[count]*incrementRatio*2; i+= increment[count]){
+            thresholds[count] = i;
+            float score = getScore();
+            if(score > max) {
+                max = score;
+                for(int j = 0; j < threshNum; j++){
+                    thresholdsMax[j] = thresholds[j];
+                }
+            }
+
+            if(count < threshNum-1) {
+                recurseForce(count+1); //break;
+            }
+
+        }
+        return;
     }
 
     public void runUphill(int iterations){
@@ -121,7 +129,7 @@ public class SimpleOptim {
         float missAcc = 1-((float)miss.size() / (float)missCount);
 //        if(missAcc > 0) System.out.println("NON ZERO mssAcc");
         if(miss.size()==0 && missCount == 0) missAcc = 1;
-        float score = accuracy * missAcc;
+        float score = accuracy;// * missAcc;
         return score;
     }
 }
