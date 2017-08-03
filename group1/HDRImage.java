@@ -1,6 +1,8 @@
 package group1;
 
-import fly2cam.FlyCamera;
+import group1.fly0cam.FlyCamera;
+
+import java.awt.*;
 
 /**
  * Image class for HDR images, handles the sequence of four images sent by the camera using HDR
@@ -30,9 +32,9 @@ public class HDRImage implements IImage {
 	private static final double K = 0.25;
 
 	public HDRImage(int exposure, long[] HDRShutters, long[] HDRGains) {
-		flyCam.Connect(frameRate, exposure, 0, 0);
+		flyCam.Connect(frameRate);
 
-		flyCam.SetHDR(HDRShutters, HDRGains);
+		//flyCam.SetHDR(HDRShutters, HDRGains);
 		this.HDRShutters = HDRShutters;
 
 		int res = flyCam.Dimz();
@@ -126,25 +128,22 @@ public class HDRImage implements IImage {
 		//for every pixel
 		for(int i = 0; i < images[0].length; i++){
 			for(int j = 0; j < images[0][0].length; j++){
-				// Do fancy math
-				// http://s3.amazonaws.com/academia.edu.documents/34722931/05936115.pdf?AWSAccessKeyId=AKIAIWOWYYGZ2Y53UL3A&Expires=1501706715&Signature=V1h%2BEMGNlikLGbP%2F5TM83zUuGiA%3D&response-content-disposition=inline%3B%20filename%3DMultiple_Exposure_Fusion_for_High_Dynami.pdf
+				//take weighted average with saturation and value
+				double sumHA = 0;
+				double sumHB = 0;
 
-				double[] sumUp = new double[3];
-				double[] sumDown = new double[3];
-
-				for(int n = 0; n < images.length; n++){
-					sumUp[0] += getWeight(images[n][i][j][0] / 255.0, n, images.length) * images[n][i][j][0];
-					sumUp[1] += getWeight(images[n][i][j][1] / 255.0, n, images.length) * images[n][i][j][1];
-					sumUp[2] += getWeight(images[n][i][j][2] / 255.0, n, images.length) * images[n][i][j][2];
-
-					sumDown[0] += getWeight(images[n][i][j][0] / 255.0, n, images.length);
-					sumDown[1] += getWeight(images[n][i][j][1] / 255.0, n, images.length);
-					sumDown[2] += getWeight(images[n][i][j][2] / 255.0, n, images.length);
+				for(int m = 0; m < images.length; m++) {
+					final float[] HSV = Color.RGBtoHSB(images[m][i][j][0], images[m][i][j][1], images[m][i][j][2], null);
+					sumHA += Math.sin(HSV[0] * 2 * Math.PI) * HSV[1] * HSV[2];
+					sumHB += Math.cos(HSV[0] * 2 * Math.PI) * HSV[1] * HSV[2];
 				}
 
-				//System.out.println(sumUp[0] / sumDown[0]);
+				float hue = (float)(Math.atan2(sumHA, sumHB) / (2 * Math.PI));
+				if(hue < 0) hue += 1;
+				final Color color = new Color(Color.HSBtoRGB(hue, 1, 1));
 
-				out[i][j] = new Pixel((short)((sumUp[0] / sumDown[0])), (short)((sumUp[1] / sumDown[1])), (short)((sumUp[2] / sumDown[2])));
+
+				out[i][j] = new Pixel((short)color.getRed(), (short)color.getGreen(), (short)color.getBlue());
 			}
 		}
 	}
