@@ -1,6 +1,8 @@
 package group1;
 
-import group1.fly0cam.FlyCamera;
+
+
+import fly2cam.FlyCamera;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -34,7 +36,7 @@ public class HDRImage implements IImage {
 	private static final double K = 0.25;
 
 	public HDRImage(int exposure, long[] HDRShutters, long[] HDRGains) {
-		flyCam.Connect(frameRate);
+		flyCam.Connect(frameRate, exposure, 0, 0);
 
 		//flyCam.SetHDR(HDRShutters, HDRGains);
 		this.HDRShutters = HDRShutters;
@@ -66,9 +68,10 @@ public class HDRImage implements IImage {
 		//step 2: HDR
 		fuseImages();
 		//step 3: median filter
+		meanFilter();
 		medianFilter();
 		//step 4; MEAN SHIFT BITCHES WOOOOOOO
-		//tempHue = MeanShiftImage.meanShift(tempHue, 10);
+		tempHue = MeanShiftImage.meanShift(tempHue, 10);
 		//step 5: convert doubles to color
 		for(int i = 0; i < tempHue.length; i++){
 			for(int o = 0; o < tempHue[0].length; o++){
@@ -175,6 +178,8 @@ public class HDRImage implements IImage {
 	public void medianFilter(){
 		final int windowSize = 3;
 
+		double[][] justOnce = new double[tempHue.length][tempHue[0].length];
+
 		for(int i=0; i<tempHue.length; i++){
 			for(int j=0; j<tempHue[0].length; j++){
 				if(i>tempHue.length-windowSize || j>tempHue[0].length-windowSize){
@@ -192,9 +197,36 @@ public class HDRImage implements IImage {
 					Arrays.sort(hues);
 
 					final int half = windowSize*windowSize/2;
-					tempHue[i][j] = hues[half];
+					justOnce[i][j] = hues[half];
 				}
 			}
 		}
+		tempHue = justOnce;
+	}
+
+	public void meanFilter(){
+		final int windowSize = 3;
+
+		double[][] justOnce = new double[tempHue.length][tempHue[0].length];
+
+		for(int i=0; i<tempHue.length; i++){
+			for(int j=0; j<tempHue[0].length; j++){
+				if(i>tempHue.length-windowSize || j>tempHue[0].length-windowSize){
+					//tempHue[i][j] = new Pixel((short)0, (short)0, (short)0);
+				}
+				else{
+					double sum = 0;
+
+					for(int w=0; w<windowSize; w++){
+						for(int q=0; q<windowSize; q++){
+							sum += tempHue[i+w][j+q];
+						}
+					}
+
+					justOnce[i][j] = sum / 9.0;
+				}
+			}
+		}
+		tempHue = justOnce;
 	}
 }
