@@ -97,7 +97,7 @@ public class Control extends LooiObject
         frames = new ArrayDeque<IPixel[][]>(5);
 
         frames.addFirst(firstFrame);
-        blobSelector = new BlobSelector(boxDrawer,this);
+        //blobSelector = new BlobSelector(boxDrawer,this);
 
         sliderWindow = new DraggingWindow(100, 100, 500, 500, new Background(Color.WHITE));
         sliderWindow.add(sliderWindow.new ExitButton());
@@ -251,7 +251,7 @@ public class Control extends LooiObject
     protected void looiPaint()
     {
         drawString(Constant.AGE_MIN,300,300);
-        drawImage(boxDrawer.getCurrentImage(),0,0,getInternalWidth(),getInternalHeight());
+        //drawImage(boxDrawer.getCurrentImage(),0,0,getInternalWidth(),getInternalHeight());
         //drawImage(testBI,0,0,getInternalWidth(),getInternalHeight());
     }
 }
