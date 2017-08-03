@@ -39,6 +39,7 @@ public class BlobDetectionRender extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+
         BlobDetection blobDetection = new BlobDetection();
         MovingBlobDetection movingBlobDetection = new MovingBlobDetection();
         BlobFilter blobFilter = new BlobFilter();
@@ -49,7 +50,6 @@ public class BlobDetectionRender extends Application
 
         //IImage -image = new JpgImage("src/testImage1.png");
         //IImage image = new Image(0, 50, 0);
-
 
         IPixel[][] pixels = image.getImage();
         final int scale = 2;
@@ -137,6 +137,7 @@ public class BlobDetectionRender extends Application
                 List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
                 List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
                 List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
+
 
                 gc.setStroke(Color.DARKGOLDENROD);
                 gc.setLineWidth(4);

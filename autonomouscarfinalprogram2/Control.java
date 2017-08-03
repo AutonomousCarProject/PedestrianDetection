@@ -10,16 +10,16 @@ import com.looi.looi.gui_essentials.AstheticButton;
 import com.looi.looi.gui_essentials.Background;
 import com.looi.looi.gui_essentials.Button;
 import com.looi.looi.gui_essentials.ScrollBox;
-import group1.IPixel;
+import group1.*;
+import com.looi.looi.gui_essentials.TextBox;
 import com.looi.looi.gui_essentials.Window;
 import com.looi.looi.gui_essentials.ScrollBox.ScrollBoxObject;
 import com.looi.looi.gui_essentials.Window.ExitButton;
 import com.sun.org.apache.xpath.internal.functions.FuncUnparsedEntityURI;
 
+import fly2cam.AutoExposure;
+import fly2cam.IAutoExposure;
 import global.Constant;
-import group1.FileImage;
-import group1.IImage;
-import group1.Image;
 import group2.Blob;
 import group2.BlobDetection;
 import group3.MovingBlob;
@@ -33,128 +33,128 @@ import java.util.List;
 import java.awt.Color;
 import java.awt.Font;
 
-
-
-
 /**
  *
  * @author peter_000
  */
 public class Control extends LooiObject
 {
-	private BlobDetection blobDetection;
-	private MovingBlobDetection movingBlobDetection;
-	private BlobFilter blobFilter;
-	private IImageBoxDrawer boxDrawer;
-	private FileImage currentImage;
 
-	private Button toggleGraphics;
-	private ScrollBox scrollBox;
-	private Window sliderWindow;
+    private IAutoExposure autoExposure;
+    private BlobDetection blobDetection;
+    private MovingBlobDetection movingBlobDetection;
+    private BlobFilter blobFilter;
+    private IImageBoxDrawer boxDrawer;
+    private IImage currentImage;
 
+    private Button toggleGraphics;
+    private ScrollBox scrollBox;
+    private Window sliderWindow;
 
-	private BufferedImage testBI = new BufferedImage(10,10,BufferedImage.TYPE_INT_ARGB);
-	{
-		for(int r = 0; r < testBI.getHeight(); r++)
-		{
-			for(int c = 0; c < testBI.getWidth(); c++)
-			{
-				int p = (255/*alpha*/ << 24) | (255 << 16) | (255 << 8) | 255;
-				testBI.setRGB(c,r,p);
-			}
-		}
-	}
+    private int previousFrame;
+    private int currentFrame;
+    public static boolean keepGoing = true;
 
-	private int previousFrame;
-	private int currentFrame;
-	public static boolean keepGoing;
+    private ArrayDeque<IPixel[][]> frames;
+    private ArrayList<IPixel[][]> frameList;
 
-	private ArrayDeque<IPixel[][]> frames;
-	private ArrayList<IPixel[][]> frameList;
+    private int yCoordinate;
 
-	private int yCoordinate;
+    private LoadTextBox ltb;
 
-	private LoadTextBox ltb;
+    public Control(boolean useCamera)
+    {
+        ArrayList<VariableSlider> variableSliders = new ArrayList<>();
+        blobDetection = new BlobDetection();
+        movingBlobDetection = new MovingBlobDetection();
+        blobFilter = new BlobFilter();
+        if (!useCamera)
+        {
+            currentImage = new FileImage();
+        }
+        else
+        {
+            //just evenly dispersed for now
+            currentImage = new HDRImage(0, new long[] { 0x060, 0x142, 0x284, 0x300 }, new long[] { 0x1BA, 0x1BA, 0x1BA, 0x1BA });
+            //currentImage = new Image();
+        }
+        boxDrawer = new IImageBoxDrawer();
+        boxDrawer.setUsingBasicColors(true);
+        autoExposure = new AutoExposure(currentImage, 30);
 
-	public Control(int frameDelay, boolean useCamera)
-	{
-		ArrayList<VariableSlider> variableSliders = new ArrayList<>();
-		blobDetection = new BlobDetection();
-		movingBlobDetection = new MovingBlobDetection();
-		blobFilter = new BlobFilter();
-		if(!useCamera)
-		{
-			currentImage = new FileImage();
-		}
-		else
-		{
-			//currentImage = new Image(1,1,1); 
-		}
-		boxDrawer = new IImageBoxDrawer();
-		boxDrawer.setUsingBasicColors(true);
+        previousFrame = 0;
+        setCurrentFrame(1);
+        keepGoing = true;
 
-		previousFrame = 0;
-		setCurrentFrame(1);
-		keepGoing = true;
+        currentImage.readCam();
+        IPixel[][] firstFrame = currentImage.getImage();
 
-		currentImage.readCam();
-		IPixel[][] firstFrame = currentImage.getImage();
+        frames = new ArrayDeque<IPixel[][]>(5);
 
-		frames = new ArrayDeque<IPixel[][]>(5);
+        frames.addFirst(firstFrame);
 
-		frames.addFirst(firstFrame);
-
-
-		/*
+        frameList = new ArrayList<>(frames); // maybe this needs to be removed?
+                                             // it was there in a merge conflict
+                                             // and I wasn't sure whether or not
+                                             // to delete it.
         yCoordinate = 10;
 
-        sliderWindow = new DraggingWindow(100,100,500,500,new Background(Color.WHITE));
-        sliderWindow.add(sliderWindow.new ExitButton()); 
-        sliderWindow.add(scrollBox = new ScrollBox(25,100,450,375,new Background(new Color(250,250,255))));
+        sliderWindow = new DraggingWindow(100, 100, 500, 500, new Background(Color.WHITE));
+        sliderWindow.add(sliderWindow.new ExitButton());
+        sliderWindow.add(scrollBox = new ScrollBox(25, 100, 450, 375, new Background(new Color(250, 250, 255))));
 
-        String text[] = {"Max Time Off Screen", "Distance Limit X", "Distance Limit Y", "Max Change Width", "Max Change Height",
-        					"X Edge Distance Limit", "Y Edge Distance Limit", "X Overlap Percent", "Y Overlap Percent", 
-        					"Unify Velocity Limit X", "Unify Velocity Limit Y", "Velocity Limit Increase X",  
-        					"Velocity Limit Increase Y", "Age Min","Velocity X Max", "Velocity Y Max",
-        					 "Max Velocity Change X", "Max Velocity Change Y", "Max Width Height Ratio", "Max Width",
-        					 "Max Height", "Max Scaled Velocity X", "Max Scaled Velocity Y", };
+        String text[] = { "Max Time Off Screen", "Distance Limit X", "Distance Limit Y", "Max Change Width",
+                "Max Change Height", "X Edge Distance Limit", "Y Edge Distance Limit", "X Overlap Percent",
+                "Y Overlap Percent", "Unify Velocity Limit X", "Unify Velocity Limit Y", "Velocity Limit Increase X",
+                "Velocity Limit Increase Y", "Age Min", "Velocity X Max", "Velocity Y Max", "Max Velocity Change X",
+                "Max Velocity Change Y", "Max Width Height Ratio", "Max Width", "Max Height", "Max Scaled Velocity X",
+                "Max Scaled Velocity Y", };
 
-       int maximumValues[] = {5, 40, 40, 100, 100, 20, 20, 1, 1, 35, 35, 3, 3, 7, 100, 100, 100, 100, 2, 1000, 1000, 100, 100};
+        int maximumValues[] = { 5, 40, 40, 100, 100, 20, 20, 1, 1, 35, 35, 3, 3, 7, 100, 100, 100, 100, 2, 1000, 1000,
+                100, 100 };
 
 
         // displays text
-        for(int i = 0; i < text.length; i++) {                        
-        	scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150, i*100+20, 100, 30, new Background(Color.WHITE), text[i])));
+        for (int i = 0; i < text.length; i++)
+        {
+            scrollBox.add(scrollBox.new ScrollBoxObject(
+                    new Text(150, i * 100 + 20, 100, 30, new Background(Color.WHITE), text[i])));
         }
 
         // displays sliders
-        for(int j = 0; j < text.length; j++) {
-        	int i = j+1;
-                VariableSlider sld = new VariableSlider<Double>(10,j*100+20,100,20,
-            				new Background(Color.WHITE),0,maximumValues[j],(a)->{
-            	Constant.setVariable(i, a);
-            }, () -> {return Constant.getVariable(i);});
-                variableSliders.add(sld);
 
-            scrollBox.add(scrollBox.new ScrollBoxObject(  sld  )); 
+        for (int j = 0; j < text.length; j++)
+        {
+            int i = j + 1;
+            VariableSlider sld = new VariableSlider<Double>(10, j * 100 + 20, 100, 20, new Background(Color.WHITE), 0,
+                    maximumValues[j], (a) -> {
+                        Constant.setVariable(i, a);
+                    }, () -> {
+                        return Constant.getVariable(i);
+                    });
+            variableSliders.add(sld);
+
+            scrollBox.add(scrollBox.new ScrollBoxObject(sld));
         }
 
-        scrollBox.add(scrollBox.new ScrollBoxObject(new SaveButton(10,100*text.length,150,100,"Save",new Color(150,200,40))));
+        scrollBox.add(scrollBox.new ScrollBoxObject(
+                new SaveButton(10, 100 * text.length, 150, 100, "Save", new Color(150, 200, 40))));
 
-        toggleGraphics = new AstheticButton(10,100*text.length+100,135,100,"Toggle Graphics",Color.GRAY) 
+        toggleGraphics = new AstheticButton(10, 100 * text.length + 100, 135, 100, "Toggle Graphics", Color.GRAY)
         {
             @Override
-            protected void action() 
+            protected void action()
             {
-                boxDrawer.setUsingBasicColors(!boxDrawer.isUsingBasicColors()); 
+                boxDrawer.setUsingBasicColors(!boxDrawer.isUsingBasicColors());
             }
         };
         toggleGraphics.setLayer(-999);
-        scrollBox.add(scrollBox.new ScrollBoxObject(toggleGraphics)); 
-        ltb = new LoadTextBox(10,3010,300,40,new Background(Color.WHITE),"File Name", new Font("",Font.PLAIN,16),true,Color.BLACK,10,5,0);
+        scrollBox.add(scrollBox.new ScrollBoxObject(toggleGraphics));
+        ltb = new LoadTextBox(10, 3010, 300, 40, new Background(Color.WHITE), "File Name", new Font("", Font.PLAIN, 16),
+                true, Color.BLACK, 10, 5, 0);
         scrollBox.add(scrollBox.new ScrollBoxObject(ltb));
         ltb.addSliders(variableSliders); 
-		 */
+		 
 	}
 
 	/**
@@ -265,4 +265,5 @@ public class Control extends LooiObject
 		drawImage(boxDrawer.getCurrentImage(),0,0,getInternalWidth(),getInternalHeight());
 		//drawImage(testBI,0,0,getInternalWidth(),getInternalHeight());
 	}
+
 }
