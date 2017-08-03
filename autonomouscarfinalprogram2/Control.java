@@ -17,6 +17,8 @@ import com.looi.looi.gui_essentials.ScrollBox.ScrollBoxObject;
 import com.looi.looi.gui_essentials.Window.ExitButton;
 import com.sun.org.apache.xpath.internal.functions.FuncUnparsedEntityURI;
 
+import fly2cam.AutoExposure;
+import fly2cam.IAutoExposure;
 import global.Constant;
 import group2.Blob;
 import group2.BlobDetection;
@@ -61,7 +63,8 @@ public class Control extends LooiObject
 
     public Control(boolean useCamera)
     {
-        ArrayList<VariableSlider> variableSliders = new ArrayList<>();
+    	
+        //ArrayList<VariableSlider> variableSliders = new ArrayList<>();
         blobDetection = new BlobDetection();
         movingBlobDetection = new MovingBlobDetection();
         blobFilter = new BlobFilter();
@@ -95,7 +98,7 @@ public class Control extends LooiObject
                                              // and I wasn't sure whether or not
                                              // to delete it.
         yCoordinate = 10;
-
+/*
         sliderWindow = new DraggingWindow(100, 100, 500, 500, new Background(Color.WHITE));
         sliderWindow.add(sliderWindow.new ExitButton());
         sliderWindow.add(scrollBox = new ScrollBox(25, 100, 450, 375, new Background(new Color(250, 250, 255))));
@@ -150,6 +153,7 @@ public class Control extends LooiObject
                 true, Color.BLACK, 10, 5, 0);
         scrollBox.add(scrollBox.new ScrollBoxObject(ltb));
         ltb.addSliders(variableSliders); 
+        */
 		 
 	}
 
@@ -187,11 +191,12 @@ public class Control extends LooiObject
 		List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
 		List<MovingBlob> matchedUnifiedBlobs =  movingBlobDetection.getFilteredUnifiedBlobs(funifiedBlobs);
 		List<MovingBlob> fmatchedUnifiedBlobs = blobFilter.filterFilteredUnifiedBlobs(matchedUnifiedBlobs);
+		
 		//boxDrawer.draw2(currentImage, unifiedBlobs, fmovingBlobs);
 		//boxDrawer.draw(currentImage, funifiedBlobs);
 		//boxDrawer.draw2(currentImage, fmovingBlobs, fmatchedUnifiedBlobs);
 		//boxDrawer.draw(currentImage, unifiedBlobs);
-		boxDrawer.draw(currentImage, fmovingBlobs);
+		boxDrawer.draw(currentImage, fmatchedUnifiedBlobs);
 		//for(MovingBlob b: fmovingBlobs) System.out.println(b.velocityChangeX);
 
 		IPixel[][] image = currentImage.getImage();
