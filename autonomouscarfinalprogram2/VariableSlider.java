@@ -8,7 +8,6 @@ package autonomouscarfinalprogram2;
 import java.text.DecimalFormat;
 import com.looi.looi.gui_essentials.Background;
 import com.looi.looi.gui_essentials.Slider;
-import com.looi.looi.gui_essentials.Window;
 
 /**
  *
