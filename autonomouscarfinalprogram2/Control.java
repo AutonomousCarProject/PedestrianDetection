@@ -196,7 +196,7 @@ public class Control extends LooiObject
 		//boxDrawer.draw(currentImage, funifiedBlobs);
 		//boxDrawer.draw2(currentImage, fmovingBlobs, fmatchedUnifiedBlobs);
 		//boxDrawer.draw(currentImage, unifiedBlobs);
-		boxDrawer.draw(currentImage, fmatchedUnifiedBlobs);
+		boxDrawer.draw(currentImage, fmatchedUnifiedBlobs); 
 		//for(MovingBlob b: fmovingBlobs) System.out.println(b.velocityChangeX);
 
 		IPixel[][] image = currentImage.getImage();
