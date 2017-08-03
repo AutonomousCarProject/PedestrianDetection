@@ -17,8 +17,6 @@ import com.looi.looi.gui_essentials.ScrollBox.ScrollBoxObject;
 import com.looi.looi.gui_essentials.Window.ExitButton;
 import com.sun.org.apache.xpath.internal.functions.FuncUnparsedEntityURI;
 
-import fly2cam.AutoExposure;
-import fly2cam.IAutoExposure;
 import global.Constant;
 import group2.Blob;
 import group2.BlobDetection;
@@ -39,7 +37,6 @@ import java.awt.Font;
  */
 public class Control extends LooiObject
 {
-
     private IAutoExposure autoExposure;
     private BlobDetection blobDetection;
     private MovingBlobDetection movingBlobDetection;
@@ -122,7 +119,6 @@ public class Control extends LooiObject
         }
 
         // displays sliders
-
         for (int j = 0; j < text.length; j++)
         {
             int i = j + 1;
@@ -193,12 +189,10 @@ public class Control extends LooiObject
 		List<MovingBlob> fmatchedUnifiedBlobs = blobFilter.filterFilteredUnifiedBlobs(matchedUnifiedBlobs);
 		//boxDrawer.draw2(currentImage, unifiedBlobs, fmovingBlobs);
 		//boxDrawer.draw(currentImage, funifiedBlobs);
-
-		//boxDrawer.draw2(currentImage, fmovingBlobs, unifiedBlobs);
+		//boxDrawer.draw2(currentImage, fmovingBlobs, fmatchedUnifiedBlobs);
 		//boxDrawer.draw(currentImage, unifiedBlobs);
-
-		boxDrawer.draw(currentImage, fmatchedUnifiedBlobs);
-
+		boxDrawer.draw(currentImage, fmovingBlobs);
+		//for(MovingBlob b: fmovingBlobs) System.out.println(b.velocityChangeX);
 
 		IPixel[][] image = currentImage.getImage();
 		IPixel[][] copy = new IPixel[image.length][image[0].length];
@@ -219,15 +213,20 @@ public class Control extends LooiObject
 		currentImage.setImage(frameList.get(currentFrame));
 
 		List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
-		List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
+		List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs();
 		List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
 		List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
 		List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
 		List<MovingBlob> matchedUnifiedBlobs =  movingBlobDetection.getFilteredUnifiedBlobs(funifiedBlobs);
 		List<MovingBlob> fmatchedUnifiedBlobs = blobFilter.filterFilteredUnifiedBlobs(matchedUnifiedBlobs);
+		//boxDrawer.draw2(currentImage, unifiedBlobs, fmovingBlobs);
+		//boxDrawer.draw(currentImage, funifiedBlobs);
+		boxDrawer.draw2(currentImage, fmovingBlobs, fmatchedUnifiedBlobs);
+		//boxDrawer.draw(currentImage, unifiedBlobs);
+		//boxDrawer.draw(currentImage, fmatchedUnifiedBlobs);
+
 
 		//boxDrawer.draw2(currentImage, unifiedBlobs, fmovingBlobs);
-		 boxDrawer.draw(currentImage, fmatchedUnifiedBlobs);
 	}   
 
 	public void incrementCurrentFrame(int i){

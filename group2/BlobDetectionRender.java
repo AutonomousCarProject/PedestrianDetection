@@ -139,6 +139,10 @@ public class BlobDetectionRender extends Application
                 List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
 
 
+                
+                List<MovingBlob> filteredBlobs = blobFilter.filterMovingBlobs(movingBlobDetection.getUnifiedBlobs(blobFilter.filterMovingBlobs(movingBlobs)));
+
+
                 gc.setStroke(Color.DARKGOLDENROD);
                 gc.setLineWidth(4);
 

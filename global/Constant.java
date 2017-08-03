@@ -28,8 +28,8 @@ public class Constant {
 	
 	//Maximum 
 	public static int VELOCITY_X_MAX = 150;
-	public static int VELOCITY_Y_MAX = 30;
-	public static int VELOCITY_X_MIN = 5;
+	public static int VELOCITY_Y_MAX = 20;
+	public static int VELOCITY_X_MIN = 2;
 	public static int VELOCITY_Y_MIN = 0;
 	public static float MAX_VELOCITY_CHANGE_X = 15;
 	public static float MAX_VELOCITY_CHANGE_Y = 20;
@@ -39,7 +39,7 @@ public class Constant {
 	public static float MAX_WIDTH_HEIGHT_RATIO = .8f;
 	public static int MAX_WIDTH = 1300;
 	public static int MAX_HEIGHT = 1200;
-	public static float MIN_SCALED_VELOCITY_X = 0.6f;
+	public static float MIN_SCALED_VELOCITY_X = 1f;
 	public static int MIN_SCALED_VELOCITY_Y = 0;
 	
 	/*

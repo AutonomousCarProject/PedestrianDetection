@@ -78,7 +78,7 @@ public class MovingBlob extends Blob
      */
     public float getScaledVelocityX()
     {
-        return 100* this.velocityX / (this.width + this.height);
+        return 100* this.velocityX / this.height;//(this.width + this.height);
     }
 
     /**
@@ -91,7 +91,7 @@ public class MovingBlob extends Blob
      */
     public float getScaledVelocityY()
     {
-        return this.velocityY / (this.width + this.height);
+        return this.velocityY / this.height;//(this.width + this.height);
     }
 
     /**
