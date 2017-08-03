@@ -10,6 +10,7 @@ import com.looi.looi.gui_essentials.AstheticButton;
 import com.looi.looi.gui_essentials.Background;
 import com.looi.looi.gui_essentials.Button;
 import com.looi.looi.gui_essentials.ScrollBox;
+
 import group1.*;
 import com.looi.looi.gui_essentials.TextBox;
 import com.looi.looi.gui_essentials.Window;
@@ -20,6 +21,7 @@ import com.sun.org.apache.xpath.internal.functions.FuncUnparsedEntityURI;
 import fly2cam.AutoExposure;
 import fly2cam.IAutoExposure;
 import global.Constant;
+
 import group2.Blob;
 import group2.BlobDetection;
 import group3.MovingBlob;
@@ -31,7 +33,9 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.Color;
+
 import java.awt.Font;
+
 
 /**
  *
@@ -39,11 +43,13 @@ import java.awt.Font;
  */
 public class Control extends LooiObject
 {
+
     private IAutoExposure autoExposure;
     private BlobDetection blobDetection;
     private MovingBlobDetection movingBlobDetection;
     private BlobFilter blobFilter;
     private IImageBoxDrawer boxDrawer;
+
     private IImage currentImage;
 
     private Button toggleGraphics;
@@ -248,6 +254,7 @@ public class Control extends LooiObject
 	}
 
 	public void setCurrentFrame(int frame){
+
 		currentFrame = frame;
 	}
 
@@ -269,5 +276,6 @@ public class Control extends LooiObject
 		drawImage(boxDrawer.getCurrentImage(),0,0,getInternalWidth(),getInternalHeight());
 		//drawImage(testBI,0,0,getInternalWidth(),getInternalHeight());
 	}
+
 
 }

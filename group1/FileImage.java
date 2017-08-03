@@ -17,10 +17,14 @@ public class FileImage implements IImage
     private final float greyRatio = Constant.GREY_RATIO;
     private final int blackRange = Constant.BLACK_RANGE;
     private final int whiteRange = Constant.WHITE_RANGE;
+    private final int lightDark = Constant.LIGHT_DARK_THRESHOLD;
 
     private int tile;
     private int autoFreq = 15;
+
+    private double multiplier = 1.0/9.0;
     private int autoCount = autoFreq+1;
+
 
     // 307200
     // private byte[] camBytes = new byte[2457636];
@@ -65,12 +69,17 @@ public class FileImage implements IImage
 
 
         if(autoCount > autoFreq && autoFreq > -1) {
-        	autoConvertWeighted();
-            //System.out.println("Calibrating");
+
+            autoConvertWeighted();
+            //filteredConvert();
+            System.out.println("Calibrating");
             autoCount = 0;
         }
         else{
-        	byteConvert();
+       		byteConvert();
+            filteredConvert();
+            //byteConvert();
+
         }
         image = convertImage(getMedianFilteredImage());
     }
@@ -315,8 +324,7 @@ public class FileImage implements IImage
         final int divisor = (width * height);
 
 
-        //autoThreshold variables
-        int threshold = 381;
+        //autoThreshold variable
         int avg; //0-765
         int r, b, g;
         int lesserSum = 0;
@@ -325,6 +333,7 @@ public class FileImage implements IImage
         int greaterCount = 0;
         int lesserMean;
         int greaterMean;
+        double redAvg = 0, blueAvg = 0, greenAvg = 0;
 
         int pos = 0;
         if (tile == 1) {
@@ -341,7 +350,7 @@ public class FileImage implements IImage
 
                     avg = (r + b + g);
 
-                    if (avg < threshold) {
+                    if (avg < lightDark) {
 
                         lesserSum += avg;
                         lesserCount++;
@@ -351,6 +360,39 @@ public class FileImage implements IImage
                         greaterSum += avg;
                         greaterCount++;
 
+                    }
+                    
+                    if(i > 0 && j > 0 && i < height - 1 && j < width - 1){
+                    	
+	                    	for(int h = -1 ; h < 2 ; h++) {
+	        					
+	        					for(int k = -1 ; k < 2 ; k++) {
+	        						
+	        						r = image[i+h][j+k].getRed();
+	        						b = image[i+h][j+k].getBlue();
+	        						g = image[i+h][j+k].getGreen();
+	        						
+	        						
+	        						redAvg += (double)r * multiplier;
+	        						blueAvg += (double)b * multiplier;
+	        						greenAvg += (double)g * multiplier;
+	        						
+	        						
+	        						/*
+	        						redAvg += r * kernel[h+1][k+1];
+	        						blueAvg += b * kernel[h+1][k+1];
+	        						greenAvg += g * kernel[h+1][k+1];
+	        						*/
+	        						
+	        					}
+	        					
+	        				}
+	                    	
+	                    	image[i][j].setRGB((short)redAvg, (short)blueAvg, (short)greenAvg);
+	        				redAvg = 0;
+	        				blueAvg = 0;
+	        				greenAvg = 0;
+                    	
                     }
 
 
@@ -375,7 +417,7 @@ public class FileImage implements IImage
 
                     avg = (r + b + g);
 
-                    if (avg < threshold) {
+                    if (avg < lightDark) {
 
                         lesserSum += avg;
                         lesserCount++;
@@ -386,6 +428,37 @@ public class FileImage implements IImage
                         greaterCount++;
 
                     }
+                    
+                    if(i > 0 && j > 0 && i < height - 1 && j < width - 1){
+                    	
+	                    	for(int h = -1 ; h < 2 ; h++) {
+	        					
+	        					for(int k = -1 ; k < 2 ; k++) {
+	        						
+	        						r = image[i+h][j+k].getRed();
+	        						b = image[i+h][j+k].getBlue();
+	        						g = image[i+h][j+k].getGreen();
+	        						
+	        						
+	        						redAvg += (double)r * multiplier;
+	        						blueAvg += (double)b * multiplier;
+	        						greenAvg += (double)g * multiplier;
+	        						
+	        						
+	        						/*
+	        						redAvg += r * kernel[h+1][k+1];
+	        						blueAvg += b * kernel[h+1][k+1];
+	        						greenAvg += g * kernel[h+1][k+1];
+	        						*/
+	        						
+	        					}
+	        					
+	        				}
+                    	
+	                    	image[i][j].setRGB((short)redAvg, (short)blueAvg, (short)greenAvg);
+	        				redAvg = 0;
+	        				blueAvg = 0;
+	        				greenAvg = 0;
 
                 }
 
@@ -398,9 +471,8 @@ public class FileImage implements IImage
 
         lesserMean = lesserSum / lesserCount;
         greaterMean = greaterSum / greaterCount;
-        threshold = (lesserMean + greaterMean) >> 1;
 
-        average2 = threshold;
+        average2 = (lesserMean + greaterMean) >> 1;
         average = average2 / 3;
 
 
@@ -433,6 +505,64 @@ public class FileImage implements IImage
         Pixel.blackMargin = average2 - blackRange;
         Pixel.whiteMargin = average2 + whiteRange;
 
+    	
     }
+    }
+    
+ 	private void filteredConvert() //low-pass filtering
+	{
+ 		
+		double redAvg = 0, blueAvg = 0, greenAvg = 0;
+		double r, g, b;
+		
+		
+		for(int i = 1 ; i < image.length - 1 ; i++) {
+			
+			for(int j = 1 ; j < image[0].length - 1 ; j++) {
+				
+				
+				for(int h = -1 ; h < 2 ; h++) {
+					
+					for(int k = -1 ; k < 2 ; k++) {
+						
+						r = image[i+h][j+k].getRed();
+						b = image[i+h][j+k].getBlue();
+						g = image[i+h][j+k].getGreen();
+						
+						
+						redAvg += r * multiplier;
+						blueAvg += b * multiplier;
+						greenAvg += g * multiplier;
+						
+						
+						/*
+						redAvg += r * kernel[h+1][k+1];
+						blueAvg += b * kernel[h+1][k+1];
+						greenAvg += g * kernel[h+1][k+1];
+						*/
+						
+					}
+					
+				}
+				
+				/*
+				redAvg = redAvg/9;
+				blueAvg = blueAvg/9;
+				greenAvg = greenAvg/9;
+				*/
+				
+				image[i][j].setRGB((short)redAvg, (short)blueAvg, (short)greenAvg);
+				redAvg = 0;
+				blueAvg = 0;
+				greenAvg = 0;
+				
+			}
+			
+		}
+
+		
+		
+	}
+
 
 }

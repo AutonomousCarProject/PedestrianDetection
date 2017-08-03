@@ -8,6 +8,7 @@ package com.looi.looi.gui_essentials;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -155,12 +156,14 @@ public class TextBox extends Rectangle
         }
         lines.add(row);//dont forget to add the last row, as rows are only added when stuff goes over the line
     }
+
     public void setLayer(double d)
     {
         super.setLayer(d);
         if(cursor != null)
             cursor.setLayer(d - 1); 
     }
+
     protected int stringWidth(String s, Font scaledFont)
     {
         graphics.setFont(scaledFont);

@@ -24,7 +24,8 @@ public class Slider extends Rectangle
     public static final Color 
             DEFAULT_TRACK_COLOR = Color.LIGHT_GRAY,
             DEFAULT_SLIDER_COLOR = Color.BLACK;
-    private double percentage = 50;
+
+
     private double trackHeight;
     private double horizontalMargin;
     private SliderObject sliderObject;
@@ -33,16 +34,17 @@ public class Slider extends Rectangle
     private Color sliderColor;
     private Color trackColor;
     
+
     public Slider(double x, double y, double width, double height, Background background, double horizontalMargin, double trackHeight, double sliderWidth, double sliderHeight, double maxSliderHeight, Color sliderColor, Color trackColor)
     {
         super(x,y,width,height,background);
         setHorizontalMargin(horizontalMargin);
         setTrackHeight(trackHeight);
-        add(sliderObject = new SliderObject(sliderWidth,sliderHeight,maxSliderHeight));
-        
+        add(sliderObject = new SliderObject(sliderWidth,sliderHeight,maxSliderHeight));       
         setSliderColor(sliderColor);
         setTrackColor(trackColor);
         setMaxMin();
+
     }
     public Slider(double x, double y, double width, double height, Background background, double horizontalMargin, double trackHeight, double sliderWidth, double sliderHeight, double maxSliderHeight)
     {
@@ -54,6 +56,7 @@ public class Slider extends Rectangle
     }
     public double getHorizontalMargin(){return horizontalMargin;}
     public double getTrackHeight(){return trackHeight;}
+
     public void setHorizontalMargin(double horizontalMargin){this.horizontalMargin = horizontalMargin;setMaxMin();}
     public void setTrackHeight(double trackHeight){this.trackHeight = trackHeight;}
     public double getSliderMinX(){return sliderMinX;}
@@ -63,6 +66,7 @@ public class Slider extends Rectangle
     public Color getTrackColor(){return trackColor;}
     public void setTrackColor(Color trackColor){this.trackColor = trackColor;}
     
+
     protected void setMaxMin()
     {
         sliderMinX = getX() + getHorizontalMargin();
@@ -82,12 +86,14 @@ public class Slider extends Rectangle
     protected void looiStep()
     {
         super.looiStep();
+
         
+
         double totalDistance = sliderMaxX - sliderMinX;
         double sliderObjectX = sliderObject.getX();
         double sliderObjectProgress = sliderObjectX - sliderMinX;
         
-        
+
         //sliderObject.setPosition(startX + distance * percentage/100,getY() + getHeight()/2);
         percentage = sliderObjectProgress/totalDistance * 100;
     }
@@ -97,6 +103,7 @@ public class Slider extends Rectangle
         setColor(trackColor);
         fillRect(getX() + getHorizontalMargin(),getY() + getHeight()/2 - getTrackHeight()/2,getWidth() - getHorizontalMargin()*2, getTrackHeight());
     }
+
     public void slideToPercentage(double percentage)
     {
         
@@ -123,8 +130,7 @@ public class Slider extends Rectangle
             this.width = width;
             this.height = height;
             this.maxHeight = maxHeight;
-            
-            
+
         }
         protected void looiStep()
         {
