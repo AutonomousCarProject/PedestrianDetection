@@ -1,6 +1,6 @@
 package group1;
 
-import group1.fly0cam.FlyCamera;
+import fly2cam.FlyCamera;
 
 import java.awt.*;
 
@@ -17,6 +17,7 @@ public class HDRImage implements IImage {
 
 	private byte[] camBytes;
 	private short[][][][] images;
+	private double[][] tempHue;
 	private IPixel[][] out;
 
 	private long[] HDRShutters;
@@ -32,7 +33,7 @@ public class HDRImage implements IImage {
 	private static final double K = 0.25;
 
 	public HDRImage(int exposure, long[] HDRShutters, long[] HDRGains) {
-		flyCam.Connect(frameRate);
+		flyCam.Connect(frameRate, exposure, 0, 0);
 
 		//flyCam.SetHDR(HDRShutters, HDRGains);
 		this.HDRShutters = HDRShutters;
@@ -43,6 +44,7 @@ public class HDRImage implements IImage {
 
 		camBytes = new byte[height * width * 4];
 		images = new short[4][height][width][3];
+		tempHue = new double[height][width];
 		out = new IPixel[height][width];
 		tile = flyCam.PixTile();
 		System.out.println("tile: "+tile+" width: "+width+" height: "+height);
@@ -62,6 +64,15 @@ public class HDRImage implements IImage {
 		//ow, that's a lot of time
 		//step 2: HDR
 		fuseImages();
+		//step 3; MEAN SHIFT BITCHES WOOOOOOO
+		tempHue = MeanShiftImage.meanShift(tempHue, 10);
+		//step 4: convert doubles to color
+		for(int i = 0; i < tempHue.length; i++){
+			for(int o = 0; o < tempHue[0].length; o++){
+				final Color thing = new Color(Color.HSBtoRGB((float)tempHue[i][o], 1, 1));
+				out[i][o] = new Pixel((short)thing.getRed(), (short)thing.getGreen(), (short)thing.getBlue());
+			}
+		}
 	}
 
 	@Override
@@ -138,12 +149,10 @@ public class HDRImage implements IImage {
 					sumHB += Math.cos(HSV[0] * 2 * Math.PI) * HSV[1] * HSV[2];
 				}
 
-				float hue = (float)(Math.atan2(sumHA, sumHB) / (2 * Math.PI));
+				double hue = Math.atan2(sumHA, sumHB) / (2 * Math.PI);
 				if(hue < 0) hue += 1;
-				final Color color = new Color(Color.HSBtoRGB(hue, 1, 1));
 
-
-				out[i][j] = new Pixel((short)color.getRed(), (short)color.getGreen(), (short)color.getBlue());
+				tempHue[i][j] = hue;
 			}
 		}
 	}
