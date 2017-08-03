@@ -17,6 +17,7 @@ public class BlobDetection implements IBlobDetection
 {
     public static final int MAXIMUM_DIFFERENCE_IN_WIDTH_BETWEEN_TWO_BLOBS_IN_ORDER_TO_JOIN = 75;
 
+    //creates data structures to organize different stages of blobs
     private Deque<Blob> unusedBlobs = new ArrayDeque<>();
     private Deque<BlobInProgress> unusedBips = new ArrayDeque<>();
     private BlobInProgress[][] bips = null;
@@ -29,12 +30,15 @@ public class BlobDetection implements IBlobDetection
         unusedBlobs.addAll(blobs);
         blobs.clear();
         
+        //get the image
         IPixel[][] pixels = image.getImage();
 
+        //there are no blobs in progress, creates a new array of blobs in progress
         if (bips == null || pixels.length != bips.length || pixels[0].length != bips[0].length)
         {
             bips = new BlobInProgress[pixels.length][pixels[0].length];
         }
+        //otherwise it empties the array of blob in progress
         else
         {
             for(int i = 0; i < bips.length; i++)
@@ -57,6 +61,7 @@ public class BlobDetection implements IBlobDetection
             added.clear();
         }
 
+        //goes along the pixels of the image
         for (int row = 0; row < pixels.length; row++)
         {
             for (int col = 0; col < pixels[0].length - 1; col++)
@@ -66,7 +71,7 @@ public class BlobDetection implements IBlobDetection
 
                 if (pix1.getColor() == pix2.getColor())// matching
                 {
-
+                	//either adds to the bip if there is an existing one or creates a new one if there isn't
                     if (bips[row][col] != null)
                     {
                         bips[row][col].right = max(bips[row][col].right, col + 1);
@@ -87,6 +92,7 @@ public class BlobDetection implements IBlobDetection
                 IPixel pix1 = pixels[row][col];
                 IPixel pix2 = pixels[row + 1][col];
 
+                //merges pixels that are vertically nearby and of same color
                 if (pix1.getColor() == pix2.getColor() && bips[row + 1][col] != null && bips[row][col] != null
                         && Math.abs(bips[row + 1][col].width() - bips[row][col]
                                 .width()) <= MAXIMUM_DIFFERENCE_IN_WIDTH_BETWEEN_TWO_BLOBS_IN_ORDER_TO_JOIN)
@@ -114,6 +120,7 @@ public class BlobDetection implements IBlobDetection
                                 }
                             }
 
+                            //sets the boundaries of the blob
                             bips[row][col].left = min(bips[row][col].left, old.left);
                             bips[row][col].right = max(bips[row][col].right, old.right);
                             bips[row][col].top = min(bips[row][col].top, old.top);
@@ -137,6 +144,7 @@ public class BlobDetection implements IBlobDetection
             }
         }
 
+        //eliminates blbos that are too large or too small
         for (BlobInProgress[] bipRow : bips)
         {
             for (BlobInProgress bip : bipRow)
