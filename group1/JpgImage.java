@@ -73,4 +73,17 @@ public class JpgImage implements IImage
         // TODO Auto-generated method stub
         
     }
+
+    @Override
+    public void setImage(IPixel[][] image)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public int getFrameNo()
+    {
+        return 0;
+    }    
 }

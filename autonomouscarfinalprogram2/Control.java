@@ -10,16 +10,14 @@ import com.looi.looi.gui_essentials.AstheticButton;
 import com.looi.looi.gui_essentials.Background;
 import com.looi.looi.gui_essentials.Button;
 import com.looi.looi.gui_essentials.ScrollBox;
-import group1.IPixel;
+import group1.*;
+import com.looi.looi.gui_essentials.TextBox;
 import com.looi.looi.gui_essentials.Window;
 import com.looi.looi.gui_essentials.ScrollBox.ScrollBoxObject;
 import com.looi.looi.gui_essentials.Window.ExitButton;
 import com.sun.org.apache.xpath.internal.functions.FuncUnparsedEntityURI;
 
 import global.Constant;
-import group1.FileImage;
-import group1.IImage;
-import group1.Image;
 import group2.Blob;
 import group2.BlobDetection;
 import group3.MovingBlob;
@@ -32,9 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.awt.Color;
 import java.awt.Font;
-
-
-
 
 /**
  *
@@ -103,10 +98,7 @@ public class Control extends LooiObject
 		frames = new ArrayDeque<IPixel[][]>(5);
 
 		frames.addFirst(firstFrame);
-
-
-		/*
-        yCoordinate = 10;
+      /*  yCoordinate = 10;
 
         sliderWindow = new DraggingWindow(100,100,500,500,new Background(Color.WHITE));
         sliderWindow.add(sliderWindow.new ExitButton()); 
@@ -123,8 +115,10 @@ public class Control extends LooiObject
 
 
         // displays text
-        for(int i = 0; i < text.length; i++) {                        
-        	scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150, i*100+20, 100, 30, new Background(Color.WHITE), text[i])));
+        for (int i = 0; i < text.length; i++)
+        {
+            scrollBox.add(scrollBox.new ScrollBoxObject(
+                    new Text(150, i * 100 + 20, 100, 30, new Background(Color.WHITE), text[i])));
         }
 
         // displays sliders
@@ -142,16 +136,35 @@ public class Control extends LooiObject
         scrollBox.add(scrollBox.new ScrollBoxObject(new SaveButton(10,100*text.length,150,100,"Save",new Color(150,200,40))));
 
         toggleGraphics = new AstheticButton(10,100*text.length+100,135,100,"Toggle Graphics",Color.GRAY) 
+        for (int j = 0; j < text.length; j++)
+        {
+            int i = j + 1;
+            VariableSlider sld = new VariableSlider<Double>(10, j * 100 + 20, 100, 20, new Background(Color.WHITE), 0,
+                    maximumValues[j], (a) -> {
+                        Constant.setVariable(i, a);
+                    }, () -> {
+                        return Constant.getVariable(i);
+                    });
+            variableSliders.add(sld);
+
+            scrollBox.add(scrollBox.new ScrollBoxObject(sld));
+        }
+
+        scrollBox.add(scrollBox.new ScrollBoxObject(
+                new SaveButton(10, 100 * text.length, 150, 100, "Save", new Color(150, 200, 40))));
+
+        toggleGraphics = new AstheticButton(10, 100 * text.length + 100, 135, 100, "Toggle Graphics", Color.GRAY)
         {
             @Override
-            protected void action() 
+            protected void action()
             {
-                boxDrawer.setUsingBasicColors(!boxDrawer.isUsingBasicColors()); 
+                boxDrawer.setUsingBasicColors(!boxDrawer.isUsingBasicColors());
             }
         };
         toggleGraphics.setLayer(-999);
-        scrollBox.add(scrollBox.new ScrollBoxObject(toggleGraphics)); 
-        ltb = new LoadTextBox(10,3010,300,40,new Background(Color.WHITE),"File Name", new Font("",Font.PLAIN,16),true,Color.BLACK,10,5,0);
+        scrollBox.add(scrollBox.new ScrollBoxObject(toggleGraphics));
+        ltb = new LoadTextBox(10, 3010, 300, 40, new Background(Color.WHITE), "File Name", new Font("", Font.PLAIN, 16),
+                true, Color.BLACK, 10, 5, 0);
         scrollBox.add(scrollBox.new ScrollBoxObject(ltb));
         ltb.addSliders(variableSliders); 
 		 */
@@ -195,7 +208,7 @@ public class Control extends LooiObject
 		//boxDrawer.draw(currentImage, funifiedBlobs);
 		//boxDrawer.draw2(currentImage, fmovingBlobs, fmatchedUnifiedBlobs);
 		//boxDrawer.draw(currentImage, unifiedBlobs);
-		boxDrawer.draw(currentImage, fmatchedUnifiedBlobs);
+		boxDrawer.draw(currentImage, fmovingBlobs);
 		//for(MovingBlob b: fmovingBlobs) System.out.println(b.velocityChangeX);
 
 		IPixel[][] image = currentImage.getImage();
@@ -268,4 +281,5 @@ public class Control extends LooiObject
 		drawImage(boxDrawer.getCurrentImage(),0,0,getInternalWidth(),getInternalHeight());
 		//drawImage(testBI,0,0,getInternalWidth(),getInternalHeight());
 	}
+    
 }

@@ -51,6 +51,7 @@ public class BlobDetectionRender extends Application
         //IImage image = new Image(0, 50, 0);
 
 
+
         IPixel[][] pixels = image.getImage();
         final int scale = 2;
 
@@ -132,11 +133,18 @@ public class BlobDetectionRender extends Application
                     }
                 }
 
+<<<<<<< HEAD
                 List<Blob> knownBlobs = blobDetection.getBlobs(image);
                 List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
                 List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
                 List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
                 List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
+=======
+                List<Blob> blobs = blobDetect.getBlobs(image);
+                List<MovingBlob> movingBlobs = movingBlobDetect.getMovingBlobs(blobs);
+                
+                List<MovingBlob> filteredBlobs = blobFilter.filterMovingBlobs(movingBlobDetect.getUnifiedBlobs(blobFilter.filterMovingBlobs(movingBlobs)));
+>>>>>>> d13318d329076ff8759b1b06aa492ab6bf981eeb
 
                 gc.setStroke(Color.DARKGOLDENROD);
                 gc.setLineWidth(4);
