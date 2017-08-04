@@ -65,12 +65,13 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		for(MovingBlob movingBlob:movingBlobs){
 			float[] point = {movingBlob.x, movingBlob.y, movingBlob.velocityX, movingBlob.velocityY};
 			float distanceMoved = 1000;
-			//until
+			//applies mean shift until there is no longer movement
 			while(distanceMoved > 2){
 				float[] pointTemp = {point[0], point[1], point[2], point[3]};
 				point = shift(point, movingBlob, movingBlobs);
 				distanceMoved = distBetweenPoints(point,pointTemp);
 			}
+			//saves final shifted point
 			finalPoints[index] = point;
 			index++;
 		}
@@ -82,15 +83,16 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		for(int i1=0;i1<finalPoints.length;i1++){
 			for(int i2=i1+1;i2<finalPoints.length;i2++){
 				float distance = distBetweenPoints(finalPoints[i1], finalPoints[i2]);
+				//storing distance for sorting
 				distances[j][0] = distance;
+				//storing indeces of pairs
 				distances[j][1] = i1;
 				distances[j][2] = i2;
 				j++;
 			}
 		}
 
-		//System.out.println(distances.length);
-
+		//sorts array by shortest distance
 		Arrays.sort(distances,new Comparator<float[]>(){
 			@Override
 			public int compare(float[] o1, float[] o2) {
@@ -99,7 +101,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			}
 
 		});
-
+		//combines blobs in order of distance unless max blob size is surpassed
 		HashMap<Integer, HashSet<Integer>> map = new HashMap<>();
 		for(int i=0;i<distances.length;i++){
 			int point1 = (int) distances[i][1];
@@ -159,6 +161,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 				}
 			}
 		}
+		//initializes unified blobs
 		LinkedList<MovingBlob> unifiedBlobs = new LinkedList<>();
 		for(HashSet<Integer> set:map.values()){
 			HashSet<MovingBlob> blobSet = new HashSet<>();
@@ -167,6 +170,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 			}
 			unifiedBlobs.add(new UnifiedBlob(blobSet));
 		}
+		//adds all ungrouped moving blobs
 		int i =0;
 		for(MovingBlob movingBlob:movingBlobs){
 			if(map.get(i)==null){
@@ -182,6 +186,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	private float distBetweenBlobs(float[] point,MovingBlob blob1,MovingBlob blob2){
 		float distanceX;
 		float distanceY;
+		//finds distance between edges
 		if(point[0]>blob2.x){
 			distanceX = point[0]-(blob2.x+blob2.width);
 		} else {
@@ -192,28 +197,32 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		} else {
 			distanceY = blob2.y-(point[1]+blob1.height);
 		}
+		//finds distance based on weight (we are also squaring the distanceX to make it more important)
+		//also cubing distance of x velocity
 		distanceX = xDistWeight * (float)(Math.pow(Math.max(0,distanceX), 2));
 		distanceY = yDistWeight * Math.max(0,distanceY);
-		//System.out.println("distanceX: " + distanceX + "   distanceY: " + distanceY);
 		float distanceVX = vXWeight * (float)Math.pow(Math.abs(point[2]-blob2.velocityX), 3);
 		float distanceVY = vYWeight * Math.abs(point[3]-blob2.velocityY);
 		return (float) Math.sqrt(distanceX*distanceX + distanceY*distanceY + distanceVX*distanceVX + distanceVY*distanceVY);
 	}
 
 	private float distBetweenPoints(float[] point1,float[] point2){
+		//find distance between arrays of length 4 with a point stored
 		return (float)Math.sqrt(Math.pow(xDistWeight*(point1[0]-point2[0]), 2)+Math.pow(yDistWeight*(point1[1]-point2[1]), 2)+
 				Math.pow(vXWeight*(point1[2]-point2[2]), 2)+Math.pow(vYWeight*(point1[3]-point2[3]), 2));
 	}
 
 	private float[] shift(float[] point, MovingBlob movingBlob, List<MovingBlob> movingBlobs){
+		//shifts points one step with weight based on gaussian
 		float[] shift = {0,0,0,0};
 		float weightTotal = 0;
 		for(MovingBlob blob:movingBlobs){
 			float distance = distBetweenBlobs(point, movingBlob, blob);
-			//float weight1 = (blob.width*blob.height)/(float)Math.pow(this.kernelBandwidth, 2);
+			//uses kernel function to find weight based on distance
 			float weight = kernel(distance, this.kernelBandwidth);
 
 			weightTotal += weight;
+			//finds moment of each dimension
 			shift[0] += (blob.x+blob.width/2)*weight;
 			shift[1] += (blob.y+blob.height/2)*weight;
 			shift[2] += blob.velocityX*weight;
@@ -221,15 +230,17 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		}
 		for(int i=0;i<4;i++){
 			if(weightTotal!=0)
+				//divides each moment by total weight to find center of mass
 				shift[i]/=weightTotal;
 		}
 		return shift; 
 	}
 
 	private float kernel(float distance, float kernelBandwidth){
+		//gaussian function to determine weight
 		return (float)Math.exp((-Math.pow(distance, 2))/Math.pow(kernelBandwidth, 2));
 	}
-	
+	//matches filtered moving blobs between frames
 	public void updateFilteredUnifiedBlobs(List<MovingBlob> blobList){
 		MovingBlob[][] pairs = new MovingBlob[blobList.size()*filteredUnifiedBlobs.size()][2];
 		int j = 0;
