@@ -72,7 +72,7 @@ public class FileImage implements IImage
         else{
         	byteConvert();
         }
-        image = convertImage(getMedianFilteredImage(3));
+        image = convertImage(getGaussianBlurredImage(image, 5));
     }
     
     public IPixel[][] convertImage(Pixel[][] imageToConvert){
@@ -140,8 +140,8 @@ public class FileImage implements IImage
 		IPixel[][] pixelSquare = new IPixel[blurMatrix.length][blurMatrix.length];
 		
     	int edge = (int)blurMatrix.length/2;
-    	for(int i=0; i<blurImage.length; i+=blurMatrix.length){
-    		for(int j=0; j<blurImage[0].length; j+=blurMatrix.length){
+    	for(int i=0; i<blurImage.length; i+=1/*blurMatrix.length*/){
+    		for(int j=0; j<blurImage[0].length; j+=1/*blurMatrix.length*/){
     			if(i<edge || j<edge || i>blurImage.length-edge-1 || j>blurImage[0].length-edge-1){
     					blurImage[i][j] = new Pixel((short)0, (short)0, (short)0);
     			}
@@ -164,12 +164,15 @@ public class FileImage implements IImage
 	    					blue += (short)(pixelSquare[w][q].getBlue()*blurMatrix[w][q]);
 	    				}
 	    			}
+	    			/*
 	    			for(int b1=0;b1<windowSize;b1++){
 	    				for(int b2=0;b2<windowSize;b2++){
-	    					if(i+b1>blurImage.length && i+b2>blurImage[0].length)
+	    					if(i+b1<blurImage.length-1 && i+b2<blurImage[0].length-1 && j+b2 != 640)
+	    						
 	    						blurImage[i+b1][j+b2] = new Pixel(red, green, blue);
 	    				}
-	    			}
+	    			}*/
+	    			blurImage[i][j] = new Pixel(red, green, blue);
 	    			
 	    			
     			}
