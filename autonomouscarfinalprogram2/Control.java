@@ -6,32 +6,26 @@
 package autonomouscarfinalprogram2;
 
 import com.looi.looi.LooiObject;
-import com.looi.looi.gui_essentials.AstheticButton;
-import com.looi.looi.gui_essentials.Background;
 import com.looi.looi.gui_essentials.Button;
 import com.looi.looi.gui_essentials.ScrollBox;
+
 import group1.*;
-import com.looi.looi.gui_essentials.TextBox;
 import com.looi.looi.gui_essentials.Window;
-import com.looi.looi.gui_essentials.ScrollBox.ScrollBoxObject;
-import com.looi.looi.gui_essentials.Window.ExitButton;
-import com.sun.org.apache.xpath.internal.functions.FuncUnparsedEntityURI;
 
 import fly2cam.AutoExposure;
 import fly2cam.IAutoExposure;
 import global.Constant;
+
 import group2.Blob;
 import group2.BlobDetection;
 import group3.MovingBlob;
 import group3.MovingBlobDetection;
 import group4.BlobFilter;
 import group5.IImageBoxDrawer;
-import java.awt.image.BufferedImage;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.Color;
-import java.awt.Font;
+
 
 /**
  *
@@ -39,11 +33,13 @@ import java.awt.Font;
  */
 public class Control extends LooiObject
 {
+
     private IAutoExposure autoExposure;
     private BlobDetection blobDetection;
     private MovingBlobDetection movingBlobDetection;
     private BlobFilter blobFilter;
     private IImageBoxDrawer boxDrawer;
+
     private IImage currentImage;
 
     private Button toggleGraphics;
@@ -70,7 +66,7 @@ public class Control extends LooiObject
         blobFilter = new BlobFilter();
         if (!useCamera)
         {
-            currentImage = new FileImage();
+            currentImage = new FileImage("captures0801/FlyCapped6.By8", true);
         }
         else
         {
@@ -79,7 +75,7 @@ public class Control extends LooiObject
             //currentImage = new Image();
         }
         boxDrawer = new IImageBoxDrawer();
-        boxDrawer.setUsingBasicColors(true);
+        boxDrawer.setUsingBasicColors(false);
         autoExposure = new AutoExposure(currentImage, 30);
 
         previousFrame = 0;
@@ -98,7 +94,7 @@ public class Control extends LooiObject
                                              // and I wasn't sure whether or not
        /*                                      // to delete it.
         yCoordinate = 10;
-
+/*
         sliderWindow = new DraggingWindow(100, 100, 500, 500, new Background(Color.WHITE));
         sliderWindow.add(sliderWindow.new ExitButton());
         sliderWindow.add(scrollBox = new ScrollBox(25, 100, 450, 375, new Background(new Color(250, 250, 255))));
@@ -152,7 +148,9 @@ public class Control extends LooiObject
         ltb = new LoadTextBox(10, 3010, 300, 40, new Background(Color.WHITE), "File Name", new Font("", Font.PLAIN, 16),
                 true, Color.BLACK, 10, 5, 0);
         scrollBox.add(scrollBox.new ScrollBoxObject(ltb));
-        ltb.addSliders(variableSliders); */
+        ltb.addSliders(variableSliders); 
+        */
+
 		 
 	}
 
@@ -176,7 +174,7 @@ public class Control extends LooiObject
 		if(currentImage.getFrameNo()==previousFrame){
 			previousFrame = 0;
 			currentImage.finish();
-			currentImage = new FileImage();
+			currentImage = new FileImage("captures0801/FlyCapped6.By8", true);
 			blobDetection = new BlobDetection();
 			movingBlobDetection = new MovingBlobDetection();
 			blobFilter = new BlobFilter();
@@ -190,11 +188,12 @@ public class Control extends LooiObject
 		List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
 		List<MovingBlob> matchedUnifiedBlobs =  movingBlobDetection.getFilteredUnifiedBlobs(funifiedBlobs);
 		List<MovingBlob> fmatchedUnifiedBlobs = blobFilter.filterFilteredUnifiedBlobs(matchedUnifiedBlobs);
+		
 		//boxDrawer.draw2(currentImage, unifiedBlobs, fmovingBlobs);
 		//boxDrawer.draw(currentImage, funifiedBlobs);
 		//boxDrawer.draw2(currentImage, fmovingBlobs, fmatchedUnifiedBlobs);
 		//boxDrawer.draw(currentImage, unifiedBlobs);
-		boxDrawer.draw(currentImage, fmovingBlobs);
+		boxDrawer.draw(currentImage, fmatchedUnifiedBlobs); 
 		//for(MovingBlob b: fmovingBlobs) System.out.println(b.velocityChangeX);
 
 		IPixel[][] image = currentImage.getImage();
@@ -246,6 +245,7 @@ public class Control extends LooiObject
 	}
 
 	public void setCurrentFrame(int frame){
+
 		currentFrame = frame;
 	}
 
@@ -267,5 +267,6 @@ public class Control extends LooiObject
 		drawImage(boxDrawer.getCurrentImage(),0,0,getInternalWidth(),getInternalHeight());
 		//drawImage(testBI,0,0,getInternalWidth(),getInternalHeight());
 	}
+
 
 }

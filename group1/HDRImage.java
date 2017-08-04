@@ -1,6 +1,11 @@
 package group1;
 
+
+
 import fly2cam.FlyCamera;
+
+import java.awt.*;
+import java.util.Arrays;
 
 /**
  * Image class for HDR images, handles the sequence of four images sent by the camera using HDR
@@ -15,6 +20,7 @@ public class HDRImage implements IImage {
 
 	private byte[] camBytes;
 	private short[][][][] images;
+	private double[][] tempHue;
 	private IPixel[][] out;
 
 	private long[] HDRShutters;
@@ -32,7 +38,7 @@ public class HDRImage implements IImage {
 	public HDRImage(int exposure, long[] HDRShutters, long[] HDRGains) {
 		flyCam.Connect(frameRate, exposure, 0, 0);
 
-		flyCam.SetHDR(HDRShutters, HDRGains);
+		//flyCam.SetHDR(HDRShutters, HDRGains);
 		this.HDRShutters = HDRShutters;
 
 		int res = flyCam.Dimz();
@@ -41,6 +47,7 @@ public class HDRImage implements IImage {
 
 		camBytes = new byte[height * width * 4];
 		images = new short[4][height][width][3];
+		tempHue = new double[height][width];
 		out = new IPixel[height][width];
 		tile = flyCam.PixTile();
 		System.out.println("tile: "+tile+" width: "+width+" height: "+height);
@@ -60,6 +67,18 @@ public class HDRImage implements IImage {
 		//ow, that's a lot of time
 		//step 2: HDR
 		fuseImages();
+		//step 3: median filter
+		meanFilter();
+		medianFilter();
+		//step 4; MEAN SHIFT BITCHES WOOOOOOO
+		tempHue = MeanShiftImage.meanShift(tempHue, 10);
+		//step 5: convert doubles to color
+		for(int i = 0; i < tempHue.length; i++){
+			for(int o = 0; o < tempHue[0].length; o++){
+				final Color thing = new Color(Color.HSBtoRGB((float)tempHue[i][o], 1, 1));
+				out[i][o] = new Pixel((short)thing.getRed(), (short)thing.getGreen(), (short)thing.getBlue());
+			}
+		}
 	}
 
 	@Override
@@ -126,25 +145,20 @@ public class HDRImage implements IImage {
 		//for every pixel
 		for(int i = 0; i < images[0].length; i++){
 			for(int j = 0; j < images[0][0].length; j++){
-				// Do fancy math
-				// http://s3.amazonaws.com/academia.edu.documents/34722931/05936115.pdf?AWSAccessKeyId=AKIAIWOWYYGZ2Y53UL3A&Expires=1501706715&Signature=V1h%2BEMGNlikLGbP%2F5TM83zUuGiA%3D&response-content-disposition=inline%3B%20filename%3DMultiple_Exposure_Fusion_for_High_Dynami.pdf
+				//take weighted average with saturation and value
+				double sumHA = 0;
+				double sumHB = 0;
 
-				double[] sumUp = new double[3];
-				double[] sumDown = new double[3];
-
-				for(int n = 0; n < images.length; n++){
-					sumUp[0] += getWeight(images[n][i][j][0] / 255.0, n, images.length) * images[n][i][j][0];
-					sumUp[1] += getWeight(images[n][i][j][1] / 255.0, n, images.length) * images[n][i][j][1];
-					sumUp[2] += getWeight(images[n][i][j][2] / 255.0, n, images.length) * images[n][i][j][2];
-
-					sumDown[0] += getWeight(images[n][i][j][0] / 255.0, n, images.length);
-					sumDown[1] += getWeight(images[n][i][j][1] / 255.0, n, images.length);
-					sumDown[2] += getWeight(images[n][i][j][2] / 255.0, n, images.length);
+				for(int m = 0; m < images.length; m++) {
+					final float[] HSV = Color.RGBtoHSB(images[m][i][j][0], images[m][i][j][1], images[m][i][j][2], null);
+					sumHA += Math.sin(HSV[0] * 2 * Math.PI) * HSV[1] * HSV[2];
+					sumHB += Math.cos(HSV[0] * 2 * Math.PI) * HSV[1] * HSV[2];
 				}
 
-				//System.out.println(sumUp[0] / sumDown[0]);
+				double hue = Math.atan2(sumHA, sumHB) / (2 * Math.PI);
+				if(hue < 0) hue += 1;
 
-				out[i][j] = new Pixel((short)((sumUp[0] / sumDown[0])), (short)((sumUp[1] / sumDown[1])), (short)((sumUp[2] / sumDown[2])));
+				tempHue[i][j] = hue;
 			}
 		}
 	}
@@ -159,5 +173,60 @@ public class HDRImage implements IImage {
 	private static double getWeight(double color, double exposureNum, double numExposures) {
 		//final double c = Math.pow(exposureNum / numExposures, 0.3);
 		return Math.exp(-Math.pow((color), 2) / K);
+	}
+
+	public void medianFilter(){
+		final int windowSize = 3;
+
+		double[][] justOnce = new double[tempHue.length][tempHue[0].length];
+
+		for(int i=0; i<tempHue.length; i++){
+			for(int j=0; j<tempHue[0].length; j++){
+				if(i>tempHue.length-windowSize || j>tempHue[0].length-windowSize){
+					//tempHue[i][j] = new Pixel((short)0, (short)0, (short)0);
+				}
+				else{
+					double[] hues = new double[windowSize*windowSize];
+
+					for(int w=0; w<windowSize; w++){
+						for(int q=0; q<windowSize; q++){
+							hues[w*windowSize + q] = tempHue[i+w][j+q];
+						}
+					}
+
+					Arrays.sort(hues);
+
+					final int half = windowSize*windowSize/2;
+					justOnce[i][j] = hues[half];
+				}
+			}
+		}
+		tempHue = justOnce;
+	}
+
+	public void meanFilter(){
+		final int windowSize = 3;
+
+		double[][] justOnce = new double[tempHue.length][tempHue[0].length];
+
+		for(int i=0; i<tempHue.length; i++){
+			for(int j=0; j<tempHue[0].length; j++){
+				if(i>tempHue.length-windowSize || j>tempHue[0].length-windowSize){
+					//tempHue[i][j] = new Pixel((short)0, (short)0, (short)0);
+				}
+				else{
+					double sum = 0;
+
+					for(int w=0; w<windowSize; w++){
+						for(int q=0; q<windowSize; q++){
+							sum += tempHue[i+w][j+q];
+						}
+					}
+
+					justOnce[i][j] = sum / 9.0;
+				}
+			}
+		}
+		tempHue = justOnce;
 	}
 }

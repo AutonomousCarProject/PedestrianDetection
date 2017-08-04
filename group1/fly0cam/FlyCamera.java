@@ -7,17 +7,6 @@ import java.io.FileInputStream;
 public class FlyCamera {
   public static final int FrameRate_15 = 3, FrameRate_30 = 4;
 
-
-//  private final String fiName = "group1/fly0cam/FlyCapped.By8";  // --non IDE
-//private final String fiName = "src/group1/fly0cam/FlyCapped8.By8"; // -- IDE
-//  private final String fiName = "src/group1/fly0cam/.By8";
-//  private final String fiName = "src/group1/fly0cam/Mix_0_0_0.By8"; // -- IDE\
-
-  private final String fiName = "src/group1/fly0cam/Sidewalk.By8";
-
-
-
-
   public int rose, // actual number of rows = FlyCap2.fc2Image.rows/2
       colz, // actual number of columns = FlyCap2.fc2Image.cols/2
       tile, // see FlyCapture2Defs.fc2BayerTileFormat
@@ -107,9 +96,9 @@ public class FlyCamera {
     colz = 0;
     tile = 0;} //~Finish
 
-  public boolean Connect(int frameRate) { // required at start, sets rose,colz,tile
+  public boolean Connect(int frameRate, String fiName) { // required at start, sets rose,colz,tile
 
-    System.out.println("test: " + new File("group1/fly0cam/FlyCapped.By8").exists());
+//    System.out.println("test: " + new File("group1/fly0cam/FlyCapped.By8").exists());
 
     int why = 27;                         // frameRate is ignored; rtns false at eof
     File myFile = new File(fiName);

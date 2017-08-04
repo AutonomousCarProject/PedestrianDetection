@@ -8,14 +8,17 @@ package autonomouscarfinalprogram2;
 import java.text.DecimalFormat;
 import com.looi.looi.gui_essentials.Background;
 import com.looi.looi.gui_essentials.Slider;
+
 import com.looi.looi.gui_essentials.Window;
 import com.looi.looi.utilities.Supplier;
+
 
 
 /**
  *
  * @author peter_000
  */
+
 public class VariableSlider<E extends Number> extends Slider
 {
     
@@ -31,6 +34,7 @@ public class VariableSlider<E extends Number> extends Slider
         this.max = max;
         this.min = min;
         looiStep();
+
     }
     protected void looiStep()
     {
@@ -40,6 +44,7 @@ public class VariableSlider<E extends Number> extends Slider
         
     }
         
+
     protected void looiPaint()
     {
     	super.looiPaint();
@@ -48,6 +53,7 @@ public class VariableSlider<E extends Number> extends Slider
     	df.setMaximumFractionDigits(2);
     	drawString(df.format(super.getPercentage()/100.0 * (max - min) + min),getX() + getWidth()/2,getY() -20);
     }
+
     public void scrollToSupplierValue()
     {
         scrollToValue(getter.get());

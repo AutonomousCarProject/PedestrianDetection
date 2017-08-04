@@ -52,4 +52,7 @@ public class TestPixel implements IPixel
         return 0;
     }
 
+    @Override
+    public void setRGB(short r, short b, short g) {}
+
 }

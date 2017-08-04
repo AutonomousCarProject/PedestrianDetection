@@ -6,6 +6,14 @@ import java.util.Arrays;
 
 import global.Constant;
 
+//private final String fiName = "group1/fly0cam/FlyCapped.By8"; 
+//private final String fiName = "src/group1/fly0cam/HDR.By8"; // -- IDE
+//private final String fiName = "src/group1/fly0cam/.By8";
+
+//private final String fiName = "src/group1/fly0cam/Mix_0_0_0.By8"; // -- IDE\
+
+//private final String fiName = "src/group1/fly0cam/Sidewalk.By8";
+
 //Defines image as an 2d array of pixels
 public class FileImage implements IImage
 {
@@ -27,9 +35,12 @@ public class FileImage implements IImage
     private byte[] camBytes;
     private IPixel[][] image;
 
-    public FileImage()
+    private boolean reverse = false;
+    private boolean shouldReverse = true;
+
+    public FileImage(String fiName)
     {
-        flyCam.Connect(frameRate);
+        flyCam.Connect(frameRate, fiName);
         int res = flyCam.Dimz();
         height = (res & 0xFFFF0000) >> 16;
         width = res & 0x0000FFFF;
@@ -38,56 +49,92 @@ public class FileImage implements IImage
         image = new Pixel[height][width];
 
         tile = flyCam.PixTile();
-        System.out.println("tile: "+tile+" width: "+width+" height: "+height);
+        System.out.println("tile: " + tile + " width: " + width + " height: " + height);
 
+    }
+    
+    public FileImage(String fiName, boolean reverse)
+    {
+        this(fiName);
+        shouldReverse(reverse);
+    }
+
+    public void shouldReverse(boolean reversed)
+    {
+        this.reverse = reversed;
     }
 
     @Override
-    public void setAutoFreq(int autoFreq){  //How many frames are loaded before the calibrate is called (-1 never calls it)
+    public void setAutoFreq(int autoFreq)
+    { // How many frames are loaded before the calibrate is called (-1 never
+      // calls it)
         this.autoFreq = autoFreq;
     }
 
     @Override
     public IPixel[][] getImage()
     {
+        if (reverse && shouldReverse)
+        {
+            reverse(image);
+            for(IPixel[] row : image)
+            {
+                reverse(row);
+            }
+            
+            shouldReverse = false;
+        }
         return image;
+    }
+
+    private void reverse(Object[] array)
+    {
+        for (int i = 0; i < array.length / 2; i++)
+        {
+            Object temp = array[i];
+            array[i] = array[array.length - i - 1];
+            array[array.length - i - 1] = temp;
+        }
     }
 
     // gets a single frame
     @Override
     public void readCam()
     {
+        shouldReverse = true;
         autoCount++;
-        //System.out.println("TILE: " + flyCam.PixTile());
+        // System.out.println("TILE: " + flyCam.PixTile());
         // System.out.println(flyCam.errn);
         flyCam.NextFrame(camBytes);
         // System.out.println(flyCam.errn);
 
-
-        if(autoCount > autoFreq && autoFreq > -1) {
-        	autoConvertWeighted();
-            //System.out.println("Calibrating");
+        if (autoCount > autoFreq && autoFreq > -1)
+        {
+            autoConvertWeighted();
+            // System.out.println("Calibrating");
             autoCount = 0;
         }
-        else{
-        	byteConvert();
+        else
+        {
+            byteConvert();
         }
         image = convertImage(getGaussianBlurredImage(image, 5));
     }
-    
-    public IPixel[][] convertImage(Pixel[][] imageToConvert){
-    	IPixel[][] newImage = new Pixel[imageToConvert.length][imageToConvert[0].length];
-		for(int b1=0;b1<imageToConvert.length;b1++){
-			for(int b2=0;b2<imageToConvert[0].length;b2++){
-				Pixel p = imageToConvert[b1][b2];
-				p.simpleConvert();
-				newImage[b1][b2] = p;
-			}
-		}
-		return newImage;
+
+    public IPixel[][] convertImage(Pixel[][] imageToConvert)
+    {
+        IPixel[][] newImage = new Pixel[imageToConvert.length][imageToConvert[0].length];
+        for (int b1 = 0; b1 < imageToConvert.length; b1++)
+        {
+            for (int b2 = 0; b2 < imageToConvert[0].length; b2++)
+            {
+                Pixel p = imageToConvert[b1][b2];
+                p.simpleConvert();
+                newImage[b1][b2] = p;
+            }
+        }
+        return newImage;
     }
-    
-    
     
     public Pixel[][] getMedianFilteredImage(int windowSize){
        
@@ -189,6 +236,7 @@ public class FileImage implements IImage
     	
     	return blurImage;
     										 
+
     }
 
     public void finish()
@@ -196,20 +244,22 @@ public class FileImage implements IImage
         flyCam.Finish();
     }
 
-    public int getFrameNo(){
+    public int getFrameNo()
+    {
         return flyCam.frameNo;
     }
-    
-    public void setImage(IPixel[][] i){
-    	image = i;
+
+    public void setImage(IPixel[][] i)
+    {
+        image = i;
     }
 
     private void byteConvert()
     {
 
-
         int pos = 0;
-        if(tile == 1){
+        if (tile == 1)
+        {
             for (int i = 0; i < height; i++)
             {
 
@@ -226,14 +276,16 @@ public class FileImage implements IImage
 
             }
         }
-        else if(tile == 3){
+        else if (tile == 3)
+        {
             for (int i = 0; i < height; i++)
             {
 
                 for (int j = 0; j < width; j++)
                 {
 
-                    image[i][j] = new Pixel((short) (camBytes[pos +  width * 2] & 255) , (short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255));
+                    image[i][j] = new Pixel((short) (camBytes[pos + width * 2] & 255), (short) (camBytes[pos] & 255),
+                            (short) (camBytes[pos + 1] & 255));
                     pos += 2;
 
                 }
@@ -247,13 +299,14 @@ public class FileImage implements IImage
 
     private void autoConvert()
     {
-        int average = 0;    //0-255
-        int average2;   //0-765
+        int average = 0; // 0-255
+        int average2; // 0-765
         int variation = 0;
-        final int divisor = (width*height);
+        final int divisor = (width * height);
 
         int pos = 0;
-        if(tile == 1){
+        if (tile == 1)
+        {
             for (int i = 0; i < height; i++)
             {
 
@@ -264,7 +317,7 @@ public class FileImage implements IImage
                             (short) (camBytes[pos + 1 + width * 2] & 255));
                     pos += 2;
 
-                    average += image[i][j].getRed() + image[i][j].getGreen()+ image[i][j].getBlue();
+                    average += image[i][j].getRed() + image[i][j].getGreen() + image[i][j].getBlue();
 
                 }
 
@@ -272,17 +325,19 @@ public class FileImage implements IImage
 
             }
         }
-        else if(tile == 3){
+        else if (tile == 3)
+        {
             for (int i = 0; i < height; i++)
             {
 
                 for (int j = 0; j < width; j++)
                 {
 
-                    image[i][j] = new Pixel((short) (camBytes[pos +  width * 2] & 255) , (short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255));
+                    image[i][j] = new Pixel((short) (camBytes[pos + width * 2] & 255), (short) (camBytes[pos] & 255),
+                            (short) (camBytes[pos + 1] & 255));
                     pos += 2;
 
-                    average += image[i][j].getRed() + image[i][j].getGreen()+ image[i][j].getBlue();
+                    average += image[i][j].getRed() + image[i][j].getGreen() + image[i][j].getBlue();
 
                 }
 
@@ -292,25 +347,29 @@ public class FileImage implements IImage
         }
 
         average2 = average / divisor;
-        average = average2/3;
+        average = average2 / 3;
 
         for (int i = 0; i < height; i++)
         {
-            for (int j = 0; j < width; j++) {
+            for (int j = 0; j < width; j++)
+            {
 
                 IPixel temp = image[i][j];
-                int rVar = temp.getRed()-average;
-                if(rVar < 0){
+                int rVar = temp.getRed() - average;
+                if (rVar < 0)
+                {
                     rVar = -rVar;
                 }
 
-                int gVar = temp.getGreen()-average;
-                if(gVar < 0){
+                int gVar = temp.getGreen() - average;
+                if (gVar < 0)
+                {
                     gVar = -rVar;
                 }
 
-                int bVar = temp.getBlue()-average;
-                if(bVar < 0) {
+                int bVar = temp.getBlue() - average;
+                if (bVar < 0)
+                {
                     bVar = -bVar;
                 }
 
@@ -320,26 +379,26 @@ public class FileImage implements IImage
         }
 
         variation = variation / divisor;
-        Pixel.greyMargin = (int)(variation * greyRatio);
+        Pixel.greyMargin = (int) (variation * greyRatio);
         Pixel.blackMargin = average2 - blackRange;
         Pixel.whiteMargin = average2 + whiteRange;
-        System.out.println("Variation: "+variation+" greyRatio: "+greyRatio);
-        System.out.println("greyMargin: " + Pixel.greyMargin + " blackMargin: " + Pixel.blackMargin + " whiteMargin: " + Pixel.whiteMargin);
+        System.out.println("Variation: " + variation + " greyRatio: " + greyRatio);
+        System.out.println("greyMargin: " + Pixel.greyMargin + " blackMargin: " + Pixel.blackMargin + " whiteMargin: "
+                + Pixel.whiteMargin);
 
     }
-    
-    
-    private void autoConvertWeighted() {
 
-        int average;    //0-255
-        int average2;   //0-765
+    private void autoConvertWeighted()
+    {
+
+        int average; // 0-255
+        int average2; // 0-765
         int variation = 0;
         final int divisor = (width * height);
 
-
-        //autoThreshold variables
+        // autoThreshold variables
         int threshold = 381;
-        int avg; //0-765
+        int avg; // 0-765
         int r, b, g;
         int lesserSum = 0;
         int greaterSum = 0;
@@ -349,12 +408,16 @@ public class FileImage implements IImage
         int greaterMean;
 
         int pos = 0;
-        if (tile == 1) {
-            for (int i = 0; i < height; i++) {
+        if (tile == 1)
+        {
+            for (int i = 0; i < height; i++)
+            {
 
-                for (int j = 0; j < width; j++) {
+                for (int j = 0; j < width; j++)
+                {
 
-                    image[i][j] = new Pixel((short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255), (short) (camBytes[pos + 1 + width * 2] & 255));
+                    image[i][j] = new Pixel((short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255),
+                            (short) (camBytes[pos + 1 + width * 2] & 255));
                     pos += 2;
 
                     r = image[i][j].getRed();
@@ -363,46 +426,15 @@ public class FileImage implements IImage
 
                     avg = (r + b + g);
 
-                    if (avg < threshold) {
+                    if (avg < threshold)
+                    {
 
                         lesserSum += avg;
                         lesserCount++;
-
-                    } else {
-
-                        greaterSum += avg;
-                        greaterCount++;
 
                     }
-
-
-                }
-
-                pos += width << 1;
-
-            }
-
-
-        } else if (tile == 3) {
-            for (int i = 0; i < height; i++) {
-
-                for (int j = 0; j < width; j++) {
-
-                    image[i][j] = new Pixel((short) (camBytes[pos + width * 2] & 255), (short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255));
-                    pos += 2;
-
-                    r = image[i][j].getRed();
-                    b = image[i][j].getBlue();
-                    g = image[i][j].getGreen();
-
-                    avg = (r + b + g);
-
-                    if (avg < threshold) {
-
-                        lesserSum += avg;
-                        lesserCount++;
-
-                    } else {
+                    else
+                    {
 
                         greaterSum += avg;
                         greaterCount++;
@@ -415,6 +447,45 @@ public class FileImage implements IImage
 
             }
 
+        }
+        else if (tile == 3)
+        {
+            for (int i = 0; i < height; i++)
+            {
+
+                for (int j = 0; j < width; j++)
+                {
+
+                    image[i][j] = new Pixel((short) (camBytes[pos + width * 2] & 255), (short) (camBytes[pos] & 255),
+                            (short) (camBytes[pos + 1] & 255));
+                    pos += 2;
+
+                    r = image[i][j].getRed();
+                    b = image[i][j].getBlue();
+                    g = image[i][j].getGreen();
+
+                    avg = (r + b + g);
+
+                    if (avg < threshold)
+                    {
+
+                        lesserSum += avg;
+                        lesserCount++;
+
+                    }
+                    else
+                    {
+
+                        greaterSum += avg;
+                        greaterCount++;
+
+                    }
+
+                }
+
+                pos += width << 1;
+
+            }
 
         }
 
@@ -425,23 +496,27 @@ public class FileImage implements IImage
         average2 = threshold;
         average = average2 / 3;
 
-
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
+        for (int i = 0; i < height; i++)
+        {
+            for (int j = 0; j < width; j++)
+            {
 
                 IPixel temp = image[i][j];
                 int rVar = temp.getRed() - average;
-                if (rVar < 0) {
+                if (rVar < 0)
+                {
                     rVar = -rVar;
                 }
 
                 int gVar = temp.getGreen() - average;
-                if (gVar < 0) {
+                if (gVar < 0)
+                {
                     gVar = -rVar;
                 }
 
                 int bVar = temp.getBlue() - average;
-                if (bVar < 0) {
+                if (bVar < 0)
+                {
                     bVar = -bVar;
                 }
 

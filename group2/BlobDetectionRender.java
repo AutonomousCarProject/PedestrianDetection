@@ -45,7 +45,8 @@ public class BlobDetectionRender extends Application
         BlobFilter blobFilter = new BlobFilter();
         
         // IImage image = new JpgImage("src/testImage1.png");
-        IImage image = new FileImage();
+        IImage image = new FileImage("captures0801/FlyCapped6.By8", true);
+        
         
 
         //IImage -image = new JpgImage("src/testImage1.png");

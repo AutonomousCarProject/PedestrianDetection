@@ -17,4 +17,6 @@ public interface IPixel
     short getGreen();
 
     short getBlue();
+    
+    void setRGB(short r, short g, short b);
 }
