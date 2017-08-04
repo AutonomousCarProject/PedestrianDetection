@@ -71,7 +71,7 @@ public class Control extends LooiObject
         else
         {
             //just evenly dispersed for now
-            currentImage = new HDRImage(0, new long[] { 0x060, 0x142, 0x284, 0x300 }, new long[] { 0x1BA, 0x1BA, 0x1BA, 0x1BA });
+            currentImage = new HDRImage(0, new long[] { 277, 452, 713, 966 }, new long[] { 413, 520, 665, 814 });
             //currentImage = new Image();
         }
         boxDrawer = new IImageBoxDrawer();
@@ -184,16 +184,16 @@ public class Control extends LooiObject
 		List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
 		List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
 		List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
-		List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
-		List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
-		List<MovingBlob> matchedUnifiedBlobs =  movingBlobDetection.getFilteredUnifiedBlobs(funifiedBlobs);
-		List<MovingBlob> fmatchedUnifiedBlobs = blobFilter.filterFilteredUnifiedBlobs(matchedUnifiedBlobs);
+		//List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
+		//List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
+		//List<MovingBlob> matchedUnifiedBlobs =  movingBlobDetection.getFilteredUnifiedBlobs(funifiedBlobs);
+		//List<MovingBlob> fmatchedUnifiedBlobs = blobFilter.filterFilteredUnifiedBlobs(matchedUnifiedBlobs);
 		
 		//boxDrawer.draw2(currentImage, unifiedBlobs, fmovingBlobs);
 		//boxDrawer.draw(currentImage, funifiedBlobs);
 		//boxDrawer.draw2(currentImage, fmovingBlobs, fmatchedUnifiedBlobs);
-		//boxDrawer.draw(currentImage, unifiedBlobs);
-		boxDrawer.draw(currentImage, fmatchedUnifiedBlobs); 
+		boxDrawer.draw(currentImage, fmovingBlobs);
+		//boxDrawer.draw(currentImage, fmatchedUnifiedBlobs);
 		//for(MovingBlob b: fmovingBlobs) System.out.println(b.velocityChangeX);
 
 		IPixel[][] image = currentImage.getImage();
