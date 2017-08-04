@@ -6,17 +6,11 @@
 package autonomouscarfinalprogram2;
 
 import com.looi.looi.LooiObject;
-import com.looi.looi.gui_essentials.AstheticButton;
-import com.looi.looi.gui_essentials.Background;
 import com.looi.looi.gui_essentials.Button;
 import com.looi.looi.gui_essentials.ScrollBox;
 
 import group1.*;
-import com.looi.looi.gui_essentials.TextBox;
 import com.looi.looi.gui_essentials.Window;
-import com.looi.looi.gui_essentials.ScrollBox.ScrollBoxObject;
-import com.looi.looi.gui_essentials.Window.ExitButton;
-import com.sun.org.apache.xpath.internal.functions.FuncUnparsedEntityURI;
 
 import fly2cam.AutoExposure;
 import fly2cam.IAutoExposure;
@@ -28,13 +22,9 @@ import group3.MovingBlob;
 import group3.MovingBlobDetection;
 import group4.BlobFilter;
 import group5.IImageBoxDrawer;
-import java.awt.image.BufferedImage;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.Color;
-
-import java.awt.Font;
 
 
 /**
@@ -76,7 +66,7 @@ public class Control extends LooiObject
         blobFilter = new BlobFilter();
         if (!useCamera)
         {
-            currentImage = new FileImage();
+            currentImage = new FileImage("captures0801/FlyCapped6.By8", true);
         }
         else
         {
@@ -183,7 +173,7 @@ public class Control extends LooiObject
 		if(currentImage.getFrameNo()==previousFrame){
 			previousFrame = 0;
 			currentImage.finish();
-			currentImage = new FileImage();
+			currentImage = new FileImage("captures0801/FlyCapped6.By8", true);
 			blobDetection = new BlobDetection();
 			movingBlobDetection = new MovingBlobDetection();
 			blobFilter = new BlobFilter();

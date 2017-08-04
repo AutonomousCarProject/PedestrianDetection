@@ -34,7 +34,7 @@ public class HDRImage implements IImage {
 	private static final double K = 0.25;
 
 	public HDRImage(int exposure, long[] HDRShutters, long[] HDRGains) {
-		flyCam.Connect(frameRate);
+		flyCam.Connect(frameRate, "captures0801/FlyCapped6.By8");
 
 		//flyCam.SetHDR(HDRShutters, HDRGains);
 		this.HDRShutters = HDRShutters;
