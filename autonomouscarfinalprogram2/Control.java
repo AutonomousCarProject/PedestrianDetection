@@ -92,7 +92,7 @@ public class Control extends LooiObject
         frameList = new ArrayList<>(frames); // maybe this needs to be removed?
                                              // it was there in a merge conflict
                                              // and I wasn't sure whether or not
-                                             // to delete it.
+       /*                                      // to delete it.
         yCoordinate = 10;
 /*
         sliderWindow = new DraggingWindow(100, 100, 500, 500, new Background(Color.WHITE));
@@ -150,6 +150,7 @@ public class Control extends LooiObject
         scrollBox.add(scrollBox.new ScrollBoxObject(ltb));
         ltb.addSliders(variableSliders); 
         */
+
 		 
 	}
 

@@ -28,7 +28,7 @@ public class FileImage implements IImage
 
     private int tile;
     private int autoFreq = 15;
-    private int autoCount = autoFreq + 1;
+    private int autoCount = 0;
 
     // 307200
     // private byte[] camBytes = new byte[2457636];
@@ -118,7 +118,7 @@ public class FileImage implements IImage
         {
             byteConvert();
         }
-        image = convertImage(getMedianFilteredImage());
+        image = convertImage(getGaussianBlurredImage(image, 5));
     }
 
     public IPixel[][] convertImage(Pixel[][] imageToConvert)
@@ -135,97 +135,107 @@ public class FileImage implements IImage
         }
         return newImage;
     }
-
-    public Pixel[][] getMedianFilteredImage()
-    {
-
-        Pixel[][] filteredImage = new Pixel[image.length][image[0].length];
-        int windowSize = 3;
-
-        for (int i = 0; i < filteredImage.length; i++)
-        {
-            for (int j = 0; j < filteredImage[0].length; j++)
-            {
-                if (i > filteredImage.length - windowSize || j > filteredImage[0].length - windowSize)
-                {
-                    filteredImage[i][j] = new Pixel((short) 0, (short) 0, (short) 0);
-                }
-                else
-                {
-                    short[] reds = new short[windowSize * windowSize];
-                    short[] greens = new short[windowSize * windowSize];
-                    short[] blues = new short[windowSize * windowSize];
-
-                    for (int w = 0; w < windowSize; w++)
-                    {
-                        for (int q = 0; q < windowSize; q++)
-                        {
-                            reds[w * windowSize + q] = image[i + w][j + q].getRed();
-                            greens[w * windowSize + q] = image[i + w][j + q].getGreen();
-                            blues[w * windowSize + q] = image[i + w][j + q].getBlue();
-                        }
-                    }
-
-                    Arrays.sort(reds);
-                    Arrays.sort(greens);
-                    Arrays.sort(blues);
-
-                    int half = windowSize * windowSize / 2;
-                    Pixel pixel = new Pixel(reds[half], greens[half], blues[half]);
-                    filteredImage[i][j] = pixel;
-                }
-            }
-        }
-        return filteredImage;
+    
+    public Pixel[][] getMedianFilteredImage(int windowSize){
+       
+    	Pixel[][] filteredImage = new Pixel[image.length][image[0].length];
+    	
+    	for(int i=0; i<filteredImage.length; i++){
+    		for(int j=0; j<filteredImage[0].length; j++){
+    			if(i>filteredImage.length-windowSize || j>filteredImage[0].length-windowSize){
+    				filteredImage[i][j] = new Pixel((short)0, (short)0, (short)0);
+    			}
+    			else{
+    				short[] reds = new short[windowSize*windowSize];
+    				short[] greens = new short[windowSize*windowSize];
+    				short[] blues = new short[windowSize*windowSize];
+	    			
+	    			
+	    			for(int w=0; w<windowSize; w++){
+	    				for(int q=0; q<windowSize; q++){
+	    					reds[w*windowSize + q] = image[i+w][j+q].getRed();
+	    					greens[w*windowSize + q] = image[i+w][j+q].getGreen();
+	    					blues[w*windowSize + q] = image[i+w][j+q].getBlue();
+	    				}
+	    			}
+	    			
+	    			Arrays.sort(reds);
+	    			Arrays.sort(greens);
+	    			Arrays.sort(blues);
+	    			
+	    			int half = windowSize*windowSize/2;
+	    			Pixel pixel = new Pixel(reds[half], greens[half], blues[half]);
+	    			filteredImage[i][j] = pixel;
+    			}	
+    		}
+    	}
+    	return filteredImage;
     }
-
-    public Pixel[][] getGaussianBlurredImage(IPixel[][] rImage)
-    {
-        Pixel[][] blurImage = new Pixel[rImage.length][rImage[0].length];
-        float[][] blurMatrix = new float[][] { { 1f / 9, 1f / 9, 1f / 9 }, { 1f / 9, 1f / 9, 1f / 9 },
-                { 1f / 9, 1f / 9, 1f / 9 } };
-
-        int edge = (int) blurMatrix.length / 2;
-        for (int i = 0; i < blurImage.length; i++)
-        {
-            for (int j = 0; j < blurImage[0].length; j++)
-            {
-                if (i < edge || j < edge || i > blurImage.length - edge - 1 || j > blurImage[0].length - edge - 1)
-                {
-                    blurImage[i][j] = new Pixel((short) 0, (short) 0, (short) 0);
-                }
-                else
-                {
-                    short red = 0;
-                    short green = 0;
-                    short blue = 0;
-
-                    int half = blurMatrix.length / 2;
-                    IPixel[][] pixelSquare = new IPixel[blurMatrix.length][blurMatrix.length];
-                    for (int i1 = 0; i1 < blurMatrix.length; i1++)
-                    {
-                        for (int i2 = 0; i2 < blurMatrix.length; i2++)
-                        {
-                            pixelSquare[i1][i2] = rImage[i + i1 - half][j + i2 - half];
-                        }
-                    }
-
-                    for (int w = 0; w < blurMatrix.length; w++)
-                    {
-                        for (int q = 0; q < blurMatrix.length; q++)
-                        {
-                            red += (short) (pixelSquare[w][q].getRed() * blurMatrix[w][q]);
-                            green += (short) (pixelSquare[w][q].getGreen() * blurMatrix[w][q]);
-                            blue += (short) (pixelSquare[w][q].getBlue() * blurMatrix[w][q]);
-                        }
-                    }
-
-                    blurImage[i][j] = new Pixel(red, green, blue);
-                }
-            }
-        }
-
-        return blurImage;
+    
+    public Pixel[][] getGaussianBlurredImage(IPixel[][] rImage, int windowSize){
+    	Pixel[][] blurImage = new Pixel[rImage.length][rImage[0].length];
+    	float[][] blurMatrix = new float[windowSize][windowSize];
+    	
+    	float norm = (float)(blurMatrix.length*blurMatrix.length);
+    	for(int i=0;i<blurMatrix.length;i++){
+    		for(int j=0;j<blurMatrix[0].length;j++){
+    			blurMatrix[i][j] = 1f/norm;
+    		}
+    	}
+    	
+		int half = (int)blurMatrix.length/2;
+		IPixel[][] pixelSquare = new IPixel[blurMatrix.length][blurMatrix.length];
+		
+    	int edge = (int)blurMatrix.length/2;
+    	for(int i=0; i<blurImage.length; i+=1/*blurMatrix.length*/){
+    		for(int j=0; j<blurImage[0].length; j+=1/*blurMatrix.length*/){
+    			if(i<edge || j<edge || i>blurImage.length-edge-1 || j>blurImage[0].length-edge-1){
+    					blurImage[i][j] = new Pixel((short)0, (short)0, (short)0);
+    			}
+    			else{
+    				short red = 0;
+	    			short green = 0;
+	    			short blue = 0;
+	    			
+	    			for(int i1=0; i1<blurMatrix.length; i1++){
+	    				for(int i2=0; i2<blurMatrix.length; i2++){
+	    					pixelSquare[i1][i2] = rImage[i+i1-half][j+i2-half];
+	    				}
+	    			}
+	    			
+	    			
+	    			for(int w=0; w<blurMatrix.length; w++){
+	    				for(int q=0; q<blurMatrix.length; q++){
+	    					red += (short)(pixelSquare[w][q].getRed()*blurMatrix[w][q]);
+	    					green += (short)(pixelSquare[w][q].getGreen()*blurMatrix[w][q]);
+	    					blue += (short)(pixelSquare[w][q].getBlue()*blurMatrix[w][q]);
+	    				}
+	    			}
+	    			/*
+	    			for(int b1=0;b1<windowSize;b1++){
+	    				for(int b2=0;b2<windowSize;b2++){
+	    					if(i+b1<blurImage.length-1 && i+b2<blurImage[0].length-1 && j+b2 != 640)
+	    						
+	    						blurImage[i+b1][j+b2] = new Pixel(red, green, blue);
+	    				}
+	    			}*/
+	    			blurImage[i][j] = new Pixel(red, green, blue);
+	    			
+	    			
+    			}
+    			
+    		}
+    	}
+    	
+    	for(int i=0;i<blurImage.length;i++){
+    		for(int j=0;j<blurImage[0].length;j++){
+    			if(blurImage[i][j] == null)
+    				blurImage[i][j] = new Pixel((short)0,(short)0,(short)0);
+    		}
+    	}
+    	
+    	return blurImage;
+    										 
 
     }
 
