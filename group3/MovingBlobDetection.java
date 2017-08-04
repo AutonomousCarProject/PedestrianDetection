@@ -21,23 +21,25 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	
 	//maximum time before unmatched MovingBlob is deleted
 	int maxTimeOffScreen = c.MAX_TIME_OFF_SCREEN;
+	//max time before unmatched unified blob is deleted
 	int maxTimeOffScreenUnified = 3;
 	//maximum distance in pixels between blobs that can be matched
 	int distanceLimitX = c.DISTANCE_LIMIT_X;
 	int distanceLimitY = c.DISTANCE_LIMIT_Y;
+	//maximum difference 
 	int widthChangeLimit = c.MAX_CHANGE_WIDTH;
 	int heightChangeLimit = c.MAX_CHANGE_HEIGHT;
 
-	float kernelBandwidth = 15;
-	float maxDistBetweenPointsInCluster = 80;
-	float xDistWeight = 1f;
-	float yDistWeight = 0.25f;
-	float vXWeight = 1.5f;
-	float vYWeight = 0.25f;
+	float kernelBandwidth = c.KERNEL_BANDWIDTH;
+	float maxDistBetweenPointsInCluster = c.MAX_DIST_BETWEEN_POINTS_CLUSTER;
+	float xDistWeight = c.X_DIST_WEIGHT;
+	float yDistWeight = c.Y_DIST_WEIGHT;
+	float vXWeight = c.V_X_WEIGHT;
+	float vYWeight = c.V_Y_WEIGHT;
 	
-	float distanceUnifyMatchLimit = 60;
-	float percentWidthChangeUnifyMatchLimit = 0.3f;
-	float percentHeightChangeUnifyMatchLimit = 0.3f;
+	float distanceUnifyMatchLimit = c.DISTANCE_MATCH_UNIFY_LIMIT;
+	float percentWidthChangeUnifyMatchLimit = c.PERCENT_WIDTH_CHANGE_UNIFIED_MATCH_LIMIT;
+	float percentHeightChangeUnifyMatchLimit = c.PERCENT_HEIGHT_CHANGE_UNIFIED_MATCH_LIMIT;
 
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();
@@ -56,13 +58,15 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	}
 
 	public List<MovingBlob> getUnifiedBlobs(List<MovingBlob> movingBlobs){
+		//final mean shifted points
 		float[][] finalPoints = new float[movingBlobs.size()][4];
 
 		int index = 0;
 		for(MovingBlob movingBlob:movingBlobs){
 			float[] point = {movingBlob.x, movingBlob.y, movingBlob.velocityX, movingBlob.velocityY};
 			float distanceMoved = 1000;
-			while(distanceMoved > 3){
+			//until
+			while(distanceMoved > 2){
 				float[] pointTemp = {point[0], point[1], point[2], point[3]};
 				point = shift(point, movingBlob, movingBlobs);
 				distanceMoved = distBetweenPoints(point,pointTemp);

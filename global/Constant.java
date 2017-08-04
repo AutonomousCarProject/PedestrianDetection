@@ -26,21 +26,48 @@ public class Constant {
 	//Minimum age to not be filtered
 	public static int AGE_MIN = 0;
 	
-	//Maximum 
+	//Maximum velocity of MovingBlob
 	public static int VELOCITY_X_MAX = 150;
 	public static int VELOCITY_Y_MAX = 20;
+	//minimum velocity of MovingBlob
 	public static int VELOCITY_X_MIN = 2;
 	public static int VELOCITY_Y_MIN = 0;
+	//max change in velocity between frames of MovingBlob
 	public static float MAX_VELOCITY_CHANGE_X = 15;
 	public static float MAX_VELOCITY_CHANGE_Y = 20;
+	
 	//Unified Blob filters
 
-	//stuff
+	//maximum ratio of width divided by height of unifiedblob
 	public static float MAX_WIDTH_HEIGHT_RATIO = .8f;
+	//maximum width of unified blob
 	public static int MAX_WIDTH = 1300;
+	//maximum height of unified blob
 	public static int MAX_HEIGHT = 1200;
+	//minimum scaled velocity of unified blob
 	public static float MIN_SCALED_VELOCITY_X = 1f;
 	public static int MIN_SCALED_VELOCITY_Y = 0;
+	
+	//Unified Blob matching
+	//bandwidth of kernel used for gaussian curve in mean shift
+	public static float KERNEL_BANDWIDTH = 15;
+	//maximum distance between points that can be clustered together
+	public static float MAX_DIST_BETWEEN_POINTS_CLUSTER = 80;
+	//weight of x distance for mean shift
+	public static float X_DIST_WEIGHT = 1f;
+	//weight of x distance for mean shift
+	public static float Y_DIST_WEIGHT = 0.25f;
+	//weight of x velocity for mean shift
+	public static float V_X_WEIGHT = 1.5f;
+	//weight of y velocity for mean shift
+	public static float V_Y_WEIGHT = 0.25f;
+	
+	//distance that unified blobs can be matched
+	public static float DISTANCE_MATCH_UNIFY_LIMIT = 60;
+	//percent that matched unified blob width can change
+	public static float PERCENT_WIDTH_CHANGE_UNIFIED_MATCH_LIMIT = 0.3f;
+	//percent that matched unified blob width can change
+	public static float PERCENT_HEIGHT_CHANGE_UNIFIED_MATCH_LIMIT = 0.3f;
 	
 	/*
     Image

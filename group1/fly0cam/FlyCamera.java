@@ -1,4 +1,4 @@
-
+ 
 package group1.fly0cam; // (same API as fly2cam)                  // 2017 February 27
 
 import java.io.File;
@@ -13,7 +13,7 @@ public class FlyCamera {
 //  private final String fiName = "src/group1/fly0cam/.By8";
 //  private final String fiName = "src/group1/fly0cam/Mix_0_0_0.By8"; // -- IDE\
 
-  private final String fiName = "src/group1/fly0cam/FlyCapped.By8";
+  private final String fiName = "src/group1/fly0cam/Sidewalk.By8";
 
 
 
