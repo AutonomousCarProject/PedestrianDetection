@@ -98,9 +98,10 @@ public class JavaFxD3SingleDemo extends Application {
 		stage.setScene(scene);
 		stage.show();
 		
-		IImage image = new FileImage();
+		/*IImage image = new FileImage();
 		image.setAutoFreq(15);
 		
+		image.readCam();
 		
 		ArrayList<Integer> blobX = new ArrayList<Integer>();
 		ArrayList<Integer> blobY = new ArrayList<Integer>();
@@ -109,55 +110,81 @@ public class JavaFxD3SingleDemo extends Application {
 				
 		ArrayList<ArrayList<Integer>> blobValues = new ArrayList<ArrayList<Integer>>();
 		
-		AnimationTimer timer = new AnimationTimer() {
+        IBlobDetection blobDetect = new BlobDetection();
+        IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
+        IMovingBlobReduction blobFilter = new BlobFilter();
+
+        List<Blob> blobs = blobDetect.getBlobs(image);
+        List<MovingBlob> movingBlobs = movingBlobDetect.getMovingBlobs(blobs);
+        
+		for (Blob blob : blobs)
+        {
 			
-        	@Override
-        	public void handle(long time)
-        	{
-        		//System.out.println(time);
-        		//blobInfo[0] = 10;
-        		
-        		image.readCam();
-        		
-                IBlobDetection blobDetect = new BlobDetection();
-                IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
-                IMovingBlobReduction blobFilter = new BlobFilter();
-
-                List<Blob> blobs = blobDetect.getBlobs(image);
-                List<MovingBlob> movingBlobs = movingBlobDetect.getMovingBlobs(blobs);
-                
-        		for (Blob blob : blobs)
-                {
-        			
-        			blobX.add(blob.x);
-        			blobY.add(blob.y);
-        			blobWidth.add(blob.width);
-        			blobHeight.add(blob.height);
-        			
-                }
-        		
-        		blobValues.add(blobX);
-        		blobValues.add(blobY);
-        		blobValues.add(blobWidth);
-        		blobValues.add(blobHeight);
-        		
-        		System.out.println(blobValues.toArray()[0]);
-
-        	}
-        	
-		};
+			blobX.add(blob.x);
+			blobY.add(blob.y);
+			blobWidth.add(blob.width);
+			blobHeight.add(blob.height);
+			
+        }
 		
-		//System.out.println(Arrays.toString(blobInfo));
+		blobValues.add(blobX);
+		blobValues.add(blobY);
+		blobValues.add(blobWidth);
+		blobValues.add(blobHeight);
 		
-		timer.start();
+		System.out.println(blobValues.toArray()[0]);*/
+		
 		
 	}
 	
-	private float[] blobData() {
-		MovingBlobDetection movingBlobsDetection = new MovingBlobDetection();
+	private Object[] blobData() {
+		
+		IImage image = new FileImage();
+		image.setAutoFreq(15);
+		
+		image.readCam();
+		
+		ArrayList<Integer> blobX = new ArrayList<Integer>();
+		ArrayList<Integer> blobY = new ArrayList<Integer>();
+		ArrayList<Integer> blobWidth = new ArrayList<Integer>();
+		ArrayList<Integer> blobHeight = new ArrayList<Integer>();
+				
+		ArrayList<ArrayList<Integer>> blobValues = new ArrayList<ArrayList<Integer>>();
+		
+        IBlobDetection blobDetect = new BlobDetection();
+        IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
+        IMovingBlobReduction blobFilter = new BlobFilter();
+
+        List<Blob> blobs = blobDetect.getBlobs(image);
+        List<MovingBlob> movingBlobs = movingBlobDetect.getMovingBlobs(blobs);
+        
+		for (Blob blob : blobs)
+        {
+			
+			blobX.add(blob.x);
+			blobY.add(blob.y);
+			blobWidth.add(blob.width);
+			blobHeight.add(blob.height);
+			
+        }
+		
+		blobValues.add(blobX);
+		blobValues.add(blobY);
+		blobValues.add(blobWidth);
+		blobValues.add(blobHeight);
+		
+		//Ob[] test = {blobValues.toArray()};
+ 		
+		Object[] blobArray = blobValues.toArray();
+		
+		//System.out.println(blobArray);
+		
+		//System.out.println(Arrays.toString(blobValues.toArray()));
+
+		/*MovingBlobDetection movingBlobsDetection = new MovingBlobDetection();
 		MovingBlob movingBlobs = new MovingBlob();
 		
-		List<MovingBlob> movingBlobsList = new LinkedList<>();
+		List<MovingBlob> movingBlobsList = new LinkedList<>();*/
 		
 		/*System.out.println(movingBlobsDetection.distanceLimitX);
 		
@@ -171,23 +198,33 @@ public class JavaFxD3SingleDemo extends Application {
 		
 		System.out.println(Arrays.toString(finalPoints));*/
 		
-		float values[] = {movingBlobsDetection.distanceLimitX, movingBlobsDetection.distanceLimitY, 
-						  movingBlobsDetection.velocityLimitIncreaseX, movingBlobsDetection.velocityLimitIncreaseY};
+		/*float values[] = {movingBlobsDetection.distanceLimitX, movingBlobsDetection.distanceLimitY, 
+						  movingBlobsDetection.velocityLimitIncreaseX, movingBlobsDetection.velocityLimitIncreaseY};*/
 		
-		return values;
+		return blobArray;
 	}
 
 	private void createD3Example() {
 
-		D3 d3 = browser.getD3();	
+		D3 d3 = browser.getD3();
 		
-		//blobData();
-
-		Double[] data = { 4.0, 8.0, 15.0, 16.0, 23.0, 42.0 };
-				
+		System.out.println(Arrays.toString(blobData()));
+		
+		//Object blobX = blobData();
+		
+		//Object[] blobX = {blobData(0)};
+		
+		//Object[] test = blobData();
+		//Object[] arr = blobData();
+		//System.out.println(arr[0]);
+		
+		//System.out.println(Arrays.deepToString(blobData()));
+						
+		Object[] data = { 4.0, 8.0, 15.0, 16.0, 23.0, 42.0 };
+						
 		Double width = 420.0;
 		Double barHeight = 20.0;
-		Double maxX = Collections.max(Arrays.asList(data));
+		Double maxX = 700.0;//Collections.max(Arrays.asList(blobData()[0].toString()));
 
 		LinearScale x = d3.scale() //
 				.linear() //
@@ -198,12 +235,12 @@ public class JavaFxD3SingleDemo extends Application {
 
 		Selection svg = d3.select(".svg") //
 				.attr("width", width) //
-				.attr("height", barHeight * blobData().length);
+				.attr("height", barHeight * blobData()[0].toString().length());
 
 		String transformExpression = "function(d, i) { return \"translate(0,\" + i *" + barHeight + " + \")\"; }";
 
 		Selection bar = svg.selectAll("g") //
-				.data(blobData()) //
+				.data(blobData()[0].toString()) //
 				.enter() //
 				.append("g") //
 				.attrExpression("transform", transformExpression);
