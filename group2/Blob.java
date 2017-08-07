@@ -1,8 +1,9 @@
 package group2;
 
 import group1.IPixel;
+import java.io.Serializable;
 
-public class Blob
+public class Blob implements Serializable
 {
     public int width, height;
     public int x, y;

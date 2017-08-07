@@ -363,6 +363,11 @@ public class LooiWindow
                 start = System.nanoTime();
             }
     }
+    static class CancelPaintException extends RuntimeException 
+    {
+        public CancelPaintException() {}
+        public String toString(){return "looiPaint() method canceled";}
+    }
     private void paint()
     {
         
@@ -380,7 +385,12 @@ public class LooiWindow
             {
                 paintActiveLooiObjects.get(i).setGraphics(g);
                 g.setColor(Color.black);//set default color here! omg it used to be yellow and I had no idea... and i was so confused y everything was YELLOW
-                paintActiveLooiObjects.get(i).looiPaint();
+                try
+                {
+                    paintActiveLooiObjects.get(i).looiPaintFinal();
+                }
+                catch(CancelPaintException e){}
+                
             }
 
 

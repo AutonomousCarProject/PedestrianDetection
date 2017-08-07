@@ -5,6 +5,10 @@
  */
 package com.looi.looi;
 
+import com.looi.looi.gui_essentials.Background;
+import com.looi.looi.gui_essentials.Rectangle;
+import com.looi.looi.gui_essentials.TextBox;
+import com.looi.looi.utilities.Action;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -27,6 +31,7 @@ public abstract class LooiObject implements Comparable<LooiObject>
     private transient LooiWindow thisWindow;
     private boolean active;
     private boolean drawScaled = true;
+    private Rectangle paintBoundary = null;
     private ArrayList<LooiObject> components = new ArrayList<>();
     
     /**
@@ -35,6 +40,7 @@ public abstract class LooiObject implements Comparable<LooiObject>
     */
     protected LooiObject()
         {
+            
             thisWindow = LooiWindow.getMainWindow();
             if(thisWindow != null)
                 {
@@ -128,7 +134,23 @@ public abstract class LooiObject implements Comparable<LooiObject>
     
     
     
-    
+    final void looiPaintFinal()
+    {
+        if(!isActive())
+        {
+            throw new LooiWindow.CancelPaintException();
+        }
+        
+        if(paintBoundary != null)
+        {
+            paint(paintBoundary,(a) -> looiPaint());
+        }
+        else
+        {
+            looiPaint();
+        }
+        
+    }
     protected void looiStep(){}
     protected void looiPaint(){}
     protected void savePaintInformation(){}
@@ -849,6 +871,26 @@ public abstract class LooiObject implements Comparable<LooiObject>
     protected Graphics getGraphics()
     {
         return thisWindow().getGraphics();
+    }
+    protected void setPaintBoundary(Rectangle r)
+    {
+        this.paintBoundary = r;
+    }
+    
+    protected Rectangle getPaintBoundary()
+    {
+        return paintBoundary;
+    }
+    private void paint(Rectangle paintBoundary, Action a, Object...objects)
+    {
+        Graphics gTemp = g;
+        Graphics shiftedGraphics = g.create(scaleX(paintBoundary.getX()),scaleY(paintBoundary.getY()),scaleW(paintBoundary.getWidth()),scaleH(paintBoundary.getHeight()));
+        //shiftedGraphics.translate(scaleX(paintBoundary.getX()),scaleY(paintBoundary.getY()));
+        shiftedGraphics.translate(-scaleX(paintBoundary.getX()),-scaleY(paintBoundary.getY()));
+        setGraphics(shiftedGraphics);
+        
+        a.act(objects);
+        setGraphics(gTemp);
     }
     final void uponActivationFinal(Object...activationInfo)
     {

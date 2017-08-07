@@ -7,7 +7,7 @@ package com.looi.looi.gui_essentials;
 
 import com.looi.looi.Point;
 import java.awt.Color;
-import java.awt.Font;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 /**
@@ -16,17 +16,51 @@ import java.util.ArrayList;
  */
 public class ScrollBox extends Rectangle
 {
+    public static final double DEFAULT_MOUSE_WHEEL_SCROLLING_COEFFICIENT = 5;
+    public static final double DEFAULT_BOTTOM_ITEM_MARGIN = 15;
+    
     private ArrayList<ScrollBoxObject> scrollBoxObjects = new ArrayList<>();
     private ScrollBar scrollBar;
     private double scrollPercentage = 0;//0-100
     private double virtualHeight;
     private double highestObjectY;
     private double lowestObjectYPlusItsHeight;
+    private boolean scrollWithMouseWheel = true;
+    private double mouseWheelScrollingCoefficient = DEFAULT_MOUSE_WHEEL_SCROLLING_COEFFICIENT;
+    private double bottomItemMargin = DEFAULT_BOTTOM_ITEM_MARGIN;
+    private boolean selected = false;
+    private boolean deactivateNonvisibleComponents = false;
+    
     public ScrollBox(double x, double y, double width, double height, Background background)
     {
         super(x,y,width,height,background);
-        add(scrollBar = createScrollBar());
+        addStationary(scrollBar = createScrollBar());
     }
+    
+    public void mousePressed(MouseEvent e)
+    {
+        if(touchingMouse())
+        {
+            selected = true;
+        }
+        else
+        {
+            selected = false;
+        }
+    }
+    public void select(){selected = true;}
+    public void deselect(){selected = false;}
+    public boolean isSelected(){return selected;}
+    public void setMouseWheelScrollingCoefficient(double d){mouseWheelScrollingCoefficient = d;}
+    public double getMouseWheelScrollingCoefficient(){return mouseWheelScrollingCoefficient;}
+    public void setScrollWithMouseWheel(boolean b){scrollWithMouseWheel = b;}
+    public boolean isScrollingWithMouseWheel(){return scrollWithMouseWheel;}
+    public double getBottomItemMargin(){return bottomItemMargin;}
+    public void setBottomItemMargin(double d){bottomItemMargin = d;}
+    public ScrollBar getScrollBar(){return scrollBar;}
+    public ArrayList<ScrollBoxObject> getScrollBoxObjects(){return scrollBoxObjects;}
+    public boolean isDeactivatingNonvisibleComponents(){return deactivateNonvisibleComponents;}
+    public void setDeactivateNonvisibleComponents(boolean b){deactivateNonvisibleComponents = b;}
     
     public void activate(Object...o)
     {
@@ -59,17 +93,55 @@ public class ScrollBox extends Rectangle
     {
         return new ScrollBar();
     }
-    public void add(ScrollBoxObject g)
+    public void setPosition(double x, double y)
+    {
+        double deltaX = x - getX();
+        double deltaY = y - getY();
+        
+        super.setPosition(x,y);
+        if(scrollBoxObjects == null)
+            return;
+        for(ScrollBoxObject s : scrollBoxObjects)
+        {
+            s.setVirtualPosition(s.getVirtualX() + deltaX,s.getVirtualY() + deltaY);
+        }
+    }
+    public void add(GuiComponent g)
+    {
+        addScrollBoxObject(new ScrollBoxObject(g));
+    }
+    public void remove(GuiComponent g)
+    {
+        for(ScrollBoxObject sbo : scrollBoxObjects)
+        {
+            if(sbo.thisComponent() == g)
+            {
+                removeScrollBoxObject(sbo);
+                return;
+            }
+        }
+    }
+    protected void addScrollBoxObject(ScrollBoxObject g)
     {
         g.setVirtualPosition(g.getVirtualX() + getX(),g.getVirtualY() + getY());
         g.thisComponent().setLayer(getLayer() - 1); 
         scrollBoxObjects.add(g);
+        g.thisComponent().setPaintBoundary(this); 
         
     }
-    public void remove(ScrollBoxObject g)
+    protected void removeScrollBoxObject(ScrollBoxObject g)
     {
         g.setVirtualPosition(g.getVirtualX() - getX(),g.getVirtualY() - getY());
         scrollBoxObjects.remove(g);
+        g.thisComponent().setPaintBoundary(null); 
+    }
+    public void addStationary(GuiComponent g)
+    {
+        super.add(g);
+    }
+    public void removeStationary(GuiComponent g)
+    {
+        super.remove(g);
     }
     protected void looiStep()
     {
@@ -78,21 +150,12 @@ public class ScrollBox extends Rectangle
         {
             s.thisComponent().setPosition(s.getVirtualX(),s.getVirtualY() - scrollPercentage/100.0 * (virtualHeight - getHeight()));
         }
-        hideAndShowScrollBoxObjects();
-    }
-    public void setPosition(double x, double y)
-    {
-        double deltaX = x - this.getX();
-        double deltaY = y - this.getY();
-        super.setPosition(x,y);
-
-        if(scrollBoxObjects == null) return;
-        for(ScrollBoxObject s : scrollBoxObjects)
+        if(deactivateNonvisibleComponents)
         {
-            s.setVirtualPosition(s.getVirtualX() + deltaX , s.getVirtualY() + deltaY);
+            hideAndShowScrollBoxObjects();
         }
+        
     }
-
     protected void findHighLowAndHeight()
     {
         if(scrollBoxObjects.isEmpty())
@@ -112,18 +175,24 @@ public class ScrollBox extends Rectangle
             }
             if(s.getVirtualY() > lowestObjectYPlusItsHeight)
             {
-                lowestObjectYPlusItsHeight = s.getVirtualY();
+                lowestObjectYPlusItsHeight = s.getVirtualY() + bottomItemMargin;
             }
             if(s.thisComponent() instanceof Rectangle)
             {
                 Rectangle r = (Rectangle)s.thisComponent();
                 if(s.getVirtualY() + r.getHeight() > lowestObjectYPlusItsHeight)
                 {
-                    lowestObjectYPlusItsHeight = s.getVirtualY() + r.getHeight();
+                    lowestObjectYPlusItsHeight = s.getVirtualY() + r.getHeight() + bottomItemMargin;
                 }
             }
         }
+        
         virtualHeight = lowestObjectYPlusItsHeight - getY();
+        if(virtualHeight < getHeight())
+        {
+            virtualHeight = getHeight();
+        }
+        
     }
     public double getVirtualHeight()
     {
@@ -140,6 +209,10 @@ public class ScrollBox extends Rectangle
         {
             scrollPercentage = 0;
         }
+        if(scrollPercentage > 100)
+        {
+            scrollPercentage = 100;
+        }
     }
     public void scrollDown(double percentage)
     {
@@ -147,6 +220,10 @@ public class ScrollBox extends Rectangle
         if(scrollPercentage > 100)
         {
             scrollPercentage = 100;
+        }
+        if(scrollPercentage < 0)
+        {
+            scrollPercentage = 0;
         }
     }
     public void scrollTo(double percentage)
@@ -225,21 +302,18 @@ public class ScrollBox extends Rectangle
     }
     public class ScrollBar extends AstheticButton
     {
-        public static final double DEFAULT_WIDTH = 50;
+        public static final double DEFAULT_WIDTH = 35;
         private boolean scrolling = false;
         private Point offsetFromMouse;
 
-        public ScrollBar(double x, double y, double width, double height, Background background, int buttonPressShadow, double depth) 
-        {
-            super(x,y,width,height,"",new Font("",Font.PLAIN,16),Color.BLACK,background,Color.BLACK,Color.BLACK,buttonPressShadow,depth);
-        }
         public ScrollBar()
         {
             this(Color.LIGHT_GRAY,DEFAULT_WIDTH);
         }
         public ScrollBar(Color myColor, double width)
         {
-            super(ScrollBox.this.getWidth() - width,0,width,0,"",new Font("",Font.PLAIN,16),Color.BLACK,new Background(myColor),myColor,myColor,AstheticButton.DEFAULT_BUTTON_PRESS_SHADOW,0) ;
+            super(ScrollBox.this.getWidth() - width,0,width,0,"",new Background(myColor)) ;
+            setDepth(0);
         }
         
         @Override
@@ -275,7 +349,11 @@ public class ScrollBox extends Rectangle
                     ScrollBox.this.scrollTo(scrollTo * 100);
                 }   
             }
-            
+            if(this.getMouseWheelRotation() != 0 && isScrollingWithMouseWheel() && isSelected())
+            {
+                ScrollBox.this.scrollDown(getMouseWheelRotation() * getMouseWheelScrollingCoefficient()); 
+                
+            }
         }
         public boolean scrolling()
         {

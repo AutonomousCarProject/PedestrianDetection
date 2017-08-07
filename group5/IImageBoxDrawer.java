@@ -29,26 +29,27 @@ public class IImageBoxDrawer implements IImageDrawing
 {
     public static final int DEFAULT_LINE_THICKNESS = 1;
     public static final Color DEFAULT_COLOR = Color.YELLOW;
+    public static final int DEFUALT_PEDESTRIAN_LINE_THICKNESS = 2;
+    public static final Color DEFAULT_PEDESTRIAN_COLOR = Color.BLUE;
     public static final double DEFAULT_MAX_VELOCITY = 5;
     
     
     private BufferedImage currentImage;
     private boolean useBasicColors = false;
-    private Color rectangleColor;
-    private double maxVelocity;
+    private Color rectangleColor = DEFAULT_COLOR;
+    private double maxVelocity = DEFAULT_MAX_VELOCITY;
     private boolean drawAdvancedInformation = false;
     private Rectangle[] rectangles = new Rectangle[0];
-    private int lineThickness;
-    public IImageBoxDrawer(Color rectangleColor, double maxVelocity, int lineThickness)
-    {
-        this.rectangleColor = rectangleColor;
-        this.maxVelocity = maxVelocity;
-        this.lineThickness = lineThickness;
-    }
+    private int lineThickness = DEFAULT_LINE_THICKNESS;
+    private Color pedestrianRectangleColor = DEFAULT_PEDESTRIAN_COLOR;
+    private int pedestrianLineThickness = DEFUALT_PEDESTRIAN_LINE_THICKNESS;
     public IImageBoxDrawer()
     {
-        this(DEFAULT_COLOR,DEFAULT_MAX_VELOCITY,DEFAULT_LINE_THICKNESS);
     }
+    public Color getRectangleColor(){return rectangleColor;}
+    public Color getPedestrianRectangleColor(){return pedestrianRectangleColor;}
+    public int getLineThickness(){return lineThickness;}
+    public int getPedestrianLineThickness(){return pedestrianLineThickness;}
     public boolean isDrawingAdvancedInformation()
     {
         return drawAdvancedInformation;
@@ -70,7 +71,7 @@ public class IImageBoxDrawer implements IImageDrawing
     {
         useBasicColors = b;
     }
-    public Color getRectangleColor(){return rectangleColor;}
+    
     public void blobsToRectangles(IImage image, List<? extends Blob> iBlobs)
     {
         rectangles = findRectangles(image,iBlobs);
@@ -123,6 +124,8 @@ public class IImageBoxDrawer implements IImageDrawing
     {
         //...
         Rectangle[] rectangles = new Rectangle[iBlobs.size()];
+        int unselected = 0;
+        int selected = 0;
         for(int i = 0; i < iBlobs.size(); i++)
         {
             Blob b = iBlobs.get(i);
@@ -133,15 +136,26 @@ public class IImageBoxDrawer implements IImageDrawing
             points[2] = new Point(b.x+b.width,b.y+b.height);
             points[3] = new Point(b.x,b.y+b.height);
             
-            rectangles[i] = new Rectangle(points,b,this.rectangleColor,lineThickness);
+            Color toDrawWith = rectangleColor;
+            int lineThickness = this.lineThickness;
+            if(b instanceof MovingBlob && ((MovingBlob)b).isPedestrian())
+            {
+                toDrawWith = pedestrianRectangleColor;
+                lineThickness = pedestrianLineThickness;
+                selected++;
+            }
+            else
+            {
+                unselected++;
+            }
+            rectangles[i] = new Rectangle(points,b,toDrawWith,lineThickness);
+            
         }
+        //System.out.println("Selected: " + selected + " Unselected: " + unselected);
         return rectangles;
     }
     
-    public int getLineThickness()
-    {
-        return lineThickness;
-    }
+    
     public Rectangle[] getRectangles()
     {
         return rectangles;
@@ -208,8 +222,6 @@ public class IImageBoxDrawer implements IImageDrawing
                     {
 
                     }
-
-
                 }
             }
             else

@@ -49,13 +49,14 @@ public class BlobFilter implements IMovingBlobReduction
 	public List<MovingBlob> filterMovingBlobs(List<MovingBlob> blobs){
 		List<MovingBlob> ret = new LinkedList<>();
 		for(MovingBlob blob : blobs){
-			if(filterMovingBlob(blob) || (blob != blobs.get(0))) ret.add(blob);
+			if(filterMovingBlob(blob)) ret.add(blob);
 		}
 		return ret;
 	}
 
 	//returns false if blob should be filtered
 	private boolean filterMovingBlob(MovingBlob blob){
+            
 		return blob.age >= Constant.AGE_MIN &&
 				Math.abs(blob.velocityY) < Constant.VELOCITY_Y_MAX &&
 				Math.abs(blob.velocityX) < Constant.VELOCITY_X_MAX &&

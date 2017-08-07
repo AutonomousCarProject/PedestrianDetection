@@ -1,6 +1,8 @@
 package group1;
 
-public interface IPixel
+import java.io.Serializable;
+
+public interface IPixel extends Serializable
 {
     // All values between 0 and 255
 	
