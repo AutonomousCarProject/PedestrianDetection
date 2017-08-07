@@ -80,6 +80,82 @@ public class IImageBoxDrawer implements IImageDrawing
          drawLines(rectangles2, b, Color.BLUE, Color.BLUE, DEFAULT_LINE_THICKNESS);
          currentImage = b;
     }
+
+    public void drawRisk(IImage image, List<MovingBlob> iBlobs)
+    {
+        Rectangle[] rectangles = findRectangles(image, iBlobs);
+        BufferedImage b = new BufferedImage(image.getImage()[0].length, image.getImage().length,
+                BufferedImage.TYPE_INT_ARGB);
+        setPixels(b, image.getImage());
+
+        Graphics2D g = (Graphics2D) b.getGraphics();
+        BasicStroke bs = new BasicStroke(DEFAULT_LINE_THICKNESS);
+        
+        Point center = new Point((image.getImage()[0].length / 2f), (image.getImage().length / 2f));
+
+        for (Rectangle rect : rectangles)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                int indexOfNextPoint;
+                if (i == 3)
+                {
+                    indexOfNextPoint = 0;
+                }
+                else
+                {
+                    indexOfNextPoint = i + 1;
+                }
+                Point start = rect.getPoints()[i];
+                Point end = rect.getPoints()[indexOfNextPoint];
+
+                g.setStroke(bs);
+
+                double risk = getRisk(rect.getBlob(), 10, center);
+                
+                final int maxGreen = 180;
+                
+                Color lineColor = findColor(Color.RED, new Color(255 - maxGreen, maxGreen, 0), risk);
+
+                g.setColor(lineColor);
+                g.drawLine((int) start.getX(), (int) start.getY(), (int) end.getX(), (int) end.getY());
+            }
+        }
+        currentImage = b;
+        
+
+    }
+    
+    // On scale from 0 to 1 -- WHERE 0 IS MAX
+    private double getRisk(MovingBlob blob, int iterations, Point center)
+    {
+        double risk = 0;
+        double mult = 1;
+        double maxDist = dist(center, new Point(0, 0));
+        for(int i = 0; i < iterations; i++)
+        {
+            if(i != iterations - 1) mult /= 2;
+            float x = blob.x + (blob.width / 2f);
+            float y = blob.y + (blob.height / 2f);
+
+            x += blob.velocityX * iterations;
+            y += blob.velocityY * iterations;
+            
+            double dist = dist(new Point(x, y), center);
+            risk += mult * (dist / maxDist);
+        }
+        
+        return risk;
+    }
+    
+    private double dist(Point point, Point point2)
+    {
+        double xSquared = (point.x - point2.x) * (point.x - point2.x);
+        double ySquared = (point.y - point2.y) * (point.y - point2.y);
+
+        return Math.sqrt(xSquared + ySquared);
+    }
+    
     protected Color findColor(Color min, Color max, double percent)
     {
         int deltaRed = max.getRed() - min.getRed();
@@ -240,7 +316,7 @@ public class IImageBoxDrawer implements IImageDrawing
                 
                 double velocity = Math.sqrt( (r.getBlob().velocityX)*(r.getBlob().velocityX) + (r.getBlob().velocityY)*(r.getBlob().velocityY) );
                 
-                Color lineColor = findColor(still,moving,r.getBlob().age/maxVelocity);
+                Color lineColor = findColor(still,moving,velocity/maxVelocity);
                 
                 g.setColor(lineColor);
                 g.drawLine((int)start.getX(),(int)start.getY(),(int)end.getX(),(int)end.getY());

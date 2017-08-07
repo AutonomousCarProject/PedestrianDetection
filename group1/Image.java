@@ -12,6 +12,7 @@ public class Image implements IImage
     private final int frameRate = 3;
 
     public FlyCamera flyCam = new FlyCamera();
+    //parameters for the coloratiion of the image
     private final float greyRatio = Constant.GREY_RATIO;
     private final int blackRange = Constant.BLACK_RANGE;
     private final int whiteRange = Constant.WHITE_RANGE;
@@ -27,11 +28,13 @@ public class Image implements IImage
     private byte[] camBytes;
     private IPixel[][] image;
 
+    //default values for image
     public Image()
     {
         this(0, 0, 0);
     }
     
+    //exposure, shutter, gain for image properties
     public Image(int exposure, int shutter, int gain)
     {
         flyCam.Connect(frameRate, exposure, shutter, gain);
@@ -87,6 +90,7 @@ public class Image implements IImage
         image = i;
     }
 
+    //converts image from bytes to arrays of pixels
     private void byteConvert()
     {
 
@@ -127,6 +131,7 @@ public class Image implements IImage
 
     }
 
+    //skip this
     private void autoConvert()
     {
         int average = 0;    //0-255
@@ -472,7 +477,8 @@ public class Image implements IImage
 
     */
 
-
+//gets the current frame number and increases by 1 whenever queried
+    
     private int frameNo = 0;
     @Override
     public int getFrameNo()
