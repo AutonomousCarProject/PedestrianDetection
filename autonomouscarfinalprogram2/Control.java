@@ -80,7 +80,7 @@ public class Control extends LooiObject
         else
         {
             //just evenly dispersed for now
-            currentImage = new HDRImage(0, new long[] { 129, 392, 613, 798 }, new long[] { 483, 483, 483, 483 });
+            currentImage = new HDRImage(0, 0, 0);
             //currentImage = new Image();
         }
         boxDrawer = new IImageBoxDrawer();
