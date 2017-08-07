@@ -62,12 +62,12 @@ public class Thresholds {
             ois.close();
         }
         catch(IOException exc){
-            //exc.printStackTrace();
-            //System.out.println("IOException");
+            exc.printStackTrace();
+            System.out.println("IOException");
         }
         catch(ClassNotFoundException exc){
             exc.printStackTrace();
-            //System.out.println("Class not found");
+            System.out.println("Class not found");
         }
         catch(Exception exc){
             exc.printStackTrace();

@@ -6,7 +6,7 @@ package AIGroup;
 public class testAI {
 
     public static void main(String[] args){
-        SimpleOptim optim = new SimpleOptim("src/TestData/blob_save_0.6755801116956007");
+        SimpleOptim optim = new SimpleOptim("blob_save_0.8923267038713327");
         //optim.runForce();
         optim.runForce();
     }

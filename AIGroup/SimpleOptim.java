@@ -68,28 +68,33 @@ public class SimpleOptim {
         blobs = Thresholds.getFrame(filename);
         recurseForce(0);
         System.out.println(max);
+        for(int j = 0; j < threshNum; j++){
+            thresholds[j] = thresholdsMax[j];
+        }
+        setThresholds();
     }
 
-    int numba = 0;
 
-    private void recurseForce(int count){
+    private boolean recurseForce(int count){
         for(float i = 0; i < increment[count]*incrementRatio*2; i+= increment[count]){
             thresholds[count] = i;
             float score = getScore()[0];
+
+
             if(score > max) {
                 max = score;
-                System.out.println("here max: "+max+" count: "+count);
                 for(int j = 0; j < threshNum; j++){
                     thresholdsMax[j] = thresholds[j];
                 }
             }
 
             if(count < threshNum-1) {
-                recurseForce(count+1); //break;
+                if(recurseForce(count+1)) return true; //break;
             }
 
         }
-        return;
+        return false;
+
     }
 
     public void runUphill(int iterations){
@@ -123,10 +128,12 @@ public class SimpleOptim {
         }
     }
 
-    public float[] getScore(){
-        
+    public void setFrame(){
         blobs = Thresholds.getFrame(filename);
-        
+    }
+
+    public float[] getScore(){
+
         setThresholds();
         List<MovingBlob> retain = new ArrayList();
         List<MovingBlob> miss = new ArrayList();
@@ -142,7 +149,6 @@ public class SimpleOptim {
         
         BlobFilter filter = new BlobFilter();
         Collection seen = filter.filterMovingBlobs(blobs);
-        System.out.println(seen.size() + " : " + blobs.size());
         retain.retainAll(seen);
         miss.retainAll(seen);
 

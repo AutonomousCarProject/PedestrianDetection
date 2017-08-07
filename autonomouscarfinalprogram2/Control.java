@@ -148,6 +148,7 @@ public class Control extends LooiObject
             @Override
             protected void action() {
                 //scrollBox.add(new Text(180, 100*text.length + 240, 100, 50, new Background(Color.WHITE), "" + simpleOptim.getScore()));
+                simpleOptim.setFrame();
                 float[] score = simpleOptim.getScore();
                 Window w = new Window(500,500,200,200,Background.WHITE_BACKGROUND);
                 DecorationBar d;
