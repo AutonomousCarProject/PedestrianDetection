@@ -1,17 +1,15 @@
 package group2;
 
+import java.io.File;
 import java.util.List;
 
 import group1.FileImage;
 import group1.IImage;
 import group1.IPixel;
-import group1.Image;
 import group1.Pixel;
-import group3.IMovingBlobDetection;
 import group3.MovingBlob;
 import group3.MovingBlobDetection;
 import group4.BlobFilter;
-import group4.IMovingBlobReduction;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -22,7 +20,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 public class BlobDetectionRender extends Application
 {
@@ -39,13 +39,20 @@ public class BlobDetectionRender extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Log File");
+        fileChooser.setInitialDirectory(new File("."));
+        
+        fileChooser.setSelectedExtensionFilter(new ExtensionFilter("Bayer-8 Encoded Raw Video", ".By8"));
+        File file = fileChooser.showOpenDialog(primaryStage);
 
         BlobDetection blobDetection = new BlobDetection();
         MovingBlobDetection movingBlobDetection = new MovingBlobDetection();
         BlobFilter blobFilter = new BlobFilter();
         
         // IImage image = new JpgImage("src/testImage1.png");
-        IImage image = new FileImage();
+        IImage image = new FileImage(file == null ? "captures0801/FlyCapped6.By8" : file.getPath(), true);
+        
         
 
         //IImage -image = new JpgImage("src/testImage1.png");

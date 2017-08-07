@@ -9,3 +9,5 @@ A self driving car project initiated by the North West Advanced Programming Work
 * [Test Videos](https://goo.gl/8y1sn8)
 
 * [Native Library GitHub](https://github.com/sameer-s/JavaFlyCam)
+
+Employee connection activity: https://youtu.be/oHg5SJYRHA0

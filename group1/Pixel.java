@@ -1,5 +1,6 @@
 package group1;
 
+import java.awt.*;
 import java.awt.Image;
 
 //Defines basic implementation for pixel
@@ -21,6 +22,42 @@ public class Pixel implements IPixel
     static int blackMargin = 300;
     static int whiteMargin = 700; // 0-765
 
+    public Pixel(int color) {
+        this.color = (short)color;
+        switch (this.color){
+            case 0:
+                this.red = 255;
+                this.green = 0;
+                this.blue = 0;
+                break;
+            case 1:
+                this.red = 0;
+                this.green = 255;
+                this.blue = 0;
+                break;
+            case 2:
+                this.red = 0;
+                this.green = 0;
+                this.blue = 255;
+                break;
+            case 3:
+                this.red = 128;
+                this.green = 128;
+                this.blue = 128;
+                break;
+            case 4:
+                this.red = 0;
+                this.green = 0;
+                this.blue = 0;
+                break;
+            case 5:
+                this.red = 255;
+                this.green = 255;
+                this.blue = 255;
+                break;
+        }
+    }
+
     public Pixel(short red, short green, short blue)
     {
         this.red = red;
@@ -34,7 +71,7 @@ public class Pixel implements IPixel
         this.red = red;
         this.green = green;
         this.blue = blue;
-        //simpleConvert();
+        simpleConvert();
     }
 
     @Override
