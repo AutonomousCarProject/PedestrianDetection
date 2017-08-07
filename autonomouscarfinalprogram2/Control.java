@@ -58,17 +58,24 @@ public class Control extends LooiObject
     private LoadTextBox ltb;
     
     private String file;
+    private boolean flip;
 
     public Control(String file)
     {
+        this(file, false);
+    }
+    
+    public Control(String file, boolean flip)
+    {
     	this.file = file;
+    	this.flip = flip;
         //ArrayList<VariableSlider> variableSliders = new ArrayList<>();
         blobDetection = new BlobDetection();
         movingBlobDetection = new MovingBlobDetection();
         blobFilter = new BlobFilter();
         if (file != null)
         {
-            currentImage = new FileImage(file, true);
+            currentImage = new FileImage(file, flip);
         }
         else
         {
@@ -176,7 +183,7 @@ public class Control extends LooiObject
 		if(currentImage.getFrameNo()==previousFrame){
 			previousFrame = 0;
 			currentImage.finish();
-			currentImage = new FileImage(file, true);
+			currentImage = new FileImage(file, flip);
 			blobDetection = new BlobDetection();
 			movingBlobDetection = new MovingBlobDetection();
 			blobFilter = new BlobFilter();
@@ -186,16 +193,16 @@ public class Control extends LooiObject
 		List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
 		List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
 		List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
-		//List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
-		//List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
-		//List<MovingBlob> matchedUnifiedBlobs =  movingBlobDetection.getFilteredUnifiedBlobs(funifiedBlobs);
-		//List<MovingBlob> fmatchedUnifiedBlobs = blobFilter.filterFilteredUnifiedBlobs(matchedUnifiedBlobs);
+		List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
+		List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
+		List<MovingBlob> matchedUnifiedBlobs =  movingBlobDetection.getFilteredUnifiedBlobs(funifiedBlobs);
+		List<MovingBlob> fmatchedUnifiedBlobs = blobFilter.filterFilteredUnifiedBlobs(matchedUnifiedBlobs);
 		
 		//boxDrawer.draw2(currentImage, unifiedBlobs, fmovingBlobs);
 		//boxDrawer.draw(currentImage, funifiedBlobs);
 		//boxDrawer.draw2(currentImage, fmovingBlobs, fmatchedUnifiedBlobs);
 		//boxDrawer.draw(currentImage, fmovingBlobs);
-	      boxDrawer.drawRisk(currentImage, fmovingBlobs);
+	      boxDrawer.drawRisk(currentImage, fmatchedUnifiedBlobs);
 		//boxDrawer.draw(currentImage, fmatchedUnifiedBlobs);
 		//for(MovingBlob b: fmovingBlobs) System.out.println(b.velocityChangeX);
 

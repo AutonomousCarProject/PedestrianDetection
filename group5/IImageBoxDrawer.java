@@ -112,7 +112,10 @@ public class IImageBoxDrawer implements IImageDrawing
                 g.setStroke(bs);
 
                 double risk = getRisk(rect.getBlob(), 10, center);
-                Color lineColor = findColor(Color.RED, Color.GREEN, risk);
+                
+                final int maxGreen = 180;
+                
+                Color lineColor = findColor(Color.RED, new Color(255 - maxGreen, maxGreen, 0), risk);
 
                 g.setColor(lineColor);
                 g.drawLine((int) start.getX(), (int) start.getY(), (int) end.getX(), (int) end.getY());
