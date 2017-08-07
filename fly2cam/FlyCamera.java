@@ -106,7 +106,7 @@ public class FlyCamera
 
     public native long[] ReadRegisterBlock(long addressHigh, long addressLow);
 
-    public native boolean NextFrame(byte[] pixels); // fills pixels, false if
+    public native boolean NextFrame(short[] pixels); // fills pixels, false if
                                                     // can't
 
     public native void Finish(); // required at end to prevent memory leaks
@@ -208,14 +208,14 @@ public class FlyCamera
     public static void main(String[] args)
     { // to test the interface
         int tall = 0, wide = 0, pix = -1;
-        byte[] buff;
+        short[] buff;
         FlyCamera hello = new FlyCamera();
         if (hello.Connect(0, 0, 0, 0)) tall = hello.Dimz();
         wide = tall & 0xFFFF;
         tall = tall >> 16;
         if (tall > 0) if (wide > 0)
         { // we got reasonable image size, get one image..
-            buff = new byte[tall * wide * 4];
+            buff = new short[tall * wide * 4];
             if (hello.NextFrame(buff)) // got an image, extract 1st pixel..
                 pix = (((int) buff[0]) << 24) | ((((int) buff[1]) & 255) << 16)
                         | ((((int) buff[wide + wide]) & 255) << 8) | (((int) buff[wide + wide + 1]) & 255);

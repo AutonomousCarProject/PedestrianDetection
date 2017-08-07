@@ -37,7 +37,7 @@ public class Camera2File extends JFrame implements MouseListener {
   private Timer TickTock = null;
   private BufferedImage theBuff = null;
   private byte[] theHead = null;
-  private byte[] camBytes = null;
+  private short[] camBytes = null;
   private int[] thePixels = null;
   private final int[] Digitz = {0x696,0x9F1,0xB95,0x9DA,0x62F,0xDDA,0x6D2,0x8BC,0xA5A,0x4B6};
 
@@ -81,7 +81,11 @@ public class Camera2File extends JFrame implements MouseListener {
       theHead[2] = (byte) (ImHi>>4);
       theHead[3] = (byte) (ImWi>>4);        // WB trashes the data..
       theFile.write(theHead);
-      theFile.write(camBytes);
+      byte[] temp = new byte[camBytes.length];
+      for(int i = 0; i < camBytes.length; i++){
+        temp[i] = (byte)(camBytes[i] >> 8);
+      }
+      theFile.write(temp);
       toRecord--;}
     catch (Exception ex) {toRecord = 0;}
     if (toRecord <= 0) StopRecording();} //~WriteFrame
@@ -165,7 +169,7 @@ public class Camera2File extends JFrame implements MouseListener {
   public boolean GetCameraImg() { // -> thePixels, true if OK
     int rx, cx, zx = 0, whom = 0, here = 0, thar = 0;        // (in Camera2File)
     boolean gotit = false;
-    byte[] myBy = camBytes; // local vars visible in debugger ;-)
+    short[] myBy = camBytes; // local vars visible in debugger ;-)
     int[] myPix = thePixels;
     FlyCamera myVid = theVideo;
     if (myBy != null) if (myPix != null) if (myVid != null)
@@ -339,7 +343,7 @@ public class Camera2File extends JFrame implements MouseListener {
     doOften = new myAction();
     TickTock = new Timer(FrameTime,doOften);
     theBuff = new BufferedImage(ImWi,ImHi, BufferedImage. TYPE_INT_RGB);
-    camBytes = new byte[nPixels*4];
+    camBytes = new short[nPixels*4];
     titok = TickTock;
     myVid = theVideo;
     try {

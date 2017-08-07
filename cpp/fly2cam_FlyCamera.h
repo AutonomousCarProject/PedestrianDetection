@@ -25,7 +25,7 @@ JNIEXPORT jboolean JNICALL Java_fly2cam_FlyCamera_Connect
  * Signature: ([B)Z
  */
 JNIEXPORT jboolean JNICALL Java_fly2cam_FlyCamera_NextFrame
-  (JNIEnv *, jobject, jbyteArray);
+  (JNIEnv *, jobject, jshortArray);
 
 /*
  * Class:     fly2cam_FlyCamera

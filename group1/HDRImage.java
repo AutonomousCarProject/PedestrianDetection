@@ -3,6 +3,7 @@ package group1;
 
 import fly2cam.FlyCamera;
 
+import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.util.Arrays;
 
@@ -17,9 +18,8 @@ public class HDRImage implements IImage {
 	public int frameRate = 4;
 	private FlyCamera flyCam = new FlyCamera();
 
-	private byte[] camBytes;
-	private short[][][][] images;
-	private double[][] tempHue;
+	private short[] camBytes;
+	private int[][][] images;
 	private IPixel[][] out;
 
 	private int tile;
@@ -34,22 +34,24 @@ public class HDRImage implements IImage {
 	private static final float LUM_BLACK = 0.3f;
 	private static final float LUM_WHITE = 0.7f;
 
+	private static final int BIT_MIN = 8;
+
 	private static final double K = 0.25;
 
 	public HDRImage(int exposure, long[] HDRShutters, long[] HDRGains) {
 		flyCam.Connect(frameRate, exposure, 0, 0);
 
-		flyCam.SetHDR(HDRShutters, HDRGains);
+		//flyCam.SetHDR(HDRShutters, HDRGains);
 
 		int res = flyCam.Dimz();
 		height = res >> 16;
 		width = res & 0x0000FFFF;
 
-		camBytes = new byte[height * width * 4];
-		images = new short[4][height][width][3];
-		tempHue = new double[height][width];
+		camBytes = new short[height * width * 4];
+		images = new int[height][width][3];
 		out = new IPixel[height][width];
-		tile = flyCam.PixTile();
+		//tile = flyCam.PixTile();
+		tile = 1;
 		System.out.println("tile: "+tile+" width: "+width+" height: "+height);
 	}
 
@@ -60,35 +62,38 @@ public class HDRImage implements IImage {
 	@Override
 	public void readCam() {
 		//step 1: all the HDR images
-		for(int i = 0; i < images.length; i++){
-			flyCam.NextFrame(camBytes);
-			byteConvert(i);
-		}
+		flyCam.NextFrame(camBytes);
+		byteConvert();
+
 		//ow, that's a lot of time
 		//step 2: HDR
-		fuseImages();
+		//fuseImages();
 		//step 3: median filter
-		//meanFilter();
-		medianFilter();
+		meanFilter();
+		// medianFilter();
 		//step 4; MEAN SHIFT BITCHES WOOOOOOO
 		//tempHue = MeanShiftImage.meanShift(tempHue, 10);
 		//step 5: convert doubles to color
-		for(int i = 0; i < tempHue.length; i++){
-			for(int o = 0; o < tempHue[0].length; o++){
-				if(tempHue[i][o] < 0) out[i][o] = new Pixel(-(int) tempHue[i][o]);
+		for(int i = 0; i < images.length; i++){
+			for(int o = 0; o < images[0].length; o++){
+				//search pixel for first high bit, and use the next eight bits after
+				//will hopefully increase gain dynamically in the image, bringing out hue in desaturated areas
+				int bit = 11;
+				//this is completly unreadable
+				//searches through every bit to see if it's on, then breaks if so
+				while (images[i][o][0] < (1 << bit) && images[i][o][1] < (1 << bit) && images[i][o][2] < (1 << bit) && bit-- > BIT_MIN);
+				//then shifts the color such that the bit found it the highest bit
+				images[i][o][0] = (images[i][o][0] >> (bit - 6)) & 255;
+				images[i][o][1] = (images[i][o][1] >> (bit - 6)) & 255;
+				images[i][o][2] = (images[i][o][2] >> (bit - 6)) & 255;
+			}
+		}
 
-				else {
+		//medianFilter();
 
-					final Color thing = new Color(Color.HSBtoRGB((float)tempHue[i][o], 1, 1));
-					out[i][o] = new Pixel((short)thing.getRed(), (short)thing.getGreen(), (short)thing.getBlue());
-					//*/
-					/*
-					//convert hue to our posterized colors
-					if(tempHue[i][o] < .125 || tempHue[i][o] > .875) out[i][o] = new Pixel(0); //red
-					else if(tempHue[i][o] < 0.5) out[i][o] = new Pixel(1); //green
-					else out[i][o] = new Pixel(2); //blue */
-
-				}
+		for(int i = 0; i < images.length; i++){
+			for(int o = 0; o < images[0].length; o++){
+				out[i][o] = new Pixel((short)images[i][o][0], (short)images[i][o][1], (short)images[i][o][2]);
 			}
 		}
 	}
@@ -103,7 +108,7 @@ public class HDRImage implements IImage {
 		flyCam.Finish();
 	}
 
-	private void byteConvert(int index)
+	private void byteConvert()
 	{
 
 		int pos = 0;
@@ -113,9 +118,9 @@ public class HDRImage implements IImage {
 
 				for (int j = 0; j < width; j++)
 				{
-					images[index][i][j][0] = (short) (camBytes[pos] & 255);
-					images[index][i][j][1] = (short) (camBytes[pos + 1] & 255);
-					images[index][i][j][2] = (short) (camBytes[pos + 1 + width * 2] & 255);
+					images[i][j][0] = (camBytes[pos] & 0xffff) >> 4;
+					images[i][j][1] = (camBytes[pos + 1] & 0xffff) >> 4;
+					images[i][j][2] = (camBytes[pos + 1 + width * 2] & 0xffff) >> 4;
 					pos += 2;
 
 				}
@@ -131,9 +136,9 @@ public class HDRImage implements IImage {
 				for (int j = 0; j < width; j++)
 				{
 
-					images[index][i][j][0] = (short) (camBytes[pos +  width * 2] & 255);
-					images[index][i][j][1] = (short) (camBytes[pos] & 255);
-					images[index][i][j][2] = (short) (camBytes[pos + 1] & 255);
+					images[i][j][0] = (camBytes[pos +  width * 2] & 0xffff) >> 4;
+					images[i][j][1] = (camBytes[pos] & 0xffff) >> 4;
+					images[i][j][2] = (camBytes[pos + 1] & 0xfff) >> 4;
 					pos += 2;
 
 				}
@@ -144,6 +149,7 @@ public class HDRImage implements IImage {
 		}
 	}
 
+	/*
 	private static int getFancyS(short r, short g, short b){
 		return Math.max(r, Math.max(g, b)) - Math.min(r, Math.min(g, b));
 	}
@@ -205,44 +211,70 @@ public class HDRImage implements IImage {
 	private static double getWeight(double color, double exposureNum, double numExposures) {
 		//final double c = Math.pow(exposureNum / numExposures, 0.3);
 		return Math.exp(-Math.pow((color), 2) / K);
-	}
+	}*/
 
 	public void medianFilter(){
 		final int windowSize = 3;
 
-		double[][] justOnce = new double[tempHue.length][tempHue[0].length];
+		int[][][] justOnce = new int[images.length][images[0].length][3];
 
-		for(int i=0; i<tempHue.length; i++){
-			for(int j=0; j<tempHue[0].length; j++){
-				if(i>tempHue.length-windowSize || j>tempHue[0].length-windowSize){
+		for(int i=0; i<images.length; i++){
+			for(int j=0; j<images[0].length; j++){
+				if(i>images.length-windowSize || j>images[0].length-windowSize){
 					//tempHue[i][j] = new Pixel((short)0, (short)0, (short)0);
 				}
 				else{
-					double[] hues = new double[windowSize*windowSize];
-					int count = 0;
+					int[][] set = new int[3][windowSize*windowSize];
 
-					for(int w=0; w<windowSize; w++){
-						for(int q=0; q<windowSize; q++){
-							if(tempHue[i+w][j+q] >= 0) {
-								hues[w*windowSize + q] = tempHue[i+w][j+q];
-								count++;
-							}
+					for(int w=0; w<windowSize; w++) {
+						for (int q = 0; q < windowSize; q++) {
+							set[0][w * windowSize + q] = images[i + w][j + q][0];
+							set[1][w * windowSize + q] = images[i + w][j + q][1];
+							set[2][w * windowSize + q] = images[i + w][j + q][2];
 						}
 					}
-					if(count > 0){
-						Arrays.sort(hues);
-						final int half = count>>1;
-						justOnce[i][j] = hues[half];
-					}
-					else {
-						justOnce[i][j] = tempHue[i][j];
-					}
+					Arrays.sort(set[0]);
+					Arrays.sort(set[1]);
+					Arrays.sort(set[2]);
+
+					final int half = set[0].length / 2;
+
+					justOnce[i][j] = new int[]{ set[0][half], set[1][half], set[2][half] };
 				}
 			}
 		}
-		tempHue = justOnce;
+		images = justOnce;
 	}
 
+	public void meanFilter(){
+		final int windowSize = 3;
+
+		int[][][] justOnce = new int[images.length][images[0].length][3];
+
+		for(int i=0; i<images.length; i++){
+			for(int j=0; j<images[0].length; j++){
+				if(i>images.length-windowSize || j>images[0].length-windowSize){
+					//tempHue[i][j] = new Pixel((short)0, (short)0, (short)0);
+				}
+				else{
+					int[] total = new int[3];
+
+					for(int w=0; w<windowSize; w++) {
+						for (int q = 0; q < windowSize; q++) {
+							total[0] += images[i + w][j + q][0];
+							total[1] += images[i + w][j + q][1];
+							total[2] += images[i + w][j + q][2];
+						}
+					}
+
+					justOnce[i][j] = new int[]{ (int)(total[0] * (1.0 / (windowSize * windowSize))), (int)(total[1] * (1.0 / (windowSize * windowSize))), (int)(total[2] * (1.0 / (windowSize * windowSize))) };
+				}
+			}
+		}
+		images = justOnce;
+	}
+
+	/*
 	public void meanFilter(){
 		final int windowSize = 3;
 
@@ -268,4 +300,5 @@ public class HDRImage implements IImage {
 		}
 		tempHue = justOnce;
 	}
+	*/
 }

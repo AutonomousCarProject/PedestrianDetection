@@ -8,6 +8,9 @@
 #include <stdio.h>
 #include <stdint.h>
 
+//hehe
+#define SHORT_MAX ((unsigned short)0 - 1)
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -68,6 +71,27 @@ extern "C" {
 				if (stuffID != NULL) env->SetLongField(thisObj, stuffID, (jlong)sofar);
 				sofar = 0;
 			}
+
+            //get format info
+            fc2Format7Info fmtInfo;
+            BOOL supported;
+            fmtInfo.mode = FC2_MODE_0;
+            nerror = fc2GetFormat7Info(theContext, &fmtInfo, &supported);
+            if (nerror != FC2_ERROR_OK) break;
+
+			//set the bit depth to 16
+			fc2Format7ImageSettings imgSettings;
+			imgSettings.mode = FC2_MODE_0;
+			imgSettings.offsetX = 0;
+			imgSettings.offsetY = 0;
+			imgSettings.width = fmtInfo.maxWidth;
+			imgSettings.height = fmtInfo.maxHeight;
+			imgSettings.pixelFormat = FC2_PIXEL_FORMAT_RAW16;
+
+			//send it to the camera
+			fc2Format7PacketInfo packInf;
+			nerror = fc2SetFormat7Configuration(theContext, &imgSettings, fmtInfo.packetSize);
+			if (nerror != FC2_ERROR_OK) break;
 
 			if (frameRate != 0) {
 				why = 26;
@@ -161,14 +185,14 @@ extern "C" {
 	  * Signature: ([B)Z
 	  */
 	JNIEXPORT jboolean JNICALL Java_fly2cam_FlyCamera_NextFrame
-	(JNIEnv *env, jobject thisObj, jbyteArray pixels) {
+	(JNIEnv *env, jobject thisObj, jshortArray pixels) {
 		int tile, rx, cx, nx = 0, roff = 0, coff = 0, sofar = 0, colz = 0, why = 19;
 		unsigned int zx = 0;
 		fc2Error nerror = FC2_ERROR_OK;
 		jsize lxx = 0;
-		jbyte * Jpix = NULL;  jbyte * Ipix = NULL;
+		jshort * Jpix = NULL;  jshort * Ipix = NULL;
 		jboolean isCopy;
-		unsigned char* camData;
+		unsigned short* camData;
 		// Get a reference to this object's class
 		jclass thisClass = env->GetObjectClass(thisObj);
 		// Get the Field ID of the instance variable..
@@ -194,14 +218,17 @@ extern "C" {
 			if (lxx > 0xFFFFFF) break;
 			nx = (int)lxx;
 			why++; // why = 15
-			Jpix = env->GetByteArrayElements(pixels, &isCopy);
+			Jpix = env->GetShortArrayElements(pixels, &isCopy);
 			if (Jpix == NULL) break;
 			Ipix = Jpix;
 			why++; // why = 16
 			nerror = fc2RetrieveBuffer(theContext, &rawImage);
 			if (nerror != FC2_ERROR_OK) break;
 			why++; // why = 17
-			nerror = fc2GetImageData(&rawImage, &camData);
+			unsigned char* tempCam = (unsigned char *)camData;
+			nerror = fc2GetImageData(&rawImage, &tempCam);
+			camData = (unsigned short *)tempCam;
+			//Ow
 			if (nerror != FC2_ERROR_OK) break;
 			why++; // why = 18
 			sofar = rawImage.receivedDataSize; // we move bytes, it also seems to be in bytes
@@ -222,12 +249,12 @@ extern "C" {
 				roff = (rx & 12) >> 1; // gotta take extra sensors off in pairs, half each side..
 									   // coff = cx&15; // skip over this many bytes each row to center image in frame
 				roff = roff*cx + ((cx & 12) >> 1); // skip over this many bytes before starting, ditto
-				camData = (unsigned char*)(((int64_t)camData) + ((int64_t)roff));
+				camData = (unsigned short*)((((int64_t)camData) + ((int64_t)roff))); ///oh god I hope this works
 			}
 			why = ~why; // why = -20 // pixel array size != image data size (OK)..
 			if (sofar == nx) { // capture 1st pixel for comparison in Java debugger..
-				sofar = ((((int)camData[0]) & 255) << 24) | ((((int)camData[1]) & 255) << 16)
-					| ((((int)camData[cx]) & 255) << 8) | ((int)camData[cx + 1]) & 255; // = RGGB 1st pix
+				sofar = ((((int)camData[0]) & SHORT_MAX) << 24) | ((((int)camData[1]) & SHORT_MAX) << 16)
+					| ((((int)camData[cx]) & SHORT_MAX) << 8) | ((int)camData[cx + 1]) & SHORT_MAX; // = RGGB 1st pix
 				why = 0;
 			}
 			else if (sofar<nx) nx = sofar; // ..just use the smaller (report compared size)
@@ -238,7 +265,7 @@ extern "C" {
 
 			while (nx-- >0) { // nx counts dest bytes
 				if (rx>0) // still in the pixels of this row to copy..
-					*Ipix++ = (jbyte)(*camData);
+					*Ipix++ = (jshort)(*camData);
 				camData++;
 				rx--; // rx counts bytes in dest row (continuing over excess, rx<0)
 				if (rx + coff>0) continue; // skips over excess pixels each row
@@ -246,7 +273,7 @@ extern "C" {
 			} //~while (nx) // starting new source row
 			break;
 		} //~while
-		if (Jpix != NULL) env->ReleaseByteArrayElements(pixels, Jpix, 0); // update Java
+		if (Jpix != NULL) env->ReleaseShortArrayElements(pixels, Jpix, 0); // update Java
 		if (nerror != FC2_ERROR_OK) sofar = (int)nerror; // report any error..
 		if (errnID != NULL) env->SetIntField(thisObj, errnID, (jint)why);
 		// if (stuffID != NULL) env->SetLongField(thisObj,stuffID,(jlong)sofar);

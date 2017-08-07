@@ -25,7 +25,8 @@ public class Image implements IImage
 
     // 307200
     // private byte[] camBytes = new byte[2457636];
-    private byte[] camBytes;
+    private short[] camBytes;
+    private byte[] tempBytes;
     private IPixel[][] image;
 
     //default values for image
@@ -43,7 +44,8 @@ public class Image implements IImage
         height = res >> 16;
         width = res & 0x0000FFFF;
         
-        camBytes = new byte[height * width * 4];
+        camBytes = new short[height * width * 4];
+        tempBytes = new byte[height * width * 4];
         image = new Pixel[height][width];
         tile = flyCam.PixTile();
         System.out.println("tile: "+tile+" width: "+width+" height: "+height);
@@ -70,6 +72,10 @@ public class Image implements IImage
         flyCam.NextFrame(camBytes);
         // System.out.println(flyCam.errn);
 
+        //downcast to bytes
+        for(int i = 0; i < camBytes.length; i++){
+            tempBytes[i] = (byte)(camBytes[i] >> 8);
+        }
 
         if(autoCount > autoFreq && autoFreq > -1) {
             autoConvertWeighted();
