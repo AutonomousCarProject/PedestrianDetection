@@ -59,12 +59,15 @@ public class SimpleOptim {
         System.out.println(max);
     }
 
+    int numba = 0;
+
     private void recurseForce(int count){
         for(float i = 0; i < increment[count]*incrementRatio*2; i+= increment[count]){
             thresholds[count] = i;
             float score = getScore();
             if(score > max) {
                 max = score;
+                System.out.println("here max: "+max+" count: "+count);
                 for(int j = 0; j < threshNum; j++){
                     thresholdsMax[j] = thresholds[j];
                 }
