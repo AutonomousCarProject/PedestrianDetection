@@ -131,7 +131,7 @@ public class Image implements IImage
 
     }
 
-    //skip this
+    //skip this method for now
     private void autoConvert()
     {
         int average = 0;    //0-255

@@ -194,7 +194,7 @@ public class AlternatingBlobDetectionRender extends Application
             case 0:
                 return (Color.RED);
             case 1:
-                return (Color.LIME);
+                return (Color.LIME);//color set to lime, because it is fully saturated (unlike "green")
             case 2:
                 return (Color.BLUE);
             case 3:
