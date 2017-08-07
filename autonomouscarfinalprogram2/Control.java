@@ -7,7 +7,6 @@
 package autonomouscarfinalprogram2;
 
 import AIGroup.SimpleOptim;
-import AIGroup.Thresholds;
 import ai_data_creation.BlobSelector;
 import com.looi.looi.LooiObject;
 import com.looi.looi.gui_essentials.*;
@@ -76,7 +75,10 @@ public class Control extends LooiObject
     public static final String AI_MODE = "ai_mode";
     private String mode = DATA_CREATION_MODE;
     private Window loadWindow;
-    
+    private static String text[] = {"Age Min","Velocity X Max", "Velocity Y Max",
+                "Max Velocity Change X", "Max Velocity Change Y", "Max Width Height Ratio", "Max Width",
+                "Max Height", "Max Scaled Velocity X", "Max Scaled Velocity Y"};
+    private ConstantEditor[] constantEditors = new ConstantEditor[text.length];
     
     public Control(int frameDelay, boolean useCamera)
     {
@@ -115,9 +117,7 @@ public class Control extends LooiObject
         d.add(aiWindow.new ExitButton());
         aiWindow.add(scrollBox = new ScrollBox(25, 100, 450, 375, new Background(new Color(250, 250, 255))));
 
-        String text[] = {"Age Min","Velocity X Max", "Velocity Y Max",
-                "Max Velocity Change X", "Max Velocity Change Y", "Max Width Height Ratio", "Max Width",
-                "Max Height", "Max Scaled Velocity X", "Max Scaled Velocity Y"};
+        
 
 
         // displays text
@@ -126,7 +126,7 @@ public class Control extends LooiObject
             scrollBox.add(new Text(150, i*100+20, 100, 30, new Background(Color.WHITE), text[i]));
             //displays Constant Editors
             scrollBox.add(
-                                    new ConstantEditor(10,i*100+20,100,50, "" + Constant.getVariable(i+14)
+                                    constantEditors[i] = new ConstantEditor(10,i*100+20,100,50, "" + Constant.getVariable(i+14)
                                                         )); //constantIndex is i + 14 to start at BlobFilter constants in Constant class
         }
 
@@ -178,7 +178,16 @@ public class Control extends LooiObject
             public void action()
             {
                 simpleOptim.runForce();
-                Window w = new Window(500,500,300,300,Background.WHITE_BACKGROUND);
+//                Window w = new Window(500,500,300,300,Background.WHITE_BACKGROUND);
+//                DecorationBar d;
+//                w.add(d = w.new DecorationBar());
+//                d.add(w.new ExitButton());
+                //System.out.println(simpl);
+                for(int i = 0; i < constantEditors.length; i++)
+                {
+                    constantEditors[i].setText(""+Constant.<Double>getVariable(i+1)); 
+                    System.out.println("");
+                }
                 
             }
         });
@@ -226,7 +235,7 @@ public class Control extends LooiObject
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+
         }
     }
     
