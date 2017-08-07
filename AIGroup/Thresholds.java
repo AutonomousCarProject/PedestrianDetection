@@ -53,7 +53,6 @@ public class Thresholds {
 
     public static List<MovingBlob> getFrame(String filename){
         List<MovingBlob> blobs = new LinkedList<>();
-
         try{
             FileInputStream fis = new FileInputStream(filename);
             ObjectInputStream ois = new ObjectInputStream(fis);
@@ -62,15 +61,15 @@ public class Thresholds {
             ois.close();
         }
         catch(IOException exc){
-            exc.printStackTrace();
-            System.out.println("IOException");
+            //exc.printStackTrace();
+            //System.out.println("IOException");
         }
         catch(ClassNotFoundException exc){
-            exc.printStackTrace();
-            System.out.println("Class not found");
+            //exc.printStackTrace();
+            //System.out.println("Class not found");
         }
         catch(Exception exc){
-            exc.printStackTrace();
+            //exc.printStackTrace();
         }
         return blobs;
     }

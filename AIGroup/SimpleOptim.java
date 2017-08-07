@@ -55,9 +55,11 @@ public class SimpleOptim {
         this.filename = name;
     }
     public void setThresholds(){
+        
         int count = 0;
         for(int i = 0; i < threshLocSize; i++){
             if(((threshLoc >> i) & 1) == 1){
+                
                 Constant.setVariable(i,thresholds[count]);
                 count++;
             }
@@ -69,7 +71,7 @@ public class SimpleOptim {
     public void runForce(){
         blobs = Thresholds.getFrame(filename);
         recurseForce(0);
-        System.out.println(max);
+        System.out.println("Score: " + max);
         for(int j = 0; j < threshNum; j++){
             thresholds[j] = thresholdsMax[j];
         }
