@@ -56,17 +56,19 @@ public class Control extends LooiObject
     private int yCoordinate;
 
     private LoadTextBox ltb;
+    
+    private String file;
 
-    public Control(boolean useCamera)
+    public Control(String file)
     {
-    	
+    	this.file = file;
         //ArrayList<VariableSlider> variableSliders = new ArrayList<>();
         blobDetection = new BlobDetection();
         movingBlobDetection = new MovingBlobDetection();
         blobFilter = new BlobFilter();
-        if (!useCamera)
+        if (file != null)
         {
-            currentImage = new FileImage("captures0801/FlyCapped6.By8", true);
+            currentImage = new FileImage(file, true);
         }
         else
         {
@@ -174,7 +176,7 @@ public class Control extends LooiObject
 		if(currentImage.getFrameNo()==previousFrame){
 			previousFrame = 0;
 			currentImage.finish();
-			currentImage = new FileImage("captures0801/FlyCapped6.By8", true);
+			currentImage = new FileImage(file, true);
 			blobDetection = new BlobDetection();
 			movingBlobDetection = new MovingBlobDetection();
 			blobFilter = new BlobFilter();
@@ -192,7 +194,8 @@ public class Control extends LooiObject
 		//boxDrawer.draw2(currentImage, unifiedBlobs, fmovingBlobs);
 		//boxDrawer.draw(currentImage, funifiedBlobs);
 		//boxDrawer.draw2(currentImage, fmovingBlobs, fmatchedUnifiedBlobs);
-		boxDrawer.draw(currentImage, fmovingBlobs);
+		//boxDrawer.draw(currentImage, fmovingBlobs);
+	      boxDrawer.drawRisk(currentImage, fmovingBlobs);
 		//boxDrawer.draw(currentImage, fmatchedUnifiedBlobs);
 		//for(MovingBlob b: fmovingBlobs) System.out.println(b.velocityChangeX);
 

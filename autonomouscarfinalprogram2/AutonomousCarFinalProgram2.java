@@ -25,7 +25,7 @@ public class AutonomousCarFinalProgram2 {
         mainWindow.fitWindow();
         
         // parameter in this constructor is the delay (in milliseconds) between frames
-        control = new Control(false);
+        control = new Control("captures0801/FlyCapped6.By8");
         hotkeys = new Hotkeys(control);
     }
     
