@@ -21,6 +21,7 @@ public class Blob
         set(width, height, x, y, color, currentId++);
     }
 
+    //size, coordinates and color of blob
     public void set(int width, int height, int x, int y, IPixel color, int id)
     {
         this.width = width;

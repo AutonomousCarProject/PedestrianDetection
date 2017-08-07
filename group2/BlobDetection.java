@@ -167,6 +167,7 @@ public class BlobDetection implements IBlobDetection
         return blobs;
     }
     
+    //reduce, reuse, recycle for blobs in progress
     private BlobInProgress getBip(int top, int left, int bottom, int right, IPixel color)
     {
         if(unusedBips.isEmpty())
@@ -185,6 +186,7 @@ public class BlobDetection implements IBlobDetection
         }
     }
 
+    //reduce, reuse, recycle for blobs in progress
     private Blob getBlob(BlobInProgress bip)
     {
         if(unusedBlobs.isEmpty())
