@@ -25,9 +25,9 @@ import java.util.ArrayList;
 public class LoadTextBox extends TextBox
 {
     private ArrayList<VariableSlider> vs = new ArrayList<>();
-    public LoadTextBox(double x, double y, double width, double height, Background background, String text, Font font, boolean editable, Color textColor, double horizontalMargin, double verticalMargin, double lineSpacing) 
+    public LoadTextBox(double x, double y, double width, double height, String text, boolean editable) 
     {
-        super(x, y, width, height, background, text, font, editable, textColor, horizontalMargin, verticalMargin, lineSpacing);
+        super(x, y, width, height, text, editable);
     }
     public void addSliders(VariableSlider...sliders)
     {

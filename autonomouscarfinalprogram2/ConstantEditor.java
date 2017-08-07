@@ -11,8 +11,8 @@ import java.lang.reflect.Field;
 public class ConstantEditor extends TextBox {
     public int constantIndex;
 
-    public ConstantEditor(double x, double y, double width, double height, Background background, String text, Font font, Color textColor, double horizontalMargin, double verticalMargin, double lineSpacing, int constantIndex) {
-        super(x,y,width,height,background,text,font,true,textColor,horizontalMargin,verticalMargin,lineSpacing);
+    public ConstantEditor(double x, double y, double width, double height, String text) {
+        super(x,y,width,height,text,true);
         this.constantIndex = constantIndex;
     }
 
