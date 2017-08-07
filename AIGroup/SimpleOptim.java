@@ -64,6 +64,8 @@ public class SimpleOptim {
         }
     }
 
+    public void runCombined
+
     public void runForce(){
         blobs = Thresholds.getFrame(filename);
         recurseForce(0);
