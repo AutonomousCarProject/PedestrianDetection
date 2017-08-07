@@ -6,6 +6,7 @@
 package autonomouscarfinalprogram2;
 
 import com.looi.looi.gui_essentials.AstheticButton;
+import com.looi.looi.gui_essentials.Background;
 import global.Constant;
 import java.awt.Color;
 import java.awt.Toolkit;
@@ -14,7 +15,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Field;
-import java.time.Clock;
 import java.time.LocalTime;
 
 /**
@@ -25,7 +25,7 @@ public class SaveButton extends AstheticButton
 {
 
     public SaveButton(double x, double y, double width, double height, String text, Color frontColor) {
-        super(x, y, width, height, text, frontColor);
+        super(x, y, width, height, text, new Background(frontColor));
     }
 
     @Override

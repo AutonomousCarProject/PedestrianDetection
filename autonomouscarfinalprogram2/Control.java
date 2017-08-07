@@ -6,14 +6,14 @@
 //*****
 package autonomouscarfinalprogram2;
 
+import AIGroup.SimpleOptim;
 import AIGroup.Thresholds;
 import ai_data_creation.BlobSelector;
 import com.looi.looi.LooiObject;
-import com.looi.looi.Point;
 import com.looi.looi.gui_essentials.*;
 import com.looi.looi.gui_essentials.Button;
-import com.looi.looi.gui_essentials.Rectangle;
 import com.looi.looi.gui_essentials.Window;
+import com.looi.looi.gui_essentials.Window.DecorationBar;
 import group1.IPixel;
 
 import global.Constant;
@@ -26,10 +26,12 @@ import group4.BlobFilter;
 import group5.IImageBoxDrawer;
 
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.event.MouseEvent;
 
 
 
@@ -49,8 +51,8 @@ public class Control extends LooiObject
     private Button toggleGraphics;
     private Button pedestrianAccuracy;
     private ScrollBox scrollBox;
-    private Window sliderWindow;
-    
+    private Window aiWindow;
+    private Window dataCreationWindow;
     
     
     
@@ -62,6 +64,7 @@ public class Control extends LooiObject
     private ArrayList<IPixel[][]> frameList;
     
     private int yCoordinate;
+    private SimpleOptim simpleOptim;
     
     List<Blob> knownBlobs;
     List<MovingBlob> movingBlobs;
@@ -69,8 +72,15 @@ public class Control extends LooiObject
     List<MovingBlob> unifiedBlobs;
     
     private BlobSelector blobSelector;
+    public static final String DATA_CREATION_MODE = "data_creation_mode";
+    public static final String AI_MODE = "ai_mode";
+    private String mode = DATA_CREATION_MODE;
+    private Window loadWindow;
+    
+    
     public Control(int frameDelay, boolean useCamera)
     {
+        simpleOptim = new SimpleOptim("");
         blobDetection = new BlobDetection();
         movingBlobDetection = new MovingBlobDetection();
         blobFilter = new BlobFilter();
@@ -86,7 +96,7 @@ public class Control extends LooiObject
 
         boxDrawer = new IImageBoxDrawer();
         boxDrawer.setUsingBasicColors(true);
-
+        
         previousFrame = 0;
         setCurrentFrame(1);
         keepGoing = true;
@@ -99,9 +109,11 @@ public class Control extends LooiObject
         frames.addFirst(firstFrame);
         //blobSelector = new BlobSelector(boxDrawer,this);
 
-        sliderWindow = new DraggingWindow(100, 100, 500, 500, new Background(Color.WHITE));
-        sliderWindow.add(sliderWindow.new ExitButton());
-        sliderWindow.add(scrollBox = new ScrollBox(25, 100, 450, 375, new Background(new Color(250, 250, 255))));
+        aiWindow = new Window(100, 100, 500, 500, new Background(Color.WHITE));
+        DecorationBar d;
+        aiWindow.add(d = aiWindow.new DecorationBar()); 
+        d.add(aiWindow.new ExitButton());
+        aiWindow.add(scrollBox = new ScrollBox(25, 100, 450, 375, new Background(new Color(250, 250, 255))));
 
         String text[] = {"Age Min","Velocity X Max", "Velocity Y Max",
                 "Max Velocity Change X", "Max Velocity Change Y", "Max Width Height Ratio", "Max Width",
@@ -111,16 +123,16 @@ public class Control extends LooiObject
         // displays text
         for(int i = 0; i < text.length; i++) {
             //displays text
-            scrollBox.add(scrollBox.new ScrollBoxObject(new Text(150, i*100+20, 100, 30, new Background(Color.WHITE), text[i])));
+            scrollBox.add(new Text(150, i*100+20, 100, 30, new Background(Color.WHITE), text[i]));
             //displays Constant Editors
-            scrollBox.add(scrollBox.new ScrollBoxObject(
-                                    new ConstantEditor(10,i*100+20,100,50, new Background(Color.WHITE), "" + Constant.getVariable(i+14),
-                                                        Text.ONLY_AVAILIBLE_FONT, Color.BLACK, 10,5, 0, i+14))); //constantIndex is i + 14 to start at BlobFilter constants in Constant class
+            scrollBox.add(
+                                    new ConstantEditor(10,i*100+20,100,50, "" + Constant.getVariable(i+14)
+                                                        )); //constantIndex is i + 14 to start at BlobFilter constants in Constant class
         }
 
-        scrollBox.add(scrollBox.new ScrollBoxObject(new SaveButton(10,100*text.length,150,100,"Save",new Color(150,200,40))));
+        scrollBox.add(new SaveButton(10,100*text.length,150,100,"Save",new Color(150,200,40)));
 
-        toggleGraphics = new AstheticButton(10,100*text.length+100,135,100,"Toggle Graphics",Color.GRAY)
+        toggleGraphics = new AstheticButton(10,100*text.length+100,135,100,"Toggle Graphics",Background.DARK_GRAY_BACKGROUND)
         {
             @Override
             protected void action()
@@ -129,16 +141,92 @@ public class Control extends LooiObject
             }
         };
         toggleGraphics.setLayer(-999);
-        scrollBox.add(scrollBox.new ScrollBoxObject(toggleGraphics));
+        scrollBox.add(toggleGraphics);
+        
 
-        pedestrianAccuracy = new AstheticButton(10, 100*text.length + 200, 150, 100, "Blob Accuracy", Color.BLUE) {
+        pedestrianAccuracy = new AstheticButton(10, 100*text.length + 200, 150, 100, "Blob Accuracy", Background.BLUE_BACKGROUND) {
             @Override
             protected void action() {
-                scrollBox.add(scrollBox.new ScrollBoxObject(new Text(180, 100*text.length + 240, 100, 50, new Background(Color.WHITE), "" + Thresholds.getScore("blob_save_size12"))));
+                //scrollBox.add(new Text(180, 100*text.length + 240, 100, 50, new Background(Color.WHITE), "" + simpleOptim.getScore()));
+                float[] score = simpleOptim.getScore();
+                Window w = new Window(500,500,200,200,Background.WHITE_BACKGROUND);
+                DecorationBar d;
+                w.add(d = w.new DecorationBar());  
+                d.add(w.new ExitButton()); 
+                w.add(new TextBox(10,60,180,130,"score: " + score[0] + " accuracy: " + score[1] + " miss accuracy: " + score[2],false));   
             }
         };
         pedestrianAccuracy.setLayer(-999);
-        scrollBox.add(scrollBox.new ScrollBoxObject(pedestrianAccuracy));
+        scrollBox.add(new AstheticButton(10,pedestrianAccuracy.getY() + toggleGraphics.getHeight(),130,100,"Swithch to data creation mode",Background.RED_BACKGROUND)
+        {
+            public void action()
+            {
+                mode = Control.DATA_CREATION_MODE;
+            }
+        });
+        scrollBox.add(pedestrianAccuracy);
+        scrollBox.add(new AstheticButton(10,3000,130,100,"Load",Background.WHITE_BACKGROUND)
+        {
+            public void action()
+            {
+                loadWindow.activate();
+            }
+        });
+        scrollBox.add(new AstheticButton(10,2500,130,100,"Evolve",Background.WHITE_BACKGROUND)
+        {
+            public void action()
+            {
+                simpleOptim.runForce();
+                Window w = new Window(500,500,300,300,Background.WHITE_BACKGROUND);
+                
+            }
+        });
+        loadWindow = new Window(0,0,500,500,Background.WHITE_BACKGROUND);
+        ScrollBox loadFiles = new ScrollBox(50,75,400,400,Background.LIGHT_GRAY_BACKGROUND);
+        loadWindow.add(loadFiles); 
+        DecorationBar dd;
+        loadWindow.add(dd = loadWindow.new DecorationBar());
+        dd.add(loadWindow.new ExitButton()); 
+        
+        
+        
+        dataCreationWindow = new Window(400,400,500,500,Background.WHITE_BACKGROUND);
+        DecorationBar d2;
+        dataCreationWindow.add(d2=dataCreationWindow.new DecorationBar());
+        d2.add(dataCreationWindow.new ExitButton());
+        dataCreationWindow.add(new AstheticButton(150,100,130,100,"Switch to ai mode",Background.RED_BACKGROUND)
+        {
+            public void action()
+            {
+                mode = AI_MODE;
+            }
+        }); 
+        blobSelector = new BlobSelector(boxDrawer,this,dataCreationWindow);
+        try
+        {
+            FileInputStream fis = new FileInputStream(blobSelector.getFileDocumentName());
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            String line;
+            double y = 10;
+            while((line = br.readLine()) != null)
+            {
+                String line2 = line;
+                loadFiles.add(new AstheticButton(10,y,400,50,line,Background.WHITE_BACKGROUND)
+                {
+                    public void action()
+                    {
+                        simpleOptim.setFileName(line2); 
+                    }
+                });
+                y+=50;
+                
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
     }
     
     
@@ -147,6 +235,20 @@ public class Control extends LooiObject
      */
     protected void looiStep()
     {
+        
+        
+        if(mode.equals(AI_MODE))
+        {
+            aiWindow.activate();
+            dataCreationWindow.deactivate();
+        }
+        if(mode.equals(DATA_CREATION_MODE))
+        {
+            aiWindow.deactivate();
+            dataCreationWindow.activate();
+        }
+        
+        
         if(!getPaused())
         {
 
@@ -177,22 +279,48 @@ public class Control extends LooiObject
             currentImage.readCam();
         }
         
-
+        List<MovingBlob> loaded = simpleOptim.getBlobs();
         if(!getPaused())
         {
             knownBlobs = blobDetection.getBlobs(currentImage);
             movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
+            for(MovingBlob b : movingBlobs)
+            {
+                b.setAsPedestrian(false); 
+            }
             fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
+            
             unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
             //List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
             //boxDrawer.draw2(currentImage,fmovingBlobs,funifiedBlobs);
-            boxDrawer.blobsToRectangles(currentImage, movingBlobs);
+            
+            
+            
         }
-        boxDrawer.draw(currentImage, unifiedBlobs);
+        if(mode.equals(DATA_CREATION_MODE)) 
+        {
+            boxDrawer.blobsToRectangles(currentImage,movingBlobs);
+        }
+        if(mode.equals(AI_MODE))
+        {
+            boxDrawer.blobsToRectangles(currentImage,loaded);
+        }
+        
+        /*System.out.println(simpleOptim.getBlobs().size());
+        for(MovingBlob b : loaded)
+        {
+            System.out.print("X: " + b.x + " Y: " + b.y + " Width: " + b.width + " Height: " + b.height);
+            System.out.println("");
+        }*/
+        boxDrawer.draw(currentImage);
     }
     public List<MovingBlob> getUnifiedBlobs()
     {
         return unifiedBlobs;
+    }
+    public List<MovingBlob> getMovingBlobs()
+    {
+        return movingBlobs;
     }
     protected void updateWhileUnpaused()
     {
@@ -251,7 +379,7 @@ public class Control extends LooiObject
     protected void looiPaint()
     {
         drawString(Constant.AGE_MIN,300,300);
-        //drawImage(boxDrawer.getCurrentImage(),0,0,getInternalWidth(),getInternalHeight());
+        drawImage(boxDrawer.getCurrentImage(),0,0,getInternalWidth(),getInternalHeight());
         //drawImage(testBI,0,0,getInternalWidth(),getInternalHeight());
     }
 }
