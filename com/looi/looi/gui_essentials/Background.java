@@ -14,9 +14,13 @@ import java.awt.Image;
  */
 public class Background 
 {
-    public static final Background WHITE_BACKGROUND = new Background(Color.WHITE);
-    public static final Background BLACK_BACKGROUND = new Background(Color.BLACK);
-    public static final Background LIGHT_GRAY_BACKGROUND = new Background(Color.LIGHT_GRAY);
+    public static final Background 
+            WHITE_BACKGROUND = new Background(Color.WHITE),
+            BLACK_BACKGROUND = new Background(Color.BLACK),
+            LIGHT_GRAY_BACKGROUND = new Background(Color.LIGHT_GRAY),
+            RED_BACKGROUND = new Background(Color.RED),
+            DARK_GRAY_BACKGROUND = new Background(Color.DARK_GRAY),
+            BLUE_BACKGROUND = new Background(Color.BLUE);
     private Color color;
     private Image image;
     public Background(Color color)

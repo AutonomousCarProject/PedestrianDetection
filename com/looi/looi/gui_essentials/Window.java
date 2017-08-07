@@ -54,7 +54,7 @@ public class Window extends Rectangle
             super(
                     Window.this.getWidth() - DEFAULT_WIDTH - DEFAULT_MARGIN_TO_EDGE,
                     DEFAULT_MARGIN_TO_EDGE,
-                    DEFAULT_WIDTH,DEFAULT_HEIGHT,DEFAULT_TEXT,Color.RED);
+                    DEFAULT_WIDTH,DEFAULT_HEIGHT,DEFAULT_TEXT,new Background(Color.RED));
             
         }
         protected void action()
@@ -66,7 +66,7 @@ public class Window extends Rectangle
             super.looiStep();
         }
     }
-    public static final InputBoolean<DecorationBar> DEFAULT_DECORATIONBAR_CAN_DRAG_CONDITION = (bar) ->
+    public static final InputBoolean<DecorationBar> DEFAULT_DECORATION_BAR_CAN_DRAG_CONDITION = (bar) ->
     {
         if(bar.thisWindow().getInternalMouseX() >= bar.getX() && bar.thisWindow().getInternalMouseX() <= bar.getX() + bar.getWidth() && bar.thisWindow().getInternalMouseY() >= bar.getY() && bar.thisWindow().getInternalMouseY() <= bar.getY() + bar.getHeight())
         // if mouse is on top of the bar
@@ -82,27 +82,19 @@ public class Window extends Rectangle
         }
         return false;
     };
+    public static final Background DEFAULT_DECORATION_BAR_BACKGROUND = Background.LIGHT_GRAY_BACKGROUND;
     public class DecorationBar extends Rectangle
     {
         public static final double DEFAULT_HEIGHT = 60;
         private boolean dragging = false;
         private double dragXOffsetFromMouse;
         private double dragYOffsetFromMouse;
-        private InputBoolean<DecorationBar> canDrag;
+        private InputBoolean<DecorationBar> canDrag = DEFAULT_DECORATION_BAR_CAN_DRAG_CONDITION;
         private ArrayList<DecorationItem> decorationItems = new ArrayList<>();
-        public DecorationBar(double x, double y, double width, double height, Background background, InputBoolean<DecorationBar> canDrag)
+        
+        public DecorationBar()
         {
-            super(x,y,width,height,background);
-            this.canDrag = canDrag;
-        }
-        public DecorationBar(Background background, InputBoolean<DecorationBar> canDrag)
-        {
-            this(0,0,Window.this.getWidth(),DEFAULT_HEIGHT,background,canDrag);
-        }
-        public DecorationBar(Background background)
-        {
-            this(background,DEFAULT_DECORATIONBAR_CAN_DRAG_CONDITION);
-            
+            super(0,0,Window.this.getWidth(),DEFAULT_HEIGHT,DEFAULT_DECORATION_BAR_BACKGROUND);
         }
         protected void mousePressed(MouseEvent e)
         {

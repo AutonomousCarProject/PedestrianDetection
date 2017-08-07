@@ -1,5 +1,9 @@
 package AIGroup;
 
+import com.looi.looi.gui_essentials.Background;
+import com.looi.looi.gui_essentials.TextBox;
+import com.looi.looi.gui_essentials.Window;
+import com.looi.looi.gui_essentials.Window.DecorationBar;
 import global.Constant;
 import group3.MovingBlob;
 import group4.BlobFilter;
@@ -8,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static global.Constant.setVariable;
 
 /**
  * Created by Spencer on 8/1/2017.
@@ -41,8 +44,16 @@ public class SimpleOptim {
                 count++;
             }
         }
+        blobs = getBlobs();
     }
-
+    public float[] getThresholdsMax()
+    {
+        return thresholdsMax;
+    }
+    public void setFileName(String name)
+    {
+        this.filename = name;
+    }
     public void setThresholds(){
         int count = 0;
         for(int i = 0; i < threshLocSize; i++){
@@ -64,7 +75,7 @@ public class SimpleOptim {
     private void recurseForce(int count){
         for(float i = 0; i < increment[count]*incrementRatio*2; i+= increment[count]){
             thresholds[count] = i;
-            float score = getScore();
+            float score = getScore()[0];
             if(score > max) {
                 max = score;
                 System.out.println("here max: "+max+" count: "+count);
@@ -82,11 +93,15 @@ public class SimpleOptim {
     }
 
     public void runUphill(int iterations){
-        blobs = Thresholds.getFrame(filename);
+        
         BlobFilter filter = new BlobFilter();
         for(int i = 0; i < iterations; i++){
             iterate();
         }
+    }
+    public List<MovingBlob> getBlobs()
+    {
+        return Thresholds.getFrame(filename);
     }
 
     private void iterate(){
@@ -99,40 +114,49 @@ public class SimpleOptim {
     private void setGradients(){
         for(int i = 0; i < threshNum; i++){
             float init = thresholds[i];
-            float first = getScore();
+            float first = getScore()[0];
             thresholds[i] = init + increment[i];
-            float second = getScore();
+            float second = getScore()[0];
             gradients[i] = (second - first)/(float)increment[i];
             thresholds[i] = init;
             setThresholds();
         }
     }
 
-    private float getScore(){
+    public float[] getScore(){
+        
+        blobs = Thresholds.getFrame(filename);
+        
         setThresholds();
         List<MovingBlob> retain = new ArrayList();
         List<MovingBlob> miss = new ArrayList();
 
         for(MovingBlob blob : blobs){
+            
             if(blob.isPedestrian()) retain.add(blob);
             else miss.add(blob);
         }
 
         int retainCount = retain.size();
         int missCount = miss.size();
-
+        
         BlobFilter filter = new BlobFilter();
         Collection seen = filter.filterMovingBlobs(blobs);
+        System.out.println(seen.size() + " : " + blobs.size());
         retain.retainAll(seen);
         miss.retainAll(seen);
 
+        
         float accuracy = (float)retain.size() / (float)retainCount;
 //        if(accuracy > 0) System.out.println("NON ZERO accuracy");
         if(retain.size()==0 && retainCount == 0) accuracy = 1;
         float missAcc = 1-((float)miss.size() / (float)missCount);
 //        if(missAcc > 0) System.out.println("NON ZERO mssAcc");
         if(miss.size()==0 && missCount == 0) missAcc = 1;
-        float score = accuracy;// * missAcc;
-        return score;
+        
+        
+        
+        float score = accuracy * missAcc;
+        return new float[] {score,accuracy,missAcc};
     }
 }

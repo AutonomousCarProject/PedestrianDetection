@@ -6,7 +6,7 @@
 package com.looi.looi.gui_essentials;
 
 import java.awt.Color;
-import java.awt.Font;
+import com.looi.looi.gui_essentials.Font;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 
@@ -20,53 +20,134 @@ public abstract class AstheticButton extends Button
     public static final int 
             DEFAULT_BUTTON_PRESS_SHADOW = 65,
             DEFAULT_RIGHT_SHADOW = 70,
-            DEFAULT_BOTTOM_SHADOW = 45;
+            DEFAULT_BOTTOM_SHADOW = 45,
+            DEFAULT_HOVER_LIGHT_UP = 40;
     public static final double DEFAULT_DEPTH = 6;
-    public static final Color DEFAULT_TEXT_COLOR = Color.BLACK;
+    public static final Color 
+            DEFAULT_TEXT_COLOR = Color.BLACK,
+            DEFAULT_BOTTOM_COLOR = Color.DARK_GRAY,
+            DEFAULT_RIGHT_COLOR = Color.LIGHT_GRAY;
     
     
-    private Color bottomColor,topColor,rightColor,leftColor,textColor,textColorPressed;
+    
+    private Color bottomColor,topColor,rightColor,leftColor,textColor,textColorPressed,bottomColorLightUp,topColorLightUp,rightColorLightUp,textColorLightUp;
     private Font font;
     private String text;
-    private int buttonPressShadow;
+    private int buttonPressShadow,bottomShadow,rightShadow,hoverLightUp;
     private boolean isPressed = false,justPressed = false,justReleased = false,lastMouseClickValid = false;
     private double depth;
     private Background pressedBackground;
-    public AstheticButton(double x, double y, double width, double height, String text, Font font, Color textColor, Background background, Color bottomColor, Color rightColor, int buttonPressShadow, double depth) 
+    public AstheticButton(double x, double y, double width, double height, String text, Background background) 
     {
         super(x,y,width,height,background);
-        this.textColor = textColor;
-        this.buttonPressShadow = buttonPressShadow;
-        this.depth = depth;
-        this.font = font;
-        this.text = text;
-        this.bottomColor = bottomColor;
-        this.rightColor = rightColor;
-        topColor = applyShadow(bottomColor,buttonPressShadow);
-        leftColor = applyShadow(rightColor,buttonPressShadow);
-        textColorPressed = applyShadow(textColor,buttonPressShadow);
+        
+        setTextColor(DEFAULT_TEXT_COLOR);
+        
         if(background.ofColor())
         {
-            pressedBackground = new Background(applyShadow(background.getColor(),buttonPressShadow));
+            setRightShadow(DEFAULT_RIGHT_SHADOW);
+            setBottomShadow(DEFAULT_BOTTOM_SHADOW);
         }
         else
         {
-            pressedBackground = background;
+            setBottomColor(DEFAULT_BOTTOM_COLOR);
+            setRightColor(DEFAULT_RIGHT_COLOR);
         }
+        setButtonPressShadow(DEFAULT_BUTTON_PRESS_SHADOW);
+        setDepth(DEFAULT_DEPTH);
+        setFont(DEFAULT_FONT);
+        setText(text);
+        setTextColorPressed(applyShadow(textColor,buttonPressShadow));
+        if(background.ofColor())
+        {
+            setPressedBackground(new Background(applyShadow(background.getColor(),buttonPressShadow)));
+        }
+        else
+        {
+            setPressedBackground(background);
+        }
+        setHoverLightUp(DEFAULT_HOVER_LIGHT_UP);
     }
-    public AstheticButton(double x, double y, double width, double height, String text, Image image, Color bottomColor, Color rightColor)
+    //public Asthetic
+    
+    public void setBottomColor(Color c){bottomColor = c;}
+    public void setTopColor(Color c){topColor = c;}
+    public void setLeftColor(Color c){leftColor = c;}
+    public void setRightColor(Color c){rightColor = c;}
+    
+    
+    public void setTextColor(Color c){textColor = c;}
+    public void setTextColorPressed(Color c){textColorPressed = c;}
+    public Color getBottomColor(){return bottomColor;}
+    public Color getTopColor(){return topColor;}
+    public Color getRightColor(){return rightColor;}
+    public Color getLeftColor(){return leftColor;}
+    public Color getTextColor(){return textColor;}
+    public Color getTextColorPressed(){return textColorPressed;}
+    
+    public void setFont(Font f){font = f;}
+    public void setText(String s){text = s;}
+    public void setDepth(double d){depth = d;}
+    public void setPressedBackground(Background b){pressedBackground = b;}
+    public Font getFont(){return font;}
+    public String getText(){return text;}
+    public double getDepth(){return depth;}
+    public Background getPressedBackground(){return pressedBackground;}
+    public int getHoverLightUp(){return hoverLightUp;}
+    public void setHoverLightUp(int i)
     {
-        this(x,y,width,height,text,DEFAULT_FONT,DEFAULT_TEXT_COLOR,new Background(image),bottomColor,rightColor,DEFAULT_BUTTON_PRESS_SHADOW,DEFAULT_DEPTH);
+        hoverLightUp = i;
+        if(getBackground().ofColor())
+        {
+            topColorLightUp = applyLight(getBackground().getColor(),hoverLightUp);
+        }
+        else
+        {
+            topColorLightUp = Color.BLACK;
+        }
+        rightColorLightUp = applyLight(rightColor,hoverLightUp);
+        bottomColorLightUp = applyLight(bottomColor,hoverLightUp);
+        textColorLightUp = applyLight(textColor,hoverLightUp);
     }
-    public AstheticButton(double x, double y, double width, double height, String text, Color frontColor)
+    
+    public void setBottomShadow(int i)
     {
-        this(x,y,width,height,text,DEFAULT_FONT,DEFAULT_TEXT_COLOR,new Background(frontColor),applyShadow(frontColor,DEFAULT_BOTTOM_SHADOW),applyShadow(frontColor,DEFAULT_RIGHT_SHADOW),DEFAULT_BUTTON_PRESS_SHADOW,DEFAULT_DEPTH);
+        bottomShadow = i;
+        if(getBackground().ofColor())
+            bottomColor = applyShadow(getBackground().getColor(),bottomShadow);
     }
-    public static Color applyShadow(Color beforeShadow, int shadow)
+    public void setRightShadow(int i)
+    {
+        rightShadow = i;
+        if(getBackground().ofColor())
+            rightColor = applyShadow(getBackground().getColor(),rightShadow);
+    }
+    
+    public int getButtonPressShadow(){return buttonPressShadow;}
+    public void setButtonPressShadow(int d)
+    {
+        buttonPressShadow = d;
+        topColor = applyShadow(bottomColor,buttonPressShadow);
+        leftColor = applyShadow(rightColor,buttonPressShadow);
+    }
+    protected Color applyShadow(Color beforeShadow, int shadow)
     {
         int r = beforeShadow.getRed() - shadow;
         int g = beforeShadow.getGreen() - shadow;
         int b = beforeShadow.getBlue() - shadow;
+        if(r > 255)r = 255;
+        if(g > 255)g = 255;
+        if(b > 255)b = 255;
+        if(r < 0)r = 0;
+        if(g < 0)g = 0;
+        if(b < 0)b = 0;
+        return new Color(r,g,b);
+    }
+    protected Color applyLight(Color beforeShadow, int shadow)
+    {
+        int r = beforeShadow.getRed() + shadow;
+        int g = beforeShadow.getGreen() + shadow;
+        int b = beforeShadow.getBlue() + shadow;
         if(r > 255)r = 255;
         if(g > 255)g = 255;
         if(b > 255)b = 255;
@@ -136,24 +217,55 @@ public abstract class AstheticButton extends Button
         setFont(font);
         if(!isPressed())
             {
-                setColor(rightColor);
+                if(touchingMouse())
+                {
+                    setColor(rightColorLightUp);
+                }
+                else
+                {
+                    setColor(rightColor);
+                }
+                
                 fillRect(getX(),getY(),getWidth(),getHeight());
-                setColor(bottomColor);
+                if(touchingMouse())
+                {
+                    setColor(bottomColorLightUp);
+                }
+                else
+                {
+                    setColor(bottomColor);
+                }
                 double[] xes = {getX(),getX()+getWidth()-depth,getX()+getWidth(),getX()};
                 double[] ys = {getY()+getHeight()-depth,getY()+getHeight()-depth,getY()+getHeight(),getY()+getHeight()};
                 fillPolygon(xes,ys);
                 
                 if(getBackground().ofColor())
                 {
-                    setColor(getBackground().getColor());
+                    if(touchingMouse())
+                    {
+                        setColor(topColorLightUp);
+                    }
+                    else
+                    {
+                        setColor(getBackground().getColor());
+                    }
+                    
                     fillRect(getX(),getY(),getWidth()-depth,getHeight()-depth);
                 }
                 else
                 {
                     drawImage(getBackground().getImage(),getX(),getY(),getWidth()-depth,getHeight()-depth);
                 }
+                if(touchingMouse())
+                {
+                    setColor(textColorLightUp);
+                }
+                else
+                {
+                    setColor(textColor);
+                }
                 
-                setColor(textColor);
+                super.setFont(getFont());
                 drawString(text,getX(),getY()+(getHeight()-depth+font.getSize())/2.0);
             }
         else
@@ -176,13 +288,11 @@ public abstract class AstheticButton extends Button
                 }
 
                 setColor(textColorPressed);
+                super.setFont(getFont());
                 drawString(text,getX()+depth,getY()+(getHeight()-depth/2.0+font.getSize())/2.0+depth);
             }
     }
-    public String getText()
-    {
-        return text;
-    }
+    
     public boolean isPressed()
     {
         return isPressed;

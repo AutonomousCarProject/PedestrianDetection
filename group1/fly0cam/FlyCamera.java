@@ -9,7 +9,7 @@ public class FlyCamera {
 
 
 //  private final String fiName = "group1/fly0cam/FlyCapped.By8";  // --non IDE
-    private final String fiName = "src/group1/fly0cam/FlyCapped.By8"; // -- IDE
+    private final String fiName = "src/group1/fly0cam/BlueShirt.By8"; // -- IDE
 //  private final String fiName = "src/group1/fly0cam/.By8";
 //  private final String fiName = "src/group1/fly0cam/Mix_0_0_0.By8"; // -- IDE
 

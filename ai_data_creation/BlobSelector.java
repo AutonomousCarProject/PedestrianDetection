@@ -12,6 +12,7 @@ import com.looi.looi.gui_essentials.AstheticButton;
 import com.looi.looi.gui_essentials.Background;
 import com.looi.looi.gui_essentials.Window;
 import com.looi.looi.gui_essentials.Window.DecorationBar;
+import group3.MovingBlob;
 import group5.IImageBoxDrawer;
 import group5.IImageBoxDrawer.Rectangle;
 import java.awt.Color;
@@ -39,14 +40,15 @@ public class BlobSelector extends LooiObject
     public static final Color DEFAULT_LASSO_COLOR = new Color(0,255,255,135);
     public static final double DEFAULT_NEW_LINE_THICKNESS_RATIO = 2;
     public static final String DEFAULT_FILE_DOCUMENT_NAME = "files.txt";
+    
     private IImageBoxDrawer ibd;
     private Point lassoStart;
     private Point lassoEnd;
     private Point[] lassoSelection;
     private List<Rectangle> selectedRectangles;
-    private Color hoverColor;
-    private Color selectedColor;
-    private Color lassoColor;
+    private Color hoverColor = DEFAULT_HOVER_COLOR;
+    private Color selectedColor = DEFAULT_SELECTION_COLOR;
+    private Color lassoColor = DEFAULT_LASSO_COLOR;
     private Color originalRectangleColor;
     private int originalLineThickness;
     private int newLineThickness;
@@ -58,19 +60,16 @@ public class BlobSelector extends LooiObject
     private String fileDocumentName;
     private Control control;
     
-    public BlobSelector(IImageBoxDrawer ibd, Color selectedColor, Color hoverColor, Color lassoColor, Color originalRectangleColor, int originalLineThickness, int newLineThickness, String fileDocumentName, Control control)
+    public BlobSelector(IImageBoxDrawer ibd, Control control, Window attachedWindow)
     {
         this.control = control;
         this.ibd = ibd;
         setLayer(-9999);
-        this.hoverColor = hoverColor;
-        this.selectedColor = selectedColor;
-        this.lassoColor = lassoColor;
-        this.originalRectangleColor = originalRectangleColor;
-        this.originalLineThickness = originalLineThickness;
-        this.newLineThickness = newLineThickness;
-        activateWindow = makeActivateWindowButton();
-        window = makeWindow();
+        this.originalRectangleColor = ibd.getRectangleColor();
+        this.originalLineThickness = ibd.getLineThickness();
+        this.newLineThickness = (int)(originalLineThickness * DEFAULT_NEW_LINE_THICKNESS_RATIO);
+        //activateWindow = makeActivateWindowButton();
+        window = attachedWindow;
         
         fileWriter = makeFileWriterButton();
         play = makeUnpauseButton();
@@ -80,31 +79,20 @@ public class BlobSelector extends LooiObject
         window.add(fileWriter);
         window.add(play);
         window.add(pause);
-        this.fileDocumentName = fileDocumentName;
+        this.fileDocumentName = DEFAULT_FILE_DOCUMENT_NAME;
     }
-    public BlobSelector(IImageBoxDrawer ibd, Color originalRectangleColor, int originalLineThickness, String fileDocumentName, Control control)
-    {
-        this(ibd,DEFAULT_SELECTION_COLOR,DEFAULT_HOVER_COLOR,DEFAULT_LASSO_COLOR, originalRectangleColor,originalLineThickness,(int)(originalLineThickness * DEFAULT_NEW_LINE_THICKNESS_RATIO),fileDocumentName,control);
-    }
-    public BlobSelector(IImageBoxDrawer ibd, String fileDocumentName, Control control)
-    {
-        this(ibd,DEFAULT_SELECTION_COLOR,DEFAULT_HOVER_COLOR,DEFAULT_LASSO_COLOR, ibd.getRectangleColor(),ibd.getLineThickness(),(int)(ibd.getLineThickness() * DEFAULT_NEW_LINE_THICKNESS_RATIO),fileDocumentName,control);
-    }
-    public BlobSelector(IImageBoxDrawer ibd, Control control)
-    {
-        this(ibd,DEFAULT_FILE_DOCUMENT_NAME,control);
-    }
+    
     protected Window makeWindow()
     {
         Window w = new Window(100,100,600,600,Background.WHITE_BACKGROUND);
         DecorationBar d;
-        w.add(d = w.new DecorationBar(Background.LIGHT_GRAY_BACKGROUND)); 
+        w.add(d = w.new DecorationBar()); 
         d.add(w.new ExitButton()); 
         return w;
     }
     protected AstheticButton makeActivateWindowButton()
     {
-        return new AstheticButton(0,0,100,50,"Open Window",new Color(150,255,150)) {
+        return new AstheticButton(0,0,100,50,"Open Window",new Background(new Color(150,255,150))) {
             @Override
             protected void action() 
             {
@@ -115,7 +103,7 @@ public class BlobSelector extends LooiObject
     }
     protected AstheticButton makeFileWriterButton()
     {
-        return new AstheticButton(10,70,100,50,"Save File",new Color(150,255,150)) 
+        return new AstheticButton(10,70,100,50,"Save File",new Background(new Color(150,255,150))) 
         {
             @Override
             protected void action() 
@@ -130,7 +118,7 @@ public class BlobSelector extends LooiObject
     }
     protected AstheticButton makePauseButton()
     {
-        return new AstheticButton(10,120,100,50,"      ||",new Color(150,255,150)) 
+        return new AstheticButton(10,120,100,50,"      ||",new Background(new Color(150,255,150))) 
         {
             @Override
             protected void action() 
@@ -142,7 +130,7 @@ public class BlobSelector extends LooiObject
     }
     protected AstheticButton makeUnpauseButton()
     {
-        return new AstheticButton(10,170,100,50,"       >",new Color(150,255,150)) 
+        return new AstheticButton(10,170,100,50,"       >",new Background(new Color(150,255,150))) 
         {
             @Override
             protected void action() 
@@ -159,7 +147,7 @@ public class BlobSelector extends LooiObject
         String name = generateFileName();
         FileOutputStream fos = new FileOutputStream(name);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
-        oos.writeObject(control.getUnifiedBlobs()); 
+        oos.writeObject(control.getMovingBlobs()); 
         System.out.println("Serialization size: " + control.getMovingBlobs().size());
         
         ArrayList<String> existingLines = new ArrayList<>();
@@ -231,11 +219,11 @@ public class BlobSelector extends LooiObject
         {
             if(e.getButton() == MouseEvent.BUTTON1)
             {
-                selectOrDeselectCertainRectangles((l,r) -> {l.add(r);});
+                selectOrDeselectCertainRectangles("add");
             }
             if(e.getButton() == MouseEvent.BUTTON3)
             {
-                selectOrDeselectCertainRectangles((l,r) -> {l.remove(r);});
+                selectOrDeselectCertainRectangles("remove"); 
             }
             lassoStart = null;
             lassoEnd = null;
@@ -268,19 +256,35 @@ public class BlobSelector extends LooiObject
             
         }
     }
-    public void selectOrDeselectCertainRectangles(InputAction<List<Rectangle>, Rectangle> action)
+    public void selectOrDeselectCertainRectangles(String action)
     {
         if(this.selectedRectangles == null)
         {
             this.selectedRectangles = new ArrayList<>();
         }
-        ArrayList<Rectangle> selectedRectangles = findLassoedRectangles();
-        for(Rectangle r : selectedRectangles)
+        ArrayList<Rectangle> lassoedRects = findLassoedRectangles();
+        ArrayList<MovingBlob> lassoedBlobs = new ArrayList<>();
+        for(Rectangle r : lassoedRects)
+        {
+            lassoedBlobs.add(r.getMovingBlob());
+        }
+        for(MovingBlob b : lassoedBlobs)
         {
             //this.selectedRectangles.add(r);
-            action.act(this.selectedRectangles,r);
+            if(action.equals("add"))
+            {
+                //r.setColor(selectedColor);
+                //r.setThickness(newLineThickness);
+                b.setAsPedestrian(true); 
+            }
+            if(action.equals("remove"))
+            {
+                //r.setColor(originalRectangleColor); 
+                //r.setThickness(originalLineThickness);
+                b.setAsPedestrian(false);
+            }
         }
-        for(Rectangle r : ibd.getRectangles())
+        /*for(Rectangle r : ibd.getRectangles())
         {
             r.setColor(originalRectangleColor); 
             r.setThickness(originalLineThickness);
@@ -292,7 +296,8 @@ public class BlobSelector extends LooiObject
             r.setColor(selectedColor);
             r.setThickness(newLineThickness);
             r.getMovingBlob().setAsPedestrian(true); 
-        }
+        }*/
+        
     }
     public interface InputAction<E,J>
     {

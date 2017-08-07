@@ -5,8 +5,8 @@
  */
 package com.looi.looi.gui_essentials;
 
+import com.looi.looi.MiscellaneousMethods;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
@@ -25,16 +25,19 @@ public class TextBox extends Rectangle
     public static final double DEFAULT_VERTICAL_MARGIN = 5;
     public static final double DEFAULT_LINE_SPACING = 3;
     public static final Color DEFAULT_DEFAULT_TEXT_COLOR = Color.LIGHT_GRAY;
+    public static final char[] DEFAULT_VALID_CHARACTERS = {' ','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','.',',','<','>','/','?',':',';','\"','\'','{','}','[',']','|','\\','-','_','+','=','1','2','3','4','5','6','7','8','9','0','`','~','!','@','#','$','%','^','&','*','(',')'};
+    public static final Background DEFAULT_BACKGROUND = Background.WHITE_BACKGROUND;
+    public static final Font DEFAULT_FONT = Font._16_PT_PLAIN;
     
     private boolean editable;
     private String defaultText;
     private String text;
-    private Font font;
-    private Color textColor;
-    private double verticalMargin;
-    private double horizontalMargin;
-    private double lineSpacing;
-    private double spamDelay;
+    private Font font = DEFAULT_FONT;
+    private Color textColor = DEFAULT_TEXT_COLOR;
+    private double verticalMargin = DEFAULT_VERTICAL_MARGIN;
+    private double horizontalMargin = DEFAULT_HORIZONTAL_MARGIN;
+    private double lineSpacing = DEFAULT_LINE_SPACING;
+    private double spamDelay = DEFAULT_SPAM_DELAY;
     private double spamTimer = 0;
     private int currentKey;
     
@@ -45,46 +48,41 @@ public class TextBox extends Rectangle
     private int cursorIndex = 0;
     private boolean selected = false;
     private Cursor cursor;
-    private double cursorWidth;
+    private double cursorWidth = DEFAULT_CURSOR_WIDTH;
     private boolean lastMouseClickValid = false;
     
     private Graphics graphics;
-    private Color defaultTextColor;
+    private Color defaultTextColor = DEFAULT_DEFAULT_TEXT_COLOR;
     private boolean resetDisplayRequired = false;
     
     private int[] lowercaseCharacterWidthsAToZ = new int[26];
     private int[] uppercaseCharacterWidthsAToZ = new int[26];
     private int spaceCharacterWidth;
+    private char[] validCharacters = DEFAULT_VALID_CHARACTERS;
     
-    public TextBox(double x, double y, double width, double height, Background background, String text, Font font, boolean editable, Color textColor, double horizontalMargin, double verticalMargin, double lineSpacing, double cursorWidth, double spamDelay, Color defaultTextColor)
+    public TextBox(double x, double y, double width, double height, String text, boolean editable)
     {
-        super(x,y,width,height,background);
+        super(x,y,width,height,DEFAULT_BACKGROUND);
         setDefaultText(text);
         setEditable(editable);
-        setTextColor(textColor);
-        setFont(font);
         setText(text);
-        setHorizontalMargin(horizontalMargin);
-        setVerticalMargin(verticalMargin);
-        setLineSpacing(lineSpacing);
-        setCursorWidth(cursorWidth);
-        setSpamDelay(spamDelay);
-        setDefaultTextColor(defaultTextColor);
         cursor = newCursor();
         cursor.setLayer(getLayer() - 1);
+        add(cursor);
         cursor.deactivate();
     }
-    public TextBox(double x, double y, double width, double height, Background background, String text, Font font, boolean editable, Color textColor, double horizontalMargin, double verticalMargin, double lineSpacing, double cursorWidth, double spamDelay)
+    
+    public void activate(Object... activationInfo)
     {
-        this(x, y, width, height, background, text, font, editable, textColor, horizontalMargin, verticalMargin, lineSpacing, cursorWidth, spamDelay, DEFAULT_DEFAULT_TEXT_COLOR);
+        super.activate(activationInfo);
+        if(!isSelected())
+        {
+            cursor.deactivate(activationInfo);
+        }
     }
-    public TextBox(double x, double y, double width, double height, Background background, String text, Font font, boolean editable, Color textColor, double horizontalMargin, double verticalMargin, double lineSpacing)
+    public void deactivate(Object... activationInfo)
     {
-        this(x,y,width,height,background,text,font,editable,textColor,horizontalMargin,verticalMargin,lineSpacing,DEFAULT_CURSOR_WIDTH,DEFAULT_SPAM_DELAY);
-    }
-    public TextBox(double x, double y, double width, double height, Background background, String text, Font font, boolean editable)
-    {
-        this(x,y,width,height,background,text,font,editable,DEFAULT_TEXT_COLOR,DEFAULT_HORIZONTAL_MARGIN,DEFAULT_VERTICAL_MARGIN,DEFAULT_LINE_SPACING,DEFAULT_CURSOR_WIDTH,DEFAULT_SPAM_DELAY);
+        super.deactivate(activationInfo);
     }
     public int getCursorIndex()
     {
@@ -203,7 +201,7 @@ public class TextBox extends Rectangle
                     restOfText.insert(0,nextWord);
                 }
             }
-
+            
         }
         lines.add(row);//dont forget to add the last row, as rows are only added when stuff goes over the line
     }
@@ -278,9 +276,10 @@ public class TextBox extends Rectangle
     public double getSpamDelay(){return spamDelay;}
     public Color getDefaultTextColor(){return defaultTextColor;}
     public void setDefaultTextColor(Color c){defaultTextColor = c;}
-    
-    
-    
+    public char[] getValidCharacters(){return validCharacters;}
+    public void setValidCharacters(char[] validCharacters){this.validCharacters = validCharacters;}
+    public boolean isSelected(){return selected;}
+    public Cursor getCursor(){return cursor;}
     protected void savePaintInformation()
     {
         
@@ -427,7 +426,7 @@ public class TextBox extends Rectangle
                 cursorIndex = getText().length();
         }
         
-        if(e.getKeyChar() != Character.MAX_VALUE)
+        if(contains(validCharacters,e.getKeyChar()) || e.getKeyCode() == KeyEvent.VK_BACK_SPACE)
         {
             type(e);
         }
@@ -456,10 +455,21 @@ public class TextBox extends Rectangle
             }
         }
         
-        if(e.getKeyChar() != Character.MAX_VALUE && e.getKeyCode() == currentKey && spamTimer >= spamDelay)
+        if((contains(validCharacters,e.getKeyChar()) || e.getKeyCode() == KeyEvent.VK_BACK_SPACE) && e.getKeyCode() == currentKey && spamTimer >= spamDelay)
         {
             type(e);
         }
+    }
+    protected boolean contains(char[] chars, char c)
+    {
+        for(char ch : chars)
+        {
+            if(ch == c)
+            {
+                return true;
+            }
+        }
+        return false;
     }
     protected synchronized void type(KeyEvent e)
     {
@@ -584,11 +594,30 @@ public class TextBox extends Rectangle
         }
         return 0;
     }
+    protected void setPaintBoundary(Rectangle r)
+    {
+        super.setPaintBoundary(r);
+        cursor.setPaintBoundary(r);
+    }
+    
     public class Cursor extends Rectangle
     {
+        public static final int DEFAULT_BLINK_TIME = 30;
+        private int blinkTime = DEFAULT_BLINK_TIME;
+        private int timer = 0;
+        private boolean visible = true;
         public Cursor()
         {
             
+        }
+        protected void looiStep()
+        {
+            timer++;
+            if(timer >= blinkTime)
+            {
+                toggleVisibility();
+                timer = 0;
+            }
         }
         protected void looiPaint()
         {
@@ -604,17 +633,33 @@ public class TextBox extends Rectangle
                     double offsetDueToNotBeingTheFirstLine = getRow() * (getFont().getSize() + getLineSpacing());
                     try
                     {
-                        super.setPosition(TextBox.this.getX() + TextBox.this.getHorizontalMargin() + Cursor.this.getGraphics().getFontMetrics().stringWidth(lines.get(getRow()).substring(0,getIndexInLine()))/getViewOverInternalWidth(),offsetDueToNotBeingTheFirstLine + TextBox.this.getY() + getVerticalMargin());
-                    }
-                    catch(java.lang.IndexOutOfBoundsException e)
-                    {
+                        double futureX = TextBox.this.getX() + TextBox.this.getHorizontalMargin() + Cursor.this.getGraphics().getFontMetrics().stringWidth(lines.get(getRow()).substring(0,getIndexInLine()))/getViewOverInternalWidth();
+                        double futureY = offsetDueToNotBeingTheFirstLine + TextBox.this.getY() + getVerticalMargin();
+                        if(futureX != getX() || futureY != getY())
+                        {
+                            setPosition(futureX,futureY);
+                            setVisible(true);
+                        }
                         
                     }
+                    catch(java.lang.IndexOutOfBoundsException e){}
                 }
-                
             }
+            if(!visible)
+                return;
             super.looiPaint();
-            
+        }
+        public int getBlinkTime(){return blinkTime;}
+        public void setBlinkTime(int i){blinkTime = i;}
+        protected void toggleVisibility()
+        {
+            visible = !visible;
+        }
+        
+        public void setVisible(boolean visible)
+        {
+            this.visible = visible;
+            timer = 0;
         }
         
     }

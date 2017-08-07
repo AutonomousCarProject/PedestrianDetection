@@ -1,5 +1,6 @@
 package com.looi.looi;
 
+import com.looi.looi.utilities.DoubleInputBoolean;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
@@ -61,4 +62,5 @@ public interface MiscellaneousMethods
             Toolkit t = Toolkit.getDefaultToolkit();
             t.beep();
         }
+        
     }

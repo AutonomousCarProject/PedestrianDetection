@@ -5,7 +5,6 @@
  */
 package com.looi.looi.gui_essentials;
 
-import com.looi.looi.LooiObject;
 import java.awt.Color;
 
 /**
@@ -20,8 +19,7 @@ public class Rectangle extends GuiComponent
             DEFAULT_WIDTH = 100,
             DEFAULT_HEIGHT = 100;
     public static final Background
-            DEFAULT_BACKGROUND = new Background(Color.BLACK);
-    
+            DEFAULT_BACKGROUND = Background.BLACK_BACKGROUND;
     
     
     private double width,height;
@@ -34,6 +32,7 @@ public class Rectangle extends GuiComponent
         this.width = width;
         this.height = height;
         this.background = background;
+        
     }
     public Rectangle()
     {
@@ -64,17 +63,28 @@ public class Rectangle extends GuiComponent
     {
         this.background = background;
     }
+    public boolean touchingMouse()
+    {
+        return getInternalMouseX() >= getX() && getInternalMouseX() <= getX() + getWidth() && getInternalMouseY() >= getY() && getInternalMouseY() <= getY() + getHeight();
+    }
     protected void looiPaint()
     {
+        
         if(background.ofColor())
         {
+            //System.out.println(background.getImage());
             setColor(background.getColor());
             fillRect(getX(),getY(),width,height);
+        }
+        else if(background instanceof PatternBackground)
+        {
+            drawImage(((PatternBackground)background).getImage(width,height),getX(),getY(),width,height);
         }
         else
         {
             drawImage(background.getImage(),getX(),getY(),width,height);
         }
     }
+    
 }
 

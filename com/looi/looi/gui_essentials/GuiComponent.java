@@ -55,7 +55,7 @@ public abstract class GuiComponent extends LooiObject
     {
         super.add(g);
         g.setPosition(x+g.getX(),y+g.getY());
-        if(g.getLayer() > getLayer())
+        if(g.getLayer() >= getLayer())
         {
             g.setLayer(getLayer()-1);
         }
@@ -65,7 +65,7 @@ public abstract class GuiComponent extends LooiObject
     public void remove(GuiComponent g)
     {
         super.remove(g);
-        g.setPosition(g.getX() - x,g.getY() - y);
+        //g.setPosition(g.getX() - x,g.getY() - y);
     }
     public void setLayer(double layer)
     {
@@ -76,5 +76,13 @@ public abstract class GuiComponent extends LooiObject
         {
             getComponent(i).setLayer(getComponent(i).getLayer() + difference);
         }
+    }
+    protected void setPaintBoundary(Rectangle r)
+    {
+        super.setPaintBoundary(r);
+    }
+    protected Rectangle getPaintBoundary()
+    {
+        return super.getPaintBoundary();
     }
 }
