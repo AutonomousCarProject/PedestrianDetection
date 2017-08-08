@@ -140,16 +140,16 @@ public class FileImage implements IImage
        
     	IPixel[][] filteredImage = new Pixel[rImage.length][rImage[0].length];
     	
+		short[] reds = new short[windowSize*windowSize];
+		short[] greens = new short[windowSize*windowSize];
+		short[] blues = new short[windowSize*windowSize];
+		
     	for(int i=0; i<filteredImage.length; i++){
     		for(int j=0; j<filteredImage[0].length; j++){
     			if(i>filteredImage.length-windowSize || j>filteredImage[0].length-windowSize){
     				filteredImage[i][j] = new Pixel((short)0, (short)0, (short)0);
     			}
     			else{
-    				short[] reds = new short[windowSize*windowSize];
-    				short[] greens = new short[windowSize*windowSize];
-    				short[] blues = new short[windowSize*windowSize];
-	    			
 	    			
 	    			for(int w=0; w<windowSize; w++){
 	    				for(int q=0; q<windowSize; q++){
