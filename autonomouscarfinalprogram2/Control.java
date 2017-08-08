@@ -185,7 +185,7 @@ public class Control extends LooiObject
                 //System.out.println(simpl);
                 for(int i = 0; i < constantEditors.length; i++)
                 {
-                    constantEditors[i].setText(""+Constant.<Double>getVariable(i+1)); 
+                    constantEditors[i].setText(""+Constant.<Double>getVariable(i+14));
                     System.out.println("");
                 }
                 

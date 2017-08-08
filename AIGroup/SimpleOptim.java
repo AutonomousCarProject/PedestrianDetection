@@ -5,9 +5,13 @@ import com.looi.looi.gui_essentials.TextBox;
 import com.looi.looi.gui_essentials.Window;
 import com.looi.looi.gui_essentials.Window.DecorationBar;
 import global.Constant;
+import global.DefaultConstant;
 import group3.MovingBlob;
 import group4.BlobFilter;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -38,7 +42,7 @@ public class SimpleOptim {
         int count = 0;
         for (int i = 1; i <= threshLocSize; i++) {
             if (((threshLoc >> i) & 1) == 1) {
-                float threshold = Constant.getVariable(i).floatValue();
+                float threshold = DefaultConstant.getVariable(i).floatValue();
                 thresholds[count] = threshold;
                 increment[count] = threshold/incrementRatio;
                 count++;
@@ -66,18 +70,57 @@ public class SimpleOptim {
         }
     }
 
-    public void runCombined
+    public List<String> loadFilenames(){
+        List<String> filenames = new ArrayList<>();
+        try {
+            FileInputStream fis = new FileInputStream("files.txt");
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            String line;
+            double y = 10;
+            while ((line = br.readLine()) != null){
+                filenames.add(line);
+            }
+        }
+        catch(Exception exc){
+            System.out.println("Exception when loading filenames");
+        }
+        return filenames;
+    }
+
+    public void runCombined(){
+        List<String> filenames = loadFilenames();
+        int sum[] = new int[threshNum];
+        int length = filenames.size();
+
+        for(int i =0 ; i < length; i++){
+            System.out.println(filenames.get(i));
+            filename = filenames.get(i);
+            runForce();
+            for(int j = 0; j < threshNum; j++){
+                sum[j] += thresholdsMax[j];
+            }
+        }
+        System.out.println();
+        for(int i = 0; i < threshNum; i++){
+            thresholds[i] = sum[i]/length;
+            setThresholds();
+            System.out.print(thresholds[i]+"\t\t\t");
+        }
+    }
+
 
     public void runForce(){
+        max = 0;
         blobs = Thresholds.getFrame(filename);
         recurseForce(0);
+
         System.out.println("Score: " + max);
         for(int j = 0; j < threshNum; j++){
             thresholds[j] = thresholdsMax[j];
         }
         setThresholds();
     }
-
 
     private boolean recurseForce(int count){
         for(float i = 0; i < increment[count]*incrementRatio*2; i+= increment[count]){
@@ -93,7 +136,7 @@ public class SimpleOptim {
             }
 
             if(count < threshNum-1) {
-                if(recurseForce(count+1)) return true; //break;
+                if(recurseForce(count+1)) return true;
             }
 
         }
