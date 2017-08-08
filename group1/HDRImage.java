@@ -7,6 +7,10 @@ import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.util.Arrays;
 
+import static group1.Pixel.blackMargin;
+import static group1.Pixel.greyMargin;
+import static group1.Pixel.whiteMargin;
+
 /**
  * Image class for HDR images, handles the sequence of four images sent by the camera using HDR
  */
@@ -52,42 +56,55 @@ public class HDRImage implements IImage {
 		flyCam.NextFrame(camBytes);
 		byteConvert();
 
-		for(int i = 0; i < images.length; i++){
-			for(int o = 0; o < images[0].length; o++){
-				//search pixel for first high bit, and use the next eight bits after
-				//will hopefully increase gain dynamically in the image, bringing out hue in desaturated areas
-				int bit = 11;
-				//this is completly unreadable
-				//searches through every bit to see if it's on, then breaks if so
-				while (images[i][o][0] < (1 << bit) && images[i][o][1] < (1 << bit) && images[i][o][2] < (1 << bit) && bit-- > BIT_MIN);
-				//then shifts the color such that the bit found it the highest bit
-				images[i][o][0] = (images[i][o][0] >> (bit - 6)) & 255;
-				images[i][o][1] = (images[i][o][1] >> (bit - 6)) & 255;
-				images[i][o][2] = (images[i][o][2] >> (bit - 6)) & 255;
+		medianFilter();
+
+		//attempt optimized conversion
+		for(int i=0; i<images.length; i++) {
+			for (int j = 0; j < images[0].length; j++) {
+				final int ave = images[i][j][0] + images[i][j][1] + images[i][j][2];
+				final int r = images[i][j][0] * 3;
+				final int g = images[i][j][1] * 3;
+				final int b = images[i][j][2] * 3;
+
+				int rdiff = r - ave;
+				if (rdiff < 0)
+				{
+					rdiff = -rdiff;
+				}
+
+				int gdiff = g - ave;
+				if (gdiff < 0)
+				{
+					gdiff = -gdiff;
+				}
+
+				int bdiff = b - ave;
+				if (bdiff < 0)
+				{
+					bdiff = -bdiff;
+				}
+
+				if (rdiff < greyMargin && gdiff < greyMargin && bdiff < greyMargin)
+				{ // if its not a distinct color
+					if (r < blackMargin && g < blackMargin && b < blackMargin)
+						out[i][j] = new Pixel(4); // black
+					else if (r > whiteMargin && g > whiteMargin && b > whiteMargin)
+						out[i][j] = new Pixel(5); // white
+					else
+						out[i][j] = new Pixel(3);
+				}
+				else if (r > g && r > b)
+					out[i][j] = new Pixel(0);
+				else if (g > r && g > b)
+					out[i][j] = new Pixel(1);
+				else if (b > r && b > g)
+					out[i][j] = new Pixel(2);
+				//uhhhh... red?
+				else out[i][j] = new Pixel(0);
+
 			}
 		}
 
-		for(int i=0; i<images.length; i++){
-			for(int j=0; j<images[0].length; j++){
-				if(i>images.length-MEAN_WINDOW || j>images[0].length-MEAN_WINDOW){
-					//tempHue[i][j] = new Pixel((short)0, (short)0, (short)0);
-					out[i][j] = new Pixel((short)0, (short)0, (short)0);
-				}
-				else{
-					int[] total = new int[3];
-
-					for(int w=0; w < MEAN_WINDOW; w++) {
-						for (int q = 0; q < MEAN_WINDOW; q++) {
-							total[0] += images[i + w][j + q][0];
-							total[1] += images[i + w][j + q][1];
-							total[2] += images[i + w][j + q][2];
-						}
-					}
-
-					out[i][j] = new Pixel((short)(total[0] * (1.0 / (MEAN_WINDOW * MEAN_WINDOW))), (short)(total[1] * (1.0 / (MEAN_WINDOW * MEAN_WINDOW))), (short)(total[2] * (1.0 / (MEAN_WINDOW * MEAN_WINDOW))));
-				}
-			}
-		}
 	}
 
 	@Override
