@@ -63,7 +63,7 @@ public class Pixel implements IPixel
         this.red = red;
         this.green = green;
         this.blue = blue;
-        //simpleConvert();
+        simpleConvert();
     }
 
     public void setRGB(short red, short green, short blue)

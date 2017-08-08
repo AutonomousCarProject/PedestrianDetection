@@ -56,7 +56,7 @@ public class FlyCamera
                                         { HDRCtrl, HDROn } }, "Error writing HDR shutter/gain registers");
     }
 
-    private void SafeWriteRegister(long addr, long val, String err)
+    public void SafeWriteRegister(long addr, long val, String err)
     {
         if (WriteRegister(addr, val) != FC2_ERROR_OK)
         {

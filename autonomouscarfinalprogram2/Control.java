@@ -80,11 +80,11 @@ public class Control extends LooiObject
         else
         {
             //just evenly dispersed for now
-            currentImage = new HDRImage(0, new long[] { 129, 392, 613, 798 }, new long[] { 483, 483, 483, 483 });
-            //currentImage = new Image();
+//            currentImage = new HDRImage(0, new long[] { 129, 392, 613, 798 }, new long[] { 483, 483, 483, 483 });
+            currentImage = new Image();
         }
         boxDrawer = new IImageBoxDrawer();
-        boxDrawer.setUsingBasicColors(false);
+        boxDrawer.setUsingBasicColors(true);
         autoExposure = new AutoExposure(currentImage, 30);
 
         previousFrame = 0;
@@ -197,7 +197,7 @@ public class Control extends LooiObject
 		List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
 		List<MovingBlob> matchedUnifiedBlobs =  movingBlobDetection.getFilteredUnifiedBlobs(funifiedBlobs);
 		List<MovingBlob> fmatchedUnifiedBlobs = blobFilter.filterFilteredUnifiedBlobs(matchedUnifiedBlobs);
-		
+				
 		//boxDrawer.draw2(currentImage, unifiedBlobs, fmovingBlobs);
 		//boxDrawer.draw(currentImage, funifiedBlobs);
 		//boxDrawer.draw2(currentImage, fmovingBlobs, fmatchedUnifiedBlobs);
@@ -225,7 +225,7 @@ public class Control extends LooiObject
 		currentImage.setImage(frameList.get(currentFrame));
 
 		List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
-		List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs();
+		List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
 		List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
 		List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
 		List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
