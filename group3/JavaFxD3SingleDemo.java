@@ -16,7 +16,6 @@ import org.treez.javafxd3.d3.JavaFxD3DemoSuite.DemoMenuButton;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.demo.DemoCase;
 import org.treez.javafxd3.d3.demo.DemoFactory;
-import org.treez.javafxd3.d3.democases.axis.AxisComponent;
 import org.treez.javafxd3.d3.scales.LinearScale;
 
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
@@ -143,120 +142,36 @@ public class JavaFxD3SingleDemo extends Application implements IMovingBlobDetect
 		
 	}
 	
-	private Object[] blobData() {
+	private String blobData() {
 		
 		IImage image = new FileImage();
 		image.setAutoFreq(15);
 		
 		image.readCam();
-				
-		//HashSet<Ex> someEx - new HashSet<>();
-		
-		//HashSet<MovingBlob> movingBlobSet = new HashSet<>(getMovingBlobs());
-		
-		HashSet<MovingBlob> movingBlobSet = new HashSet<>(getMovingBlobs());
-		
-		//System.out.println(movingBlobSet);
-				
-		ArrayList<Float> blobX = new ArrayList<Float>();
-		ArrayList<Float> blobY = new ArrayList<Float>();
-		ArrayList<Float> blobPredictedX = new ArrayList<Float>();
-		ArrayList<Float> blobPredictedY = new ArrayList<Float>();
-		ArrayList<Float> blobVelocityX = new ArrayList<Float>();
-		ArrayList<Float> blobVelocityY = new ArrayList<Float>();
-		ArrayList<Float> blobVelocityChangeX = new ArrayList<Float>();
-		ArrayList<Float> blobVelocityChangeY = new ArrayList<Float>();
-		ArrayList<Float> blobWidth = new ArrayList<Float>();
-		ArrayList<Float> blobHeight = new ArrayList<Float>();
-		ArrayList<Float> blobAge = new ArrayList<Float>();
-		ArrayList<Float> blobAgeOffScreen = new ArrayList<Float>();
-				
-		ArrayList<ArrayList<Float>> blobValues = new ArrayList<ArrayList<Float>>();
 		
 		ArrayList<String> blobStrings = new ArrayList<String>();
 		
         IBlobDetection blobDetect = new BlobDetection();
         IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
-        IMovingBlobReduction blobFilter = new BlobFilter();
-        
-        MovingBlob movingBlob = new MovingBlob();
 
         List<Blob> blobs = blobDetect.getBlobs(image);
         List<MovingBlob> movingBlobs = movingBlobDetect.getMovingBlobs(blobs);
                 
-        //System.out.println(movingBlobs);
-        
-        //System.out.println(movingBlobs.toArray().length);
         
         for(int i = 0; i < movingBlobs.toArray().length; i++) {
-        	//blobX.add(movingBlobs)
-        	//System.out.println(movingBlobs.get(i));
-        	
-        	blobX.add((float)movingBlobs.get(i).x);
-        	blobY.add((float)movingBlobs.get(i).y);
-        	blobPredictedX.add(movingBlobs.get(i).predictedX);
-        	blobPredictedY.add(movingBlobs.get(i).predictedY);
-        	blobVelocityX.add(movingBlobs.get(i).velocityX);
-        	blobVelocityY.add(movingBlobs.get(i).velocityY);
-        	blobVelocityChangeX.add(movingBlobs.get(i).velocityChangeX);
-        	blobVelocityChangeY.add(movingBlobs.get(i).velocityChangeY);
-        	blobWidth.add((float)movingBlobs.get(i).width);
-        	blobHeight.add((float)movingBlobs.get(i).height);
-        	blobAge.add((float)movingBlobs.get(i).age);
-        	blobAgeOffScreen.add((float)movingBlobs.get(i).ageOffScreen);
-        	
-        	//arr = "X"+movingBlobs.get(i).x;
-        	
-        	//System.out.println(arr);
         	
         	String blobString = "\n"+movingBlobs.get(i).x + "," + movingBlobs.get(i).y + "," + movingBlobs.get(i).predictedX + "," + movingBlobs.get(i).predictedY + "," + movingBlobs.get(i).velocityX + "," + movingBlobs.get(i).velocityY + "," + movingBlobs.get(i).velocityChangeX + "," + movingBlobs.get(i).velocityChangeY + "," + movingBlobs.get(i).width + "," + movingBlobs.get(i).height + "," + movingBlobs.get(i).age + "," + movingBlobs.get(i).ageOffScreen;
         	
         	blobStrings.add(blobString);
         	
-        	//System.out.println(blobString);
-        }
-        
-        //System.out.println(Arrays.toString(blobStrings.toArray()));
-              
-        
-		for (Blob blob : blobs)
-        {
-			
-			/*blobX.add(blob.x);
-			blobY.add(blob.y);
-			blobWidth.add(blob.width);
-			blobHeight.add(blob.height);*/
-					
-        }
-		
-		blobValues.add(blobX);
-		blobValues.add(blobY);
-		blobValues.add(blobPredictedX);
-		blobValues.add(blobPredictedY);
-		blobValues.add(blobVelocityX);
-		blobValues.add(blobVelocityY);
-		blobValues.add(blobVelocityChangeX);
-		blobValues.add(blobVelocityChangeY);
-		blobValues.add(blobWidth);
-		blobValues.add(blobHeight);
-		blobValues.add(blobAge);
-		blobValues.add(blobAgeOffScreen);
-		
-		
-		//System.out.println(blobValues);
-		
+        }     
+				
 		String blobString = "X, Y, Predicted X, Predicted Y, Velocity X, Velocity Y, Velocity Change X, Velocity Change Y, Width, Height, Age, Age Off Screen" +
 							blobStrings.toString().substring(1, blobStrings.toString().length()-1);
-		//					movingBlobs.get(0).x + "," + movingBlobs.get(0).y + "," + movingBlobs.get(0).predictedX + "," + movingBlobs.get(0).predictedY + "," + movingBlobs.get(0).velocityX + "," + movingBlobs.get(0).velocityY + ","	+ movingBlobs.get(0).velocityChangeX + ", " + movingBlobs.get(0).velocityChangeY + "," + movingBlobs.get(0).width + "," + movingBlobs.get(0).height + "," + movingBlobs.get(0).age + "," + movingBlobs.get(0).ageOffScreen + "\n";
 				
 		System.out.println(blobString);
-		
-		
-		Object[] blobArray = blobValues.toArray();
-		
-		//System.out.println(Arrays.toString(blobArray));
-				
-		return blobArray;
+								
+		return blobString;
 	}
 	
 	public List<MovingBlob> getMovingBlobs(List<Blob> blobList){return movingBlobs;}
