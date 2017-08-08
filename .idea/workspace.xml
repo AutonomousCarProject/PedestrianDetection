@@ -2,12 +2,66 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b558064f-02d1-4e9d-9a0c-a74f579860ab" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.0244527660795536" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.037934572258201404" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.03828952263709973" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.06093867643022688" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.0959469976802465" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.10437019617001064" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.10510897457333612" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.12455045963944544" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.13770441393563315" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.1478939652730058" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.15286610892953945" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.1979340938058023" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.22482608966859685" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.2934923560674101" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.3354380200210495" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.34076655574411596" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.37597899235456145" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.400085753000333" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.4172627163080782" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.42974438593863895" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.45738716885728414" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.4599555596798506" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.47626629896441364" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.4795208674839966" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.4846218321425392" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.48980759079128655" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.49556683224202236" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.5601868982703871" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.5610960778360035" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.5852358600983751" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.6095979669881003" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.637465511729575" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.6485720887856044" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.6496034098689334" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.6569337535056777" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.6802322789007673" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.6922203874467906" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.7021956136117703" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.7031316009454124" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.7114846273099702" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.723254093382384" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.7710710464219084" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.8158565107283786" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.8279817376421044" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.87313870773702" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.8734837818854043" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.8979369081315397" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.8987874083331838" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.9191127653154328" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.9201954597625748" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.9706282918299316" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.9850047575181766" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_0.9970682333699455" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_data_creation/blob_save_3.008761621464684E-4" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/blob_save_0.9426706187885655" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AIGroup/Thresholds.java" afterPath="$PROJECT_DIR$/AIGroup/Thresholds.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ai_data_creation/BlobSelector.java" afterPath="$PROJECT_DIR$/ai_data_creation/BlobSelector.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/autonomouscarfinalprogram2/Control.java" afterPath="$PROJECT_DIR$/autonomouscarfinalprogram2/Control.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/group3/MovingBlob.java" afterPath="$PROJECT_DIR$/group3/MovingBlob.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/group3/UnifiedBlob.java" afterPath="$PROJECT_DIR$/group3/UnifiedBlob.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/group4/BlobFilter.java" afterPath="$PROJECT_DIR$/group4/BlobFilter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/files.txt" afterPath="$PROJECT_DIR$/files.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/group1/fly0cam/FlyCamera.java" afterPath="$PROJECT_DIR$/group1/fly0cam/FlyCamera.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -23,35 +77,77 @@
     </SUITE>
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="Control.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/autonomouscarfinalprogram2/Control.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="194">
-              <caret line="136" column="177" lean-forward="false" selection-start-line="136" selection-start-column="177" selection-end-line="136" selection-end-column="177" />
+            <state relative-caret-position="214">
+              <caret line="348" column="32" lean-forward="false" selection-start-line="348" selection-start-column="25" selection-end-line="348" selection-end-column="32" />
               <folding>
-                <element signature="e#0#8260#0" expanded="true" />
-                <element signature="imports" expanded="true" />
-                <element signature="e#4042#4043#0" expanded="true" />
-                <element signature="e#4136#4137#0" expanded="true" />
-                <element signature="e#6474#6475#0" expanded="true" />
-                <element signature="e#6509#6510#0" expanded="true" />
-                <element signature="e#7551#7552#0" expanded="true" />
-                <element signature="e#7577#7578#0" expanded="true" />
-                <element signature="e#7622#7623#0" expanded="true" />
-                <element signature="e#7655#7656#0" expanded="true" />
-                <element signature="e#7969#7970#0" expanded="true" />
-                <element signature="e#7999#8000#0" expanded="true" />
+                <element signature="e#0#12994#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Thresholds.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="BlobSelector.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ai_data_creation/BlobSelector.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="493">
+              <caret line="146" column="62" lean-forward="false" selection-start-line="146" selection-start-column="62" selection-end-line="146" selection-end-column="62" />
+              <folding>
+                <element signature="e#0#11547#0" expanded="true" />
+                <marker date="1502211891758" expanded="true" signature="10267:10273" ph="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Window.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/com/looi/looi/gui_essentials/Window.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1030">
+              <caret line="24" column="11" lean-forward="false" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Thresholds.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AIGroup/Thresholds.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="308">
-              <caret line="48" column="41" lean-forward="true" selection-start-line="48" selection-start-column="41" selection-end-line="48" selection-end-column="41" />
+            <state relative-caret-position="646">
+              <caret line="50" column="5" lean-forward="false" selection-start-line="50" selection-start-column="5" selection-end-line="50" selection-end-column="5" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AutonomousCarFinalProgram2.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/autonomouscarfinalprogram2/AutonomousCarFinalProgram2.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="153">
+              <caret line="13" column="13" lean-forward="false" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FlyCamera.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/group1/fly0cam/FlyCamera.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="11" column="35" lean-forward="false" selection-start-line="11" selection-start-column="35" selection-end-line="11" selection-end-column="35" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="files.txt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/files.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -60,9 +156,13 @@
       <file leaf-file-name="BlobFilter.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/group4/BlobFilter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="266">
-              <caret line="51" column="63" lean-forward="false" selection-start-line="51" selection-start-column="63" selection-end-line="51" selection-end-column="63" />
-              <folding />
+            <state relative-caret-position="748">
+              <caret line="51" column="53" lean-forward="false" selection-start-line="51" selection-start-column="53" selection-end-line="51" selection-end-column="53" />
+              <folding>
+                <marker date="1502209858275" expanded="true" signature="1547:1882" ph="{...}" />
+                <marker date="1502209858275" expanded="true" signature="1952:2097" ph="{...}" />
+                <marker date="1502209858275" expanded="true" signature="2151:2470" ph="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -71,17 +171,7 @@
         <entry file="file://$PROJECT_DIR$/group3/MovingBlob.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="255">
-              <caret line="17" column="84" lean-forward="true" selection-start-line="17" selection-start-column="84" selection-end-line="17" selection-end-column="84" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Blob.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/group2/Blob.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="13" column="20" lean-forward="false" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="20" />
+              <caret line="17" column="84" lean-forward="false" selection-start-line="17" selection-start-column="84" selection-end-line="17" selection-end-column="84" />
               <folding />
             </state>
           </provider>
@@ -92,48 +182,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="102">
               <caret line="10" column="58" lean-forward="false" selection-start-line="10" selection-start-column="58" selection-end-line="10" selection-end-column="58" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ObjectInputStream.java" pinned="false" current-in-tab="false">
-        <entry file="jar://C:/Program Files/Java/jdk1.8.0_111/src.zip!/java/io/ObjectInputStream.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="194">
-              <caret line="1352" column="0" lean-forward="false" selection-start-line="1352" selection-start-column="0" selection-end-line="1352" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ObjectStreamClass.java" pinned="false" current-in-tab="false">
-        <entry file="jar://C:/Program Files/Java/jdk1.8.0_111/src.zip!/java/io/ObjectStreamClass.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="202">
-              <caret line="149" column="0" lean-forward="false" selection-start-line="149" selection-start-column="0" selection-end-line="149" selection-end-column="0" />
-              <folding>
-                <element signature="e#5190#5191#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Image.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/group1/Image.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="37" column="8" lean-forward="false" selection-start-line="37" selection-start-column="8" selection-end-line="37" selection-end-column="8" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FileImage.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/group1/FileImage.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="287">
-              <caret line="45" column="0" lean-forward="true" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -153,6 +201,9 @@
       <find>exitbutton</find>
       <find>gety</find>
       <find>system.out</find>
+      <find>datacreation</find>
+      <find>pause</find>
+      <find>fmoving</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -176,15 +227,17 @@
         <option value="$PROJECT_DIR$/com/looi/looi/gui_essentials/ScrollBox.java" />
         <option value="$PROJECT_DIR$/global/Constant.java" />
         <option value="$PROJECT_DIR$/autonomouscarfinalprogram2/ConstantEditor.java" />
-        <option value="$PROJECT_DIR$/group1/fly0cam/FlyCamera.java" />
         <option value="$PROJECT_DIR$/group1/Image.java" />
         <option value="$PROJECT_DIR$/group1/FileImage.java" />
         <option value="$PROJECT_DIR$/group2/Blob.java" />
-        <option value="$PROJECT_DIR$/autonomouscarfinalprogram2/Control.java" />
         <option value="$PROJECT_DIR$/group3/MovingBlob.java" />
         <option value="$PROJECT_DIR$/group3/UnifiedBlob.java" />
         <option value="$PROJECT_DIR$/group4/BlobFilter.java" />
         <option value="$PROJECT_DIR$/AIGroup/Thresholds.java" />
+        <option value="$PROJECT_DIR$/group1/fly0cam/FlyCamera.java" />
+        <option value="$PROJECT_DIR$/autonomouscarfinalprogram2/Control.java" />
+        <option value="$PROJECT_DIR$/ai_data_creation/BlobSelector.java" />
+        <option value="$PROJECT_DIR$/files.txt" />
       </list>
     </option>
   </component>
@@ -215,6 +268,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -232,59 +286,6 @@
               <item name="AutonomousCar" type="462c0819:PsiDirectoryNode" />
               <item name="AIGroup" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="AutonomousCar" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AutonomousCar" type="462c0819:PsiDirectoryNode" />
-              <item name="autonomouscarfinalprogram2" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AutonomousCar" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AutonomousCar" type="462c0819:PsiDirectoryNode" />
-              <item name="looi" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AutonomousCar" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AutonomousCar" type="462c0819:PsiDirectoryNode" />
-              <item name="looi" type="462c0819:PsiDirectoryNode" />
-              <item name="gui_essentials" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AutonomousCar" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AutonomousCar" type="462c0819:PsiDirectoryNode" />
-              <item name="fly2cam" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AutonomousCar" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AutonomousCar" type="462c0819:PsiDirectoryNode" />
-              <item name="global" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AutonomousCar" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AutonomousCar" type="462c0819:PsiDirectoryNode" />
-              <item name="group1" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AutonomousCar" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AutonomousCar" type="462c0819:PsiDirectoryNode" />
-              <item name="group1" type="462c0819:PsiDirectoryNode" />
-              <item name="fly0cam" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AutonomousCar" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AutonomousCar" type="462c0819:PsiDirectoryNode" />
-              <item name="group1" type="462c0819:PsiDirectoryNode" />
-              <item name="FlyCamera" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AutonomousCar" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AutonomousCar" type="462c0819:PsiDirectoryNode" />
-              <item name="group3" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AutonomousCar" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AutonomousCar" type="462c0819:PsiDirectoryNode" />
-              <item name="group4" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -292,7 +293,6 @@
       <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="AndroidView" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -300,6 +300,11 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.excludes" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/group3/MovingBlobDetectionTest.java" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Jonathan\Desktop\AutonomousCar\ai_data_creation" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -443,35 +448,32 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11467000" />
+    <option name="totallyTimeSpent" value="15666000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979852" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32979852" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.123958334" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.11354167" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18020834" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3997879" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -491,10 +493,12 @@
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.123958334" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32979852" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
     </layout>
@@ -514,7 +518,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/com/looi/looi/LooiObject.java</url>
-          <line>484</line>
+          <line>506</line>
           <properties />
         </line-breakpoint>
       </breakpoints>
@@ -523,6 +527,144 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/group1/Image.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="612">
+          <caret line="37" column="8" lean-forward="false" selection-start-line="37" selection-start-column="8" selection-end-line="37" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group1/FileImage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="714">
+          <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_111/src.zip!/java/io/ObjectInputStream.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="22287">
+          <caret line="1352" column="0" lean-forward="false" selection-start-line="1352" selection-start-column="0" selection-end-line="1352" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_111/src.zip!/java/io/ObjectStreamClass.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1683">
+          <caret line="149" column="0" lean-forward="false" selection-start-line="149" selection-start-column="0" selection-end-line="149" selection-end-column="0" />
+          <folding>
+            <element signature="e#5190#5191#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group2/Blob.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="13" column="20" lean-forward="false" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="20" />
+          <folding>
+            <marker date="1502209858275" expanded="false" signature="334:349" ph=" { " />
+            <marker date="1502209858275" expanded="false" signature="381:387" ph=" }" />
+            <marker date="1502209858275" expanded="false" signature="459:474" ph=" { " />
+            <marker date="1502209858275" expanded="false" signature="519:525" ph=" }" />
+            <marker date="1502209858275" expanded="true" signature="610:765" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group3/UnifiedBlob.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="10" column="58" lean-forward="false" selection-start-line="10" selection-start-column="58" selection-end-line="10" selection-end-column="58" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group4/BlobFilter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="748">
+          <caret line="51" column="63" lean-forward="false" selection-start-line="51" selection-start-column="63" selection-end-line="51" selection-end-column="63" />
+          <folding>
+            <marker date="1502209858275" expanded="true" signature="1547:1882" ph="{...}" />
+            <marker date="1502209858275" expanded="true" signature="1952:2097" ph="{...}" />
+            <marker date="1502209858275" expanded="true" signature="2151:2470" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group3/MovingBlob.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="84" lean-forward="false" selection-start-line="17" selection-start-column="84" selection-end-line="17" selection-end-column="84" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TestData/files.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group5/IImageBoxDrawer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="27" column="13" lean-forward="false" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="13" />
+          <folding>
+            <marker date="1502209858275" expanded="true" signature="7796:8500" ph="{...}" />
+            <marker date="1502209858275" expanded="true" signature="8574:10264" ph="{...}" />
+            <marker date="1502209858275" expanded="true" signature="10557:12272" ph="{...}" />
+            <marker date="1502209858275" expanded="true" signature="10760:10902" ph="{...}" />
+            <marker date="1502209858275" expanded="false" signature="10937:10960" ph=" { " />
+            <marker date="1502209858275" expanded="false" signature="10974:10984" ph=" }" />
+            <marker date="1502209858275" expanded="true" signature="11023:11069" ph="{...}" />
+            <marker date="1502209858275" expanded="true" signature="11120:11247" ph="{...}" />
+            <marker date="1502209858275" expanded="false" signature="11281:11304" ph=" { " />
+            <marker date="1502209858275" expanded="false" signature="11321:11331" ph=" }" />
+            <marker date="1502209858275" expanded="false" signature="11379:11402" ph=" { " />
+            <marker date="1502209858275" expanded="false" signature="11429:11439" ph=" }" />
+            <marker date="1502209858275" expanded="false" signature="11471:11494" ph=" { " />
+            <marker date="1502209858275" expanded="false" signature="11507:11517" ph=" }" />
+            <marker date="1502209858275" expanded="false" signature="11555:11578" ph=" { " />
+            <marker date="1502209858275" expanded="false" signature="11593:11603" ph=" }" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ai_data_creation/BlobSelector.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2261">
+          <caret line="161" column="41" lean-forward="false" selection-start-line="161" selection-start-column="41" selection-end-line="161" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#11547#0" expanded="true" />
+            <marker date="1502211891758" expanded="true" signature="10267:10273" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/autonomouscarfinalprogram2/Control.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1785">
+          <caret line="136" column="168" lean-forward="false" selection-start-line="136" selection-start-column="168" selection-end-line="136" selection-end-column="168" />
+          <folding>
+            <element signature="e#0#12994#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AIGroup/Thresholds.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="544">
+          <caret line="53" column="0" lean-forward="true" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/finalprj/autonomouscarfinalprogram2/AutonomousCarFinalProgram2.java" />
     <entry file="file://$PROJECT_DIR$/group1/Dummy.java" />
     <entry file="file://$PROJECT_DIR$/group1/Dummy2.java" />
@@ -535,20 +677,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/group3/MovingBlobDetectionTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="680">
-          <caret line="47" column="82" lean-forward="false" selection-start-line="47" selection-start-column="82" selection-end-line="47" selection-end-column="82" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/group3/MovingBlobDetectionTest.java" />
     <entry file="file://$PROJECT_DIR$/finalprj/autonomouscarfinalprogram2/Control.java" />
     <entry file="file://$PROJECT_DIR$/group2/BlobDetection.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
           <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -576,38 +710,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/group2/BlobDetectionRender.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="253">
-          <caret line="142" column="28" lean-forward="true" selection-start-line="142" selection-start-column="28" selection-end-line="142" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ai_data_creation/BlobSelector.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="101" column="23" lean-forward="false" selection-start-line="101" selection-start-column="23" selection-end-line="101" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/autonomouscarfinalprogram2/DraggingWindow.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="91">
-          <caret line="15" column="13" lean-forward="false" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/com/looi/looi/gui_essentials/Window.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1275">
-          <caret line="16" column="13" lean-forward="false" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/group2/BlobDetectionRender.java" />
+    <entry file="file://$PROJECT_DIR$/autonomouscarfinalprogram2/DraggingWindow.java" />
     <entry file="file://$PROJECT_DIR$/com/looi/looi/gui_essentials/ScrollBox.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
@@ -670,12 +774,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="10098">
           <caret line="688" column="40" lean-forward="false" selection-start-line="688" selection-start-column="39" selection-end-line="688" selection-end-column="40" />
-          <folding>
-            <element signature="e#15194#15195#0" expanded="true" />
-            <element signature="e#15246#15247#0" expanded="true" />
-            <element signature="e#15573#15574#0" expanded="true" />
-            <element signature="e#15614#15615#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -683,14 +782,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="357">
           <caret line="28" column="13" lean-forward="false" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/group1/fly0cam/FlyCamera.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="13" column="67" lean-forward="false" selection-start-line="13" selection-start-column="67" selection-end-line="13" selection-end-column="67" />
           <folding />
         </state>
       </provider>
@@ -721,10 +812,10 @@
     </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_111/src.zip!/java/io/ObjectStreamClass.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="202">
+        <state relative-caret-position="1683">
           <caret line="149" column="0" lean-forward="false" selection-start-line="149" selection-start-column="0" selection-end-line="149" selection-end-column="0" />
           <folding>
-            <element signature="e#5190#5191#0" expanded="true" />
+            <element signature="e#5190#5191#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -732,28 +823,76 @@
     <entry file="file://$PROJECT_DIR$/group2/Blob.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
-          <caret line="13" column="20" lean-forward="false" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="20" />
+          <caret line="14" column="20" lean-forward="false" selection-start-line="14" selection-start-column="20" selection-end-line="14" selection-end-column="20" />
+          <folding>
+            <marker date="1502209858275" expanded="false" signature="334:349" ph=" { " />
+            <marker date="1502209858275" expanded="false" signature="381:387" ph=" }" />
+            <marker date="1502209858275" expanded="false" signature="459:474" ph=" { " />
+            <marker date="1502209858275" expanded="false" signature="519:525" ph=" }" />
+            <marker date="1502209858275" expanded="true" signature="610:765" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group3/MovingBlob.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="84" lean-forward="false" selection-start-line="17" selection-start-column="84" selection-end-line="17" selection-end-column="84" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/autonomouscarfinalprogram2/Control.java">
+    <entry file="file://$PROJECT_DIR$/group4/BlobFilter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="136" column="177" lean-forward="false" selection-start-line="136" selection-start-column="177" selection-end-line="136" selection-end-column="177" />
+        <state relative-caret-position="748">
+          <caret line="51" column="53" lean-forward="false" selection-start-line="51" selection-start-column="53" selection-end-line="51" selection-end-column="53" />
           <folding>
-            <element signature="e#0#8260#0" expanded="true" />
-            <element signature="imports" expanded="true" />
-            <element signature="e#4042#4043#0" expanded="true" />
-            <element signature="e#4136#4137#0" expanded="true" />
-            <element signature="e#6474#6475#0" expanded="true" />
-            <element signature="e#6509#6510#0" expanded="true" />
-            <element signature="e#7551#7552#0" expanded="true" />
-            <element signature="e#7577#7578#0" expanded="true" />
-            <element signature="e#7622#7623#0" expanded="true" />
-            <element signature="e#7655#7656#0" expanded="true" />
-            <element signature="e#7969#7970#0" expanded="true" />
-            <element signature="e#7999#8000#0" expanded="true" />
+            <marker date="1502209858275" expanded="true" signature="1547:1882" ph="{...}" />
+            <marker date="1502209858275" expanded="true" signature="1952:2097" ph="{...}" />
+            <marker date="1502209858275" expanded="true" signature="2151:2470" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AIGroup/Thresholds.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="646">
+          <caret line="50" column="5" lean-forward="false" selection-start-line="50" selection-start-column="5" selection-end-line="50" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/autonomouscarfinalprogram2/AutonomousCarFinalProgram2.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="13" column="13" lean-forward="false" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group1/fly0cam/FlyCamera.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="11" column="35" lean-forward="false" selection-start-line="11" selection-start-column="35" selection-end-line="11" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/com/looi/looi/gui_essentials/Window.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1030">
+          <caret line="24" column="11" lean-forward="false" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ai_data_creation/BlobSelector.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="493">
+          <caret line="146" column="62" lean-forward="false" selection-start-line="146" selection-start-column="62" selection-end-line="146" selection-end-column="62" />
+          <folding>
+            <element signature="e#0#11547#0" expanded="true" />
+            <marker date="1502211891758" expanded="true" signature="10267:10273" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -766,26 +905,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/group3/MovingBlob.java">
+    <entry file="file://$PROJECT_DIR$/autonomouscarfinalprogram2/Control.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="84" lean-forward="true" selection-start-line="17" selection-start-column="84" selection-end-line="17" selection-end-column="84" />
-          <folding />
+        <state relative-caret-position="214">
+          <caret line="348" column="32" lean-forward="false" selection-start-line="348" selection-start-column="25" selection-end-line="348" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#12994#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/group4/BlobFilter.java">
+    <entry file="file://$PROJECT_DIR$/files.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="51" column="63" lean-forward="false" selection-start-line="51" selection-start-column="63" selection-end-line="51" selection-end-column="63" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AIGroup/Thresholds.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="48" column="41" lean-forward="true" selection-start-line="48" selection-start-column="41" selection-end-line="48" selection-end-column="41" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>

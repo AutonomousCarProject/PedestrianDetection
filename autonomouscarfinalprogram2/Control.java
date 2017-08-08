@@ -243,7 +243,7 @@ public class Control extends LooiObject
     /**
      * This method runs 60 timer per sec
      */
-    protected void looiStep()
+    public void looiStep()
     {
         
         
