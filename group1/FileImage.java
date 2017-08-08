@@ -118,17 +118,17 @@ public class FileImage implements IImage
         {
             byteConvert();
         }
-        image = convertImage(getGaussianBlurredImage(image, 5));
+        image = convertImage(getMedianFilteredImage(image, 3));
     }
 
-    public IPixel[][] convertImage(Pixel[][] imageToConvert)
+    public IPixel[][] convertImage(IPixel[][] imageToConvert)
     {
         IPixel[][] newImage = new Pixel[imageToConvert.length][imageToConvert[0].length];
         for (int b1 = 0; b1 < imageToConvert.length; b1++)
         {
             for (int b2 = 0; b2 < imageToConvert[0].length; b2++)
             {
-                Pixel p = imageToConvert[b1][b2];
+                Pixel p = (Pixel)imageToConvert[b1][b2];
                 p.simpleConvert();
                 newImage[b1][b2] = p;
             }
@@ -136,9 +136,9 @@ public class FileImage implements IImage
         return newImage;
     }
     
-    public Pixel[][] getMedianFilteredImage(int windowSize){
+    public IPixel[][] getMedianFilteredImage(IPixel[][] rImage, int windowSize){
        
-    	Pixel[][] filteredImage = new Pixel[image.length][image[0].length];
+    	IPixel[][] filteredImage = new Pixel[rImage.length][rImage[0].length];
     	
     	for(int i=0; i<filteredImage.length; i++){
     		for(int j=0; j<filteredImage[0].length; j++){
@@ -153,9 +153,9 @@ public class FileImage implements IImage
 	    			
 	    			for(int w=0; w<windowSize; w++){
 	    				for(int q=0; q<windowSize; q++){
-	    					reds[w*windowSize + q] = image[i+w][j+q].getRed();
-	    					greens[w*windowSize + q] = image[i+w][j+q].getGreen();
-	    					blues[w*windowSize + q] = image[i+w][j+q].getBlue();
+	    					reds[w*windowSize + q] = rImage[i+w][j+q].getRed();
+	    					greens[w*windowSize + q] = rImage[i+w][j+q].getGreen();
+	    					blues[w*windowSize + q] = rImage[i+w][j+q].getBlue();
 	    				}
 	    			}
 	    			
