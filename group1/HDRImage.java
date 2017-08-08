@@ -3,8 +3,6 @@ package group1;
 
 import fly2cam.FlyCamera;
 
-import javax.swing.table.AbstractTableModel;
-import java.awt.*;
 import java.util.Arrays;
 
 import static group1.Pixel.blackMargin;
@@ -28,8 +26,8 @@ public class HDRImage implements IImage {
 
 	private int tile;
 
-	private static final int BIT_MIN = 8;
-	private static final int MEAN_WINDOW = 3;
+	private static final int WHITE_BAL_ITR_COUNT = 6;
+	private static final int PIX_INC = 10;
 
 	public HDRImage(int exposure, int shutter, int gain) {
 		flyCam.Connect(frameRate, exposure, shutter, gain);
@@ -44,6 +42,8 @@ public class HDRImage implements IImage {
 		//tile = flyCam.PixTile();
 		tile = 1;
 		System.out.println("tile: "+tile+" width: "+width+" height: "+height);
+		//auto white balance such that our greys are maximized at at stared
+		autoWhiteBalance();
 	}
 
 	@Override
@@ -117,16 +117,13 @@ public class HDRImage implements IImage {
 		flyCam.Finish();
 	}
 
-	private void byteConvert()
-	{
+	private void byteConvert() {
 
 		int pos = 0;
-		if(tile == 1){
-			for (int i = 0; i < height; i++)
-			{
+		if (tile == 1) {
+			for (int i = 0; i < height; i++) {
 
-				for (int j = 0; j < width; j++)
-				{
+				for (int j = 0; j < width; j++) {
 					images[i][j][0] = (camBytes[pos] & 0xffff) >> 4;
 					images[i][j][1] = (camBytes[pos + 1] & 0xffff) >> 4;
 					images[i][j][2] = (camBytes[pos + 1 + width * 2] & 0xffff) >> 4;
@@ -137,15 +134,12 @@ public class HDRImage implements IImage {
 				pos += width * 2;
 
 			}
-		}
-		else if(tile == 3){
-			for (int i = 0; i < height; i++)
-			{
+		} else if (tile == 3) {
+			for (int i = 0; i < height; i++) {
 
-				for (int j = 0; j < width; j++)
-				{
+				for (int j = 0; j < width; j++) {
 
-					images[i][j][0] = (camBytes[pos +  width * 2] & 0xffff) >> 4;
+					images[i][j][0] = (camBytes[pos + width * 2] & 0xffff) >> 4;
 					images[i][j][1] = (camBytes[pos] & 0xffff) >> 4;
 					images[i][j][2] = (camBytes[pos + 1] & 0xfff) >> 4;
 					pos += 2;
@@ -156,6 +150,72 @@ public class HDRImage implements IImage {
 
 			}
 		}
+	}
+
+	private void autoWhiteBalance() {
+		int redBal = 512;
+		int blueBal = 512;
+		int inc = 256;
+		for(int p = 0; p < WHITE_BAL_ITR_COUNT; p++){
+			int totalSats[] = new int[2];
+			//set white balance to manual, and enable it, first with first inc
+			flyCam.SafeWriteRegister(0x80C, (1 << 25) | redBal - inc | (blueBal << 12), "white balance write failed");
+			//get the image, and averaging saturation
+			flyCam.NextFrame(camBytes);
+			//iterate through most pixels cheaply
+			totalSats[0] = cheapSaturationTotal(camBytes, width, height, PIX_INC);
+			//shift the balance a sizable amount, then get saturation again
+			flyCam.SafeWriteRegister(0x80C, (1 << 25) | redBal + inc | (blueBal << 12), "white balance write failed");
+			flyCam.NextFrame(camBytes);
+			//iterate through most pixels cheaply
+			totalSats[1] = cheapSaturationTotal(camBytes, width, height, PIX_INC);
+			//whichever one is lower, move the white balance there
+			if(totalSats[0] < totalSats[1]) redBal -= inc;
+			else if(totalSats[0] > totalSats[1]) redBal += inc;
+			//or just keep it the same
+			//and halve the increment
+			inc >>= 1;
+		}
+		//and do it again for blueshift
+		inc = 256;
+		for(int p = 0; p < WHITE_BAL_ITR_COUNT; p++){
+			int totalSats[] = new int[2];
+			//set white balance to manual, and enable it, first with first inc
+			flyCam.SafeWriteRegister(0x80C, (1 << 25) | redBal | (blueBal - inc << 12), "white balance write failed");
+			//get the image, and averaging saturation
+			flyCam.NextFrame(camBytes);
+			//iterate through most pixels cheaply
+			totalSats[0] = cheapSaturationTotal(camBytes, width, height, PIX_INC);
+			//shift the balance a sizable amount, then get saturation again
+			flyCam.SafeWriteRegister(0x80C, (1 << 25) | redBal | (blueBal + inc << 12), "white balance write failed");
+			flyCam.NextFrame(camBytes);
+			//iterate through most pixels cheaply
+			totalSats[1] = cheapSaturationTotal(camBytes, width, height, PIX_INC);
+			//whichever one is lower, move the white balance there
+			if(totalSats[0] < totalSats[1]) blueBal -= inc;
+			else if(totalSats[0] > totalSats[1]) blueBal += inc;
+			//or just keep it the same
+			//and halve the increment
+			inc >>= 1;
+		}
+		//do the thing
+		flyCam.SafeWriteRegister(0x80C, (1 << 25) | redBal | (blueBal << 12), "white balance write failed");
+	}
+
+	private static int cheapSaturationTotal(short[] camBytes, int width, int height, int pixInc) {
+		int ret = 0;
+		for (int i = 0; i < height; i+=pixInc)
+		{
+			for (int j = 0; j < width; j+=pixInc)
+			{
+				final int pos = j * 2 + i * width * 4;
+				final int r = (camBytes[pos] & 0xffff) >> 4;
+				final int g = (camBytes[pos + 1] & 0xffff) >> 4;
+				final int b = (camBytes[pos + 1 + width * 2] & 0xffff) >> 4;
+				ret += Math.max(r, Math.max(g, b)) - Math.min(r, Math.min(g, b));
+			}
+		}
+		return ret;
 	}
 
 	/*
