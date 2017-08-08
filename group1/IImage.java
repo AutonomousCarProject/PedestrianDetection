@@ -5,7 +5,7 @@ public interface IImage
     IPixel[][] getImage();
 	void readCam();
 	void finish();
-	void setAutoFreq(int autoFreq);	
-        default void setImage(IPixel[][] image){}
-        default int getFrameNo(){return 0;}
+    default void setImage(IPixel[][] image){}
+    default int getFrameNo(){ return 0;}
+	void setAutoFreq(int autoFreq);
 }

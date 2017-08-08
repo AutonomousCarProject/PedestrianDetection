@@ -10,10 +10,14 @@ public class Image implements IImage
     public int width;
 
     private final int frameRate = 3;
-    private FlyCamera flyCam = new FlyCamera();
+
+    public FlyCamera flyCam = new FlyCamera();
+    //parameters for the coloratiion of the image
     private final float greyRatio = Constant.GREY_RATIO;
     private final int blackRange = Constant.BLACK_RANGE;
     private final int whiteRange = Constant.WHITE_RANGE;
+    private final int lightDark = Constant.LIGHT_DARK_THRESHOLD;
+
 
     private int tile;
     private int autoCount = 0;
@@ -22,8 +26,16 @@ public class Image implements IImage
     // 307200
     // private byte[] camBytes = new byte[2457636];
     private byte[] camBytes;
+    private byte[] tempBytes;
     private IPixel[][] image;
 
+    //default values for image
+    public Image()
+    {
+        this(0, 0, 0);
+    }
+    
+    //exposure, shutter, gain for image properties
     public Image(int exposure, int shutter, int gain)
     {
         flyCam.Connect(frameRate, exposure, shutter, gain);
@@ -33,13 +45,10 @@ public class Image implements IImage
         width = res & 0x0000FFFF;
         
         camBytes = new byte[height * width * 4];
+        tempBytes = new byte[height * width * 4];
         image = new Pixel[height][width];
         tile = flyCam.PixTile();
         System.out.println("tile: "+tile+" width: "+width+" height: "+height);
-    }
-    
-    public Image(){
-    	this(0,0,0);
     }
 
     @Override
@@ -63,6 +72,10 @@ public class Image implements IImage
         flyCam.NextFrame(camBytes);
         // System.out.println(flyCam.errn);
 
+        //downcast to bytes
+        for(int i = 0; i < camBytes.length; i++){
+            tempBytes[i] = (byte)(camBytes[i] >> 8);
+        }
 
         if(autoCount > autoFreq && autoFreq > -1) {
             autoConvertWeighted();
@@ -83,6 +96,7 @@ public class Image implements IImage
         image = i;
     }
 
+    //converts image from bytes to arrays of pixels
     private void byteConvert()
     {
 
@@ -123,6 +137,7 @@ public class Image implements IImage
 
     }
 
+    //skip this method for now
     private void autoConvert()
     {
         int average = 0;    //0-255
@@ -212,6 +227,137 @@ public class Image implements IImage
         int average;    //0-255
         int average2;   //0-765
         int variation = 0;
+        final int divisor = (width * height);
+
+
+        //autoThreshold variable
+        int avg; //0-765
+        int r, b, g;
+        int lesserSum = 0;
+        int greaterSum = 0;
+        int lesserCount = 0;
+        int greaterCount = 0;
+        int lesserMean;
+        int greaterMean;
+
+        int pos = 0;
+        if (tile == 1) {
+            for (int i = 0; i < height; i++) {
+
+                for (int j = 0; j < width; j++) {
+
+                    image[i][j] = new Pixel((short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255), (short) (camBytes[pos + 1 + width * 2] & 255));
+                    pos += 2;
+
+                    r = image[i][j].getRed();
+                    b = image[i][j].getBlue();
+                    g = image[i][j].getGreen();
+
+                    avg = (r + b + g);
+
+                    if (avg < lightDark) {
+
+                        lesserSum += avg;
+                        lesserCount++;
+
+                    } else {
+
+                        greaterSum += avg;
+                        greaterCount++;
+
+                    }
+
+
+                }
+
+                pos += width << 1;
+
+            }
+
+
+        } else if (tile == 3) {
+            for (int i = 0; i < height; i++) {
+
+                for (int j = 0; j < width; j++) {
+
+                    image[i][j] = new Pixel((short) (camBytes[pos + width * 2] & 255), (short) (camBytes[pos] & 255), (short) (camBytes[pos + 1] & 255));
+                    pos += 2;
+
+                    r = image[i][j].getRed();
+                    b = image[i][j].getBlue();
+                    g = image[i][j].getGreen();
+
+                    avg = (r + b + g);
+
+                    if (avg < lightDark) {
+
+                        lesserSum += avg;
+                        lesserCount++;
+
+                    } else {
+
+                        greaterSum += avg;
+                        greaterCount++;
+
+                    }
+
+                }
+
+                pos += width << 1;
+
+            }
+
+
+        }
+
+        lesserMean = lesserSum / lesserCount;
+        greaterMean = greaterSum / greaterCount;
+
+        average2 = (lesserMean + greaterMean) >> 1;
+        average = average2 / 3;
+
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+
+                IPixel temp = image[i][j];
+                int rVar = temp.getRed() - average;
+                if (rVar < 0) {
+                    rVar = -rVar;
+                }
+
+                int gVar = temp.getGreen() - average;
+                if (gVar < 0) {
+                    gVar = -rVar;
+                }
+
+                int bVar = temp.getBlue() - average;
+                if (bVar < 0) {
+                    bVar = -bVar;
+                }
+
+                variation += rVar + gVar + bVar;
+            }
+
+        }
+
+        variation = variation / divisor;
+        Pixel.greyMargin = (int) (variation * greyRatio);
+        Pixel.blackMargin = average2 - blackRange;
+        Pixel.whiteMargin = average2 + whiteRange;
+
+    }
+
+    /*
+    private void autoConvertWeighted2() {
+
+        int average;    //0-255
+        int average2;   //0-765
+        int greatVar = 0;
+        int lessVar = 0;
+        int greatCount = 0;
+        int lessCount = 0;
+        int threshVar = 50;
         final int divisor = (width * height);
 
 
@@ -334,11 +480,16 @@ public class Image implements IImage
         Pixel.whiteMargin = average2 + whiteRange;
 
     }
+
+    */
+
+//gets the current frame number and increases by 1 whenever queried
     
     private int frameNo = 0;
     @Override
-    public int getFrameNo(){
-    	return frameNo++;
+    public int getFrameNo()
+    {
+        return frameNo++;
     }
 
 }

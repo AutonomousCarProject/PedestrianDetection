@@ -58,6 +58,7 @@ public class Thresholds {
             ObjectInputStream ois = new ObjectInputStream(fis);
 
             blobs = (LinkedList<MovingBlob>)ois.readObject();
+            
             ois.close();
         }
         catch(IOException exc){

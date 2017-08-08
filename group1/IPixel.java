@@ -1,8 +1,6 @@
 package group1;
 
-import java.io.Serializable;
-
-public interface IPixel extends Serializable
+public interface IPixel
 {
     // All values between 0 and 255
 	
@@ -19,4 +17,6 @@ public interface IPixel extends Serializable
     short getGreen();
 
     short getBlue();
+    
+    void setRGB(short r, short g, short b);
 }

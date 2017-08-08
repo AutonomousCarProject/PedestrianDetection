@@ -126,9 +126,10 @@ public class SimpleOptim {
         for(float i = 0; i < increment[count]*incrementRatio*2; i+= increment[count]){
             thresholds[count] = i;
             float score = getScore()[0];
-
+            
 
             if(score > max) {
+                System.out.println("max: " + max);
                 max = score;
                 for(int j = 0; j < threshNum; j++){
                     thresholdsMax[j] = thresholds[j];
@@ -153,7 +154,8 @@ public class SimpleOptim {
     }
     public List<MovingBlob> getBlobs()
     {
-        return Thresholds.getFrame(filename);
+        List<MovingBlob> blobs = Thresholds.getFrame(filename);
+        return blobs;
     }
 
     private void iterate(){

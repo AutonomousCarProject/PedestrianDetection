@@ -56,6 +56,7 @@ public class BlobSelector extends LooiObject
     private AstheticButton activateWindow;
     private AstheticButton play;
     private AstheticButton pause;
+    private AstheticButton step;
     private Window window;
     private String fileDocumentName;
     private Control control;
@@ -74,11 +75,13 @@ public class BlobSelector extends LooiObject
         fileWriter = makeFileWriterButton();
         play = makeUnpauseButton();
         pause = makePauseButton();
+        step = makeStepButton();
         
         
         window.add(fileWriter);
         window.add(play);
         window.add(pause);
+        window.add(step);
         this.fileDocumentName = DEFAULT_FILE_DOCUMENT_NAME;
     }
     
@@ -140,6 +143,18 @@ public class BlobSelector extends LooiObject
             }
         };
     }
+    protected AstheticButton makeStepButton() {
+        return new AstheticButton(10, 220, 100, 50, "     Step", new Background(new Color(150, 255, 150)))
+        {
+            @Override
+            protected void action()
+            {
+                control.pauseUnpause();
+                control.looiStep();
+                control.pauseUnpause();
+            }
+        };
+    }
     public void saveFile() throws FileNotFoundException, IOException
     {
         
@@ -147,8 +162,8 @@ public class BlobSelector extends LooiObject
         String name = generateFileName();
         FileOutputStream fos = new FileOutputStream(name);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
-        oos.writeObject(control.getMovingBlobs()); 
-        System.out.println("Serialization size: " + control.getMovingBlobs().size());
+        oos.writeObject(control.getUnifiedBlobs()); 
+        System.out.println("Serialization size: " + control.getUnifiedBlobs().size());
         
         ArrayList<String> existingLines = new ArrayList<>();
         try

@@ -79,7 +79,7 @@ public class Control extends LooiObject
                 "Max Velocity Change X", "Max Velocity Change Y", "Max Width Height Ratio", "Max Width",
                 "Max Height", "Max Scaled Velocity X", "Max Scaled Velocity Y"};
     private ConstantEditor[] constantEditors = new ConstantEditor[text.length];
-    
+    private String fileName = "src/group1/fly0cam/Mix_0_0_0.By8";
     public Control(int frameDelay, boolean useCamera)
     {
         simpleOptim = new SimpleOptim("");
@@ -89,7 +89,7 @@ public class Control extends LooiObject
 
         if(!useCamera)
         {
-            currentImage = new FileImage();
+            currentImage = new FileImage(fileName);
         }
         else
         {
@@ -191,6 +191,24 @@ public class Control extends LooiObject
                 
             }
         });
+        scrollBox.add(new AstheticButton(10,2600,130,100,"Evolve all",new Background(Color.MAGENTA))
+        {
+            public void action()
+            {
+                simpleOptim.runCombined();
+//                Window w = new Window(500,500,300,300,Background.WHITE_BACKGROUND);
+//                DecorationBar d;
+//                w.add(d = w.new DecorationBar());
+//                d.add(w.new ExitButton());
+                //System.out.println(simpl);
+                for(int i = 0; i < constantEditors.length; i++)
+                {
+                    constantEditors[i].setText(""+Constant.<Double>getVariable(i+14));
+                    System.out.println("");
+                }
+                
+            }
+        });
         loadWindow = new Window(0,0,500,500,Background.WHITE_BACKGROUND);
         ScrollBox loadFiles = new ScrollBox(50,75,400,400,Background.LIGHT_GRAY_BACKGROUND);
         loadWindow.add(loadFiles); 
@@ -243,7 +261,12 @@ public class Control extends LooiObject
     /**
      * This method runs 60 timer per sec
      */
+<<<<<<< HEAD
+    
     protected void looiStep()
+=======
+    public void looiStep()
+>>>>>>> 582e030abfd9a0b1ebe87db9f336a234d093883c
     {
         
         
@@ -282,7 +305,7 @@ public class Control extends LooiObject
     	if(currentImage.getFrameNo()==previousFrame){
         	previousFrame = 0;
         	currentImage.finish();
-            currentImage = new FileImage();
+            currentImage = new FileImage(fileName);
         	blobDetection = new BlobDetection();
             movingBlobDetection = new MovingBlobDetection();
             blobFilter = new BlobFilter();
@@ -290,6 +313,7 @@ public class Control extends LooiObject
         }
         
         List<MovingBlob> loaded = simpleOptim.getBlobs();
+        
         if(!getPaused())
         {
             knownBlobs = blobDetection.getBlobs(currentImage);
@@ -301,7 +325,7 @@ public class Control extends LooiObject
             fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
             
             unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
-            //List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
+            //funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
             //boxDrawer.draw2(currentImage,fmovingBlobs,funifiedBlobs);
             
             
@@ -309,11 +333,12 @@ public class Control extends LooiObject
         }
         if(mode.equals(DATA_CREATION_MODE)) 
         {
-            boxDrawer.blobsToRectangles(currentImage,movingBlobs);
+            boxDrawer.blobsToRectangles(currentImage,unifiedBlobs);
         }
         if(mode.equals(AI_MODE))
         {
             boxDrawer.blobsToRectangles(currentImage,loaded);
+            
         }
         
         /*System.out.println(simpleOptim.getBlobs().size());

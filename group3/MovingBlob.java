@@ -139,4 +139,5 @@ public class MovingBlob extends Blob implements Serializable
     {
         return score;
     }
+    public float getDensity(){return -1;}
 }

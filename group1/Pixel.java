@@ -1,5 +1,8 @@
 package group1;
 
+import java.awt.*;
+import java.awt.Image;
+
 //Defines basic implementation for pixel
 public class Pixel implements IPixel
 { // 0-765
@@ -15,9 +18,45 @@ public class Pixel implements IPixel
     private short blue;
 
 
-    static int greyMargin = 145;
-    static int blackMargin = 400;
+    static int greyMargin = 60;
+    static int blackMargin = 300;
     static int whiteMargin = 700; // 0-765
+
+    public Pixel(int color) {
+        this.color = (short)color;
+        switch (this.color){
+            case 0:
+                this.red = 255;
+                this.green = 0;
+                this.blue = 0;
+                break;
+            case 1:
+                this.red = 0;
+                this.green = 255;
+                this.blue = 0;
+                break;
+            case 2:
+                this.red = 0;
+                this.green = 0;
+                this.blue = 255;
+                break;
+            case 3:
+                this.red = 128;
+                this.green = 128;
+                this.blue = 128;
+                break;
+            case 4:
+                this.red = 0;
+                this.green = 0;
+                this.blue = 0;
+                break;
+            case 5:
+                this.red = 255;
+                this.green = 255;
+                this.blue = 255;
+                break;
+        }
+    }
 
     public Pixel(short red, short green, short blue)
     {
@@ -71,7 +110,7 @@ public class Pixel implements IPixel
         return blue;
     }
 
-    private void simpleConvert()
+    public void simpleConvert()
     {
         short ave = (short) (red + green + blue);
         int r = red * 3;
@@ -111,7 +150,8 @@ public class Pixel implements IPixel
             color = 1;
         else if (b > r && b > g) color = 2;
     }
-
+    
+    
     /*
      * public void convert(){ //luminance = sum of rgb luma = (short)(red +
      * green + blue);
@@ -130,4 +170,8 @@ public class Pixel implements IPixel
      * if(gdiff > rdiff && gdiff > bdiff) color = 1; else if(bdiff > rdiff &&
      * bdiff > gdiff) color = 2; }
      */
+    
+    public String toString(){
+    	return this.red + " " + this.green + " " + this.blue;
+    }
 }

@@ -9,7 +9,7 @@ import group2.Blob;
 public class UnifiedBlob extends MovingBlob {
 
 	private static final long serialVersionUID = 314159265;
-
+        private float density;
 
 
 	public UnifiedBlob(Set<MovingBlob> movingBlobs) {
@@ -23,6 +23,9 @@ public class UnifiedBlob extends MovingBlob {
 		float bottom = 0;
 		float left = 1000000;
 		float right = 0;
+		
+		float totalArea = 0;
+		
 		//find averages and other values
 		for(MovingBlob movingBlob: movingBlobs){
 			minAgeOffScreen = Math.min(minAgeOffScreen, movingBlob.ageOffScreen);
@@ -42,9 +45,11 @@ public class UnifiedBlob extends MovingBlob {
 			
 			float blobBottom = movingBlob.y + movingBlob.height;
 			if (blobBottom > bottom) bottom = blobBottom;
+			
+			totalArea += movingBlob.width*movingBlob.height;
 		}
-
-		this.age = maxAge;
+		this.age=0;
+		//this.age = maxAge;
 		this.ageOffScreen = minAgeOffScreen;
 
 
@@ -56,9 +61,13 @@ public class UnifiedBlob extends MovingBlob {
 		this.width = (int)(right-left);
 		this.height = (int)(bottom-top);
 		
+		this.density = 10*totalArea/(this.width*this.height);
+		
 		this.updatePredictedPosition();
 	}
 
 	public UnifiedBlob() {}
-
+        public float getDensity(){
+		return this.density;
+	}
 }

@@ -28,6 +28,8 @@ public class Constant {
 	public static int UNIFY_VELOCITY_LIMIT_Y = 25;
 	public static float VELOCITY_LIMIT_INCREASE_X = 0.75f;
 	public static float VELOCITY_LIMIT_INCREASE_Y = 0.3f;
+        
+            public static int LIGHT_DARK_THRESHOLD = 381;
 
 	/**
 	 * BlobFilter

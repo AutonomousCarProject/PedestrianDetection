@@ -5,14 +5,14 @@ import java.io.Serializable;
 
 public class Blob implements Serializable
 {
+    private static final long serialVersionUID = 3141592;
     public int width, height;
     public int x, y;
     public IPixel color;
     public int id;
 
     public static int currentId = 0;
-
-    public Blob() {}
+    public Blob(){}
     public Blob(int width, int height, int x, int y, IPixel color)
     {
         set(width, height, x, y, color);
@@ -23,6 +23,7 @@ public class Blob implements Serializable
         set(width, height, x, y, color, currentId++);
     }
 
+    //size, coordinates and color of blob
     public void set(int width, int height, int x, int y, IPixel color, int id)
     {
         this.width = width;
