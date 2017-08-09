@@ -14,7 +14,7 @@ public class Constant {
 
 	//constants for color margin calibrations
 	//ratio of absolute average deviation to greyMargin
-    public static float GREY_RATIO = 0.75f;
+    public static float GREY_RATIO = 0.4f;
 
     //how far to set black and white margins from mean
     public static int BLACK_RANGE = 100;

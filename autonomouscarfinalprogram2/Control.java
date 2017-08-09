@@ -24,6 +24,7 @@ import group4.BlobFilter;
 import group5.IImageBoxDrawer;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -84,7 +85,7 @@ public class Control extends LooiObject
             //currentImage = new Image();
         }
         boxDrawer = new IImageBoxDrawer();
-        boxDrawer.setUsingBasicColors(true);
+        boxDrawer.setUsingBasicColors(false);
         autoExposure = new AutoExposure(currentImage, 30);
 
         previousFrame = 0;
@@ -190,20 +191,21 @@ public class Control extends LooiObject
 			currentImage.readCam();
 		}
 
-		List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
-		List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
-		List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
-		List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
-		List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
-		List<MovingBlob> matchedUnifiedBlobs =  movingBlobDetection.getFilteredUnifiedBlobs(funifiedBlobs);
-		List<MovingBlob> fmatchedUnifiedBlobs = blobFilter.filterFilteredUnifiedBlobs(matchedUnifiedBlobs);
+		final List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
+		final List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
+		final List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
+		final List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
+		final List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
+		final List<MovingBlob> matchedUnifiedBlobs =  movingBlobDetection.getFilteredUnifiedBlobs(funifiedBlobs);
+		final List<MovingBlob> fmatchedUnifiedBlobs = blobFilter.filterFilteredUnifiedBlobs(matchedUnifiedBlobs);
 		
 		//boxDrawer.draw2(currentImage, unifiedBlobs, fmovingBlobs);
 		//boxDrawer.draw(currentImage, funifiedBlobs);
 		//boxDrawer.draw2(currentImage, fmovingBlobs, fmatchedUnifiedBlobs);
-		//boxDrawer.draw(currentImage, fmovingBlobs);
-	      boxDrawer.drawRisk(currentImage, fmatchedUnifiedBlobs);
-		//boxDrawer.draw(currentImage, fmatchedUnifiedBlobs);
+		//boxDrawer.draw(currentImage, new LinkedList<>());
+		//boxDrawer.drawRisk(currentImage, fmovingBlobs);
+		//boxDrawer.draw(currentImage, movingBlobs);
+		boxDrawer.draw(currentImage, fmatchedUnifiedBlobs);
 		//for(MovingBlob b: fmovingBlobs) System.out.println(b.velocityChangeX);
 
 		IPixel[][] image = currentImage.getImage();

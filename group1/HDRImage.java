@@ -2,6 +2,7 @@ package group1;
 
 
 import fly2cam.FlyCamera;
+import global.Constant;
 
 import java.util.Arrays;
 
@@ -26,8 +27,20 @@ public class HDRImage implements IImage {
 
 	private int tile;
 
+	private int autoCount = 0;
+	private static int AUTO_FREQ = 15;
+
+	//hehe
+	private static final int windowSize = 3;
+	private int[][][] justOnce;
+	private int[][] set = new int[3][windowSize * windowSize];
+
 	private static final int WHITE_BAL_ITR_COUNT = 6;
 	private static final int PIX_INC = 10;
+
+	private final float greyRatio = Constant.GREY_RATIO;
+	private final int blackRange = Constant.BLACK_RANGE * 3;
+	private final int whiteRange = Constant.WHITE_RANGE * 3;
 
 	public HDRImage(int exposure, int shutter, int gain) {
 		flyCam.Connect(frameRate, exposure, shutter, gain);
@@ -39,76 +52,88 @@ public class HDRImage implements IImage {
 		camBytes = new short[height * width * 4];
 		images = new int[height][width][3];
 		out = new IPixel[height][width];
+		justOnce = new int[images.length][images[0].length][3];
 		//tile = flyCam.PixTile();
 		tile = 1;
-		System.out.println("tile: "+tile+" width: "+width+" height: "+height);
+		System.out.println("tile: " + tile + " width: " + width + " height: " + height);
 		//auto white balance such that our greys are maximized at at stared
 		autoWhiteBalance();
 	}
 
 	@Override
-	public void setAutoFreq(int autoFreq) {}
+	public void setAutoFreq(int autoFreq) {
+	}
 
 	//this is where the HDR happens
 	@Override
 	public void readCam() {
 		//step 1: all the HDR images
 		flyCam.NextFrame(camBytes);
-		byteConvert();
+		if(++autoCount < AUTO_FREQ) byteConvert();
+		else {
+			autoCount = 0;
+			//autoConvert();
+			//autoConvertWeighted();
+			byteConvert();
+		}
 
 		medianFilter();
 
 		//attempt optimized conversion
-		for(int i=0; i<images.length; i++) {
+		for (int i = 0; i < images.length; i++) {
 			for (int j = 0; j < images[0].length; j++) {
+				//final int pos = j * 2 + i * width * 4;
+				//final int r = (camBytes[pos] & 0xffff) >> 4;
+				//final int g = (camBytes[pos + 1] & 0xffff) >> 4;
+				//final int b = (camBytes[pos + 1 + width * 2] & 0xffff) >> 4;
 				final int ave = images[i][j][0] + images[i][j][1] + images[i][j][2];
-				final int r = images[i][j][0] * 3;
-				final int g = images[i][j][1] * 3;
-				final int b = images[i][j][2] * 3;
+				final int r3 = images[i][j][0] * 3;
+				final int g3 = images[i][j][1] * 3;
+				final int b3 = images[i][j][2] * 3;
 
-				int rdiff = r - ave;
-				if (rdiff < 0)
-				{
+				int rdiff = r3 - ave;
+				if (rdiff < 0) {
 					rdiff = -rdiff;
 				}
 
-				int gdiff = g - ave;
-				if (gdiff < 0)
-				{
+				int gdiff = g3 - ave;
+				if (gdiff < 0) {
 					gdiff = -gdiff;
 				}
 
-				int bdiff = b - ave;
-				if (bdiff < 0)
-				{
+				int bdiff = b3 - ave;
+				if (bdiff < 0) {
 					bdiff = -bdiff;
 				}
 
-				if (rdiff < greyMargin && gdiff < greyMargin && bdiff < greyMargin)
-				{ // if its not a distinct color
-					if (r < blackMargin && g < blackMargin && b < blackMargin)
+				if (rdiff < greyMargin * 3 && gdiff < greyMargin * 3 && bdiff < greyMargin * 3) { // if its not a distinct color
+					if (r3 < blackMargin * 3 && g3 < blackMargin * 3 && b3 < blackMargin * 3)
 						out[i][j] = new Pixel(4); // black
-					else if (r > whiteMargin && g > whiteMargin && b > whiteMargin)
+					else if (r3 > whiteMargin * 3 && g3 > whiteMargin * 3 && b3 > whiteMargin * 3)
 						out[i][j] = new Pixel(5); // white
 					else
 						out[i][j] = new Pixel(3);
-				}
-				else if (r > g && r > b)
+				} else if (r3 > g3 && r3 > b3)
 					out[i][j] = new Pixel(0);
-				else if (g > r && g > b)
+				else if (g3 > r3 && g3 > b3)
 					out[i][j] = new Pixel(1);
-				else if (b > r && b > g)
+				else if (b3 > r3 && b3 > g3)
 					out[i][j] = new Pixel(2);
-				//uhhhh... red?
+					//uhhhh... red?
 				else out[i][j] = new Pixel(0);
 
+
+				//out[i][j] = new Pixel((short)(images[i][j][0] >> 4), (short)(images[i][j][1] >> 4), (short)(images[i][j][2] >> 4));
+
 			}
+
 		}
+
 
 	}
 
 	@Override
-	public IPixel[][] getImage(){
+	public IPixel[][] getImage() {
 		return out;
 	}
 
@@ -151,6 +176,224 @@ public class HDRImage implements IImage {
 			}
 		}
 	}
+
+	private void autoConvertWeighted() {
+
+		int average; // 0-255
+		int average2; // 0-765
+		int variation = 0;
+		final int divisor = (width * height);
+
+		// autoThreshold variables
+		int threshold = 381;
+		int avg; // 0-765
+		int lesserSum = 0;
+		int greaterSum = 0;
+		int lesserCount = 0;
+		int greaterCount = 0;
+		int lesserMean;
+		int greaterMean;
+
+		int pos = 0;
+		if (tile == 1) {
+			for (int i = 0; i < height; i++) {
+
+				for (int j = 0; j < width; j++) {
+
+					images[i][j][0] = (camBytes[pos] & 0xffff) >> 4;
+					images[i][j][1] = (camBytes[pos + 1] & 0xffff) >> 4;
+					images[i][j][2] = (camBytes[pos + 1 + width * 2] & 0xffff) >> 4;
+					pos += 2;
+
+					final int r = images[i][j][0];
+					final int g = images[i][j][1];
+					final int b = images[i][j][2];
+
+					avg = (r + b + g);
+
+					if (avg < threshold) {
+
+						lesserSum += avg;
+						lesserCount++;
+
+					} else {
+
+						greaterSum += avg;
+						greaterCount++;
+
+					}
+
+				}
+
+				pos += width << 1;
+
+			}
+
+		} else if (tile == 3) {
+			for (int i = 0; i < height; i++) {
+
+				for (int j = 0; j < width; j++) {
+
+					images[i][j][0] = (camBytes[pos] & 0xffff) >> 4;
+					images[i][j][1] = (camBytes[pos + 1] & 0xffff) >> 4;
+					images[i][j][2] = (camBytes[pos + 1 + width * 2] & 0xffff) >> 4;
+					pos += 2;
+
+					final int r = images[i][j][0];
+					final int g = images[i][j][1];
+					final int b = images[i][j][2];
+
+
+					avg = (r + b + g);
+
+					if (avg < threshold) {
+
+						lesserSum += avg;
+						lesserCount++;
+
+					} else {
+
+						greaterSum += avg;
+						greaterCount++;
+
+					}
+
+				}
+
+				pos += width << 1;
+
+			}
+
+		}
+
+		lesserMean = lesserSum / lesserCount;
+		greaterMean = greaterSum / greaterCount;
+		threshold = (lesserMean + greaterMean) >> 1;
+
+		average2 = threshold;
+		average = average2 / 3;
+
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+
+				int rVar = images[i][j][0] - average;
+				if (rVar < 0) {
+					rVar = -rVar;
+				}
+
+				int gVar = images[i][j][1] - average;
+				if (gVar < 0) {
+					gVar = -gVar;
+				}
+
+				int bVar = images[i][j][2] - average;
+				if (bVar < 0) {
+					bVar = -bVar;
+				}
+
+				variation += rVar + gVar + bVar;
+			}
+
+		}
+
+		variation = variation / divisor;
+		Pixel.greyMargin = (int) (variation * greyRatio);
+		Pixel.blackMargin = average2 - blackRange;
+		Pixel.whiteMargin = average2 + whiteRange;
+
+	}
+
+	private void autoConvert()
+	{
+		int average = 0; // 0-255
+		int average2; // 0-765
+		int variation = 0;
+		final int divisor = (width * height);
+
+		int pos = 0;
+		if (tile == 1)
+		{
+			for (int i = 0; i < height; i++)
+			{
+
+				for (int j = 0; j < width; j++)
+				{
+
+					images[i][j][0] = (camBytes[pos] & 0xffff) >> 4;
+					images[i][j][1] = (camBytes[pos + 1] & 0xffff) >> 4;
+					images[i][j][2] = (camBytes[pos + 1 + width * 2] & 0xffff) >> 4;
+					pos += 2;
+
+					average += images[i][j][0] + images[i][j][1] + images[i][j][2];
+
+				}
+
+				pos += width * 2;
+
+			}
+		}
+		else if (tile == 3)
+		{
+			for (int i = 0; i < height; i++)
+			{
+
+				for (int j = 0; j < width; j++)
+				{
+
+					images[i][j][0] = (camBytes[pos] & 0xffff) >> 4;
+					images[i][j][1] = (camBytes[pos + 1] & 0xffff) >> 4;
+					images[i][j][2] = (camBytes[pos + 1 + width * 2] & 0xffff) >> 4;
+					pos += 2;
+
+					average += images[i][j][0] + images[i][j][1] + images[i][j][2];
+
+				}
+
+				pos += width * 2;
+
+			}
+		}
+
+		average2 = average / divisor;
+		average = average2 / 3;
+
+		for (int i = 0; i < height; i++)
+		{
+			for (int j = 0; j < width; j++)
+			{
+				int rVar = images[i][j][0] - average;
+				if (rVar < 0)
+				{
+					rVar = -rVar;
+				}
+
+				int gVar = images[i][j][1] - average;
+				if (gVar < 0)
+				{
+					gVar = -rVar;
+				}
+
+				int bVar = images[i][j][2] - average;
+				if (bVar < 0)
+				{
+					bVar = -bVar;
+				}
+
+				variation += rVar + gVar + bVar;
+			}
+
+		}
+
+		variation = variation / divisor;
+		Pixel.greyMargin = (int) (variation * greyRatio);
+		Pixel.blackMargin = average2 - blackRange;
+		Pixel.whiteMargin = average2 + whiteRange;
+		System.out.println("Variation: " + variation + " greyRatio: " + greyRatio);
+		System.out.println("greyMargin: " + Pixel.greyMargin + " blackMargin: " + Pixel.blackMargin + " whiteMargin: "
+				+ Pixel.whiteMargin);
+
+	}
+
 
 	private void autoWhiteBalance() {
 		int redBal = 512;
@@ -283,18 +526,12 @@ public class HDRImage implements IImage {
 	}*/
 
 	public void medianFilter(){
-		final int windowSize = 3;
-
-		int[][][] justOnce = new int[images.length][images[0].length][3];
-
 		for(int i=0; i<images.length; i++){
 			for(int j=0; j<images[0].length; j++){
 				if(i>images.length-windowSize || j>images[0].length-windowSize){
 					//tempHue[i][j] = new Pixel((short)0, (short)0, (short)0);
 				}
 				else{
-					int[][] set = new int[3][windowSize*windowSize];
-
 					for(int w=0; w<windowSize; w++) {
 						for (int q = 0; q < windowSize; q++) {
 							set[0][w * windowSize + q] = images[i + w][j + q][0];
@@ -302,13 +539,16 @@ public class HDRImage implements IImage {
 							set[2][w * windowSize + q] = images[i + w][j + q][2];
 						}
 					}
+
 					Arrays.sort(set[0]);
 					Arrays.sort(set[1]);
 					Arrays.sort(set[2]);
 
-					final int half = set[0].length / 2;
+					final int half = (windowSize * windowSize) / 2;
 
-					justOnce[i][j] = new int[]{ set[0][half], set[1][half], set[2][half] };
+					justOnce[i][j][0] = set[0][half];
+					justOnce[i][j][1] = set[1][half];
+					justOnce[i][j][2] = set[2][half];
 				}
 			}
 		}
@@ -346,4 +586,6 @@ public class HDRImage implements IImage {
 		tempHue = justOnce;
 	}
 	*/
+
+
 }
