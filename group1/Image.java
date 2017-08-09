@@ -1,7 +1,10 @@
 package group1;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+
 //import group1.fly0cam.FlyCamera;
 import fly2cam.FlyCamera;
 import global.Constant;
+import jdk.nashorn.internal.runtime.regexp.joni.ast.ConsAltNode;
 
 //Defines image as an 2d array of pixels
 public class Image implements IImage
@@ -66,6 +69,9 @@ public class Image implements IImage
     @Override
     public void readCam()
     {
+    	Constant.LAST_FRAME_MILLIS = Constant.CURRENT_FRAME_MILLIS;
+    	Constant.CURRENT_FRAME_MILLIS = System.currentTimeMillis();
+    	Constant.TIME_DIFFERENCE = Constant.CURRENT_FRAME_MILLIS-Constant.LAST_FRAME_MILLIS;
         autoCount++;
         //System.out.println("TILE: " + flyCam.PixTile());
         // System.out.println(flyCam.errn);

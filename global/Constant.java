@@ -7,6 +7,11 @@ public class Constant {
 	    FileImage
 	 */
 
+	//time that last frame was collected
+	public static long LAST_FRAME_MILLIS = 0;
+	public static long CURRENT_FRAME_MILLIS = 0;
+	public static long TIME_DIFFERENCE = 0;
+
 	//constants for color margin calibrations
 	//ratio of absolute average deviation to greyMargin
     public static float GREY_RATIO = 0.75f;
