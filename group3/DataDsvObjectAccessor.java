@@ -7,6 +7,7 @@ import org.treez.javafxd3.d3.dsv.DsvObjectAccessor;
 import org.treez.javafxd3.d3.dsv.DsvRow;
 import org.treez.javafxd3.d3.time.JsDate;
 import org.treez.javafxd3.d3.time.TimeFormat;
+import org.treez.javafxd3.d3.core.JsObject;
 
 public class DataDsvObjectAccessor implements DsvObjectAccessor<DsvData> {
 	
@@ -35,14 +36,15 @@ public class DataDsvObjectAccessor implements DsvObjectAccessor<DsvData> {
 	
 		Value value = dsvRow.get("symbol");
 		
-		if ("S&P 500".equals(value.asString())) {
+		//if ("S&P 500".equals(value.asString())) {
 			String symbol = dsvRow.get("symbol").asString();
-			JsDate date = format.parse(dsvRow.get("date").asString());
+			//JsDate date = format.parse(dsvRow.get("date").asString());
+			int date = dsvRow.get("date").asInt();
 			double price = dsvRow.get("price").asDouble();
 			return new DsvData(engine, symbol, date, price);
-		} else {
+		/*} else {
 			return null;
-		}
+		}*/
 	}
 		
 	//#end region

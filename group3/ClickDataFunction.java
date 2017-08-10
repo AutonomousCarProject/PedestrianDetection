@@ -51,9 +51,10 @@ public class ClickDataFunction implements DataFunction<Void> {
 		int n = valueList.size() - 1;
 		int i = (int) Math.floor((Math.random() * n) / 2);
 		int j = i + (int) Math.floor((Math.random() * n) / 2) + 1;
-		JsObject firstObj = valueList.get(i).getDate().getJsObject();
-		JsObject secondObj = valueList.get(j).getDate().getJsObject();
-		xScale.domain(Array.fromJavaScriptObjects(engine, firstObj, secondObj));
+		int firstObj = valueList.get(i).getDate();//.getJsObject();
+		int secondObj = valueList.get(j).getDate();//.getJsObject();
+		Double[] data = {(double) firstObj, (double) secondObj};
+		xScale.domain(Array.fromDoubles(engine, data)/*.fromJavaScriptObjects(engine, firstObj, secondObj)*/);
 		Transition transition = svg.transition().duration(750);
 		transition.select("." + "x" + "." + "axis").call(xAxis);
 		transition.select("." + "area").attr("d", area.apply(valueList));

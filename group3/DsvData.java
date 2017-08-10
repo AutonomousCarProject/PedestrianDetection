@@ -12,34 +12,40 @@ public class DsvData extends JavaScriptObject {
 
 	private final String symbol;
 
-	private final JsDate date;
+	private final int date;
 
 	private final double price;
-
+	
 	//#end region
 
 	//#region CONSTRUCTORS	
 	
 	public DsvData(JsEngine engine, JsObject wrappedJsObject) {
 		super(engine, wrappedJsObject);		
-		JsObject jsDate = (JsObject) wrappedJsObject.getMember("date");
-		this.date = new JsDate(engine, jsDate);
+		//JsObject jsDate = (JsObject) wrappedJsObject.getMember("date");
+		//this.date = new JsDate(engine, jsDate);
+		
+		//this.date = (JsObject) wrappedJsObject.getMember("date");
+		this.date = (int) wrappedJsObject.getMember("date");
 		this.price =Double.parseDouble(wrappedJsObject.getMember("price").toString());
-		this.symbol = (String) wrappedJsObject.getMember("symbol");				
+		this.symbol = (String) wrappedJsObject.getMember("symbol");
+		
 	}
 	
-	public DsvData(JsEngine engine, final String symbol, final JsDate date, final double price) {
+	public DsvData(JsEngine engine, final String symbol, final int date, final double price) {
 		super(engine);		
 		this.date = date;
 		this.price = price;
-		this.symbol = symbol;		
-		
+		this.symbol = symbol;
+				
 		String command = "new Object()";
 		JsObject jsObject = (JsObject) engine.executeScript(command);		
-		JsObject jsDate = date.getJsObject();
-		jsObject.setMember("date", jsDate);
+		//JsObject jsDate = date.getJsObject();
+		
+		jsObject.setMember("date", date/*jsDate*/);
 		jsObject.setMember("price", price);
 		jsObject.setMember("symbol", symbol);
+				
 		setJsObject(jsObject);				
 	}
 
@@ -47,10 +53,10 @@ public class DsvData extends JavaScriptObject {
 
 	//#region METHODS
 
-	@Override
+	/*@Override
 	public String toString() {
 		return "Data [date=" + date.getTime() + ", price=" + price + "]";
-	}
+	}*/
 	
 	//#end region
 
@@ -60,7 +66,7 @@ public class DsvData extends JavaScriptObject {
 		return symbol;
 	}
 
-	public JsDate getDate() {
+	public int getDate() {
 		return date;
 	}
 

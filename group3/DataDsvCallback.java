@@ -25,7 +25,7 @@ public class DataDsvCallback implements DsvCallback<DsvData> {
 
 	private JsEngine engine;
 	private Selection svg;
-	private TimeScale xScale;
+	private LinearScale xScale;
 	private LinearScale yScale;
 	private Axis xAxis;
 	private Axis yAxis;
@@ -39,7 +39,7 @@ public class DataDsvCallback implements DsvCallback<DsvData> {
 
 	//#region CONSTRUCTORS
 
-	public DataDsvCallback(JsEngine engine, Selection svg, TimeScale xScale, LinearScale yScale, Axis xAxis,
+	public DataDsvCallback(JsEngine engine, Selection svg, LinearScale xScale, LinearScale yScale, Axis xAxis,
 			Axis yAxis, Line line, Area area, int m[], int w, int h) {
 		this.engine = engine;
 		this.svg = svg;
@@ -76,7 +76,7 @@ public class DataDsvCallback implements DsvCallback<DsvData> {
 
 		// // Compute the minimum and maximum date, and the maximum
 		// price.
-		List<JsDate> domainValues = new ArrayList<>();
+		List<Integer> domainValues = new ArrayList<>();
 
 		int size = valueList.size();
 
@@ -149,10 +149,12 @@ public class DataDsvCallback implements DsvCallback<DsvData> {
 			int n = valueList.size() - 1;
 			int i = (int) Math.floor((Math.random() * n) / 2);
 			int j = i + (int) Math.floor((Math.random() * n) / 2) + 1;
-			JsObject firstObj = valueList.get(i).getDate().getJsObject();
-			JsObject secondObj = valueList.get(j).getDate().getJsObject();
+			int firstObj = valueList.get(i).getDate();//.getJsObject();
+			int secondObj = valueList.get(j).getDate();//.getJsObject();
 			
-			xScale.domain(Array.fromJavaScriptObjects(engine, firstObj, secondObj));
+			Double[] data = {(double) firstObj, (double) secondObj};
+			xScale.domain(Array.fromDoubles(engine, data)/*.fromJavaScriptObjects(engine, firstObj, secondObj)*/);
+			//xScale.domain(Array.fromJavaScriptObjects(engine, firstObj, secondObj));
 			
 			Transition transition = svg.transition() //
 					.duration(750);

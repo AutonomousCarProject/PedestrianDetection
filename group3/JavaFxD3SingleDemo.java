@@ -169,7 +169,7 @@ public class JavaFxD3SingleDemo extends Application implements IMovingBlobDetect
 		String blobString = "X, Y, Predicted X, Predicted Y, Velocity X, Velocity Y, Velocity Change X, Velocity Change Y, Width, Height, Age, Age Off Screen" +
 							blobStrings.toString().substring(1, blobStrings.toString().length()-1);
 				
-		System.out.println(blobString);
+		//System.out.println(blobString);
 								
 		return blobString;
 	}
@@ -181,9 +181,7 @@ public class JavaFxD3SingleDemo extends Application implements IMovingBlobDetect
 		D3 d3 = browser.getD3();
 
 		// set stage title
-		String versionString = "D3 API version: " + d3.version();
-		String title = "Welcome to javax-d3 : A thin Java wrapper around d3." + versionString;
-		stage.setTitle(title);
+		stage.setTitle("JavaFx Graphing Analyzer");
 
 		// create demo menu buttons
 		createDemoSuiteMenu(d3, buttonPane, demoPreferenceBox);
@@ -194,7 +192,7 @@ public class JavaFxD3SingleDemo extends Application implements IMovingBlobDetect
 
 		D3 d3 = browser.getD3();
 		
-		blobData();
+		//blobData();
 						
 		Object[] data = { 4.0, 8.0, 15.0, 16.0, 23.0, 42.0 };
 						

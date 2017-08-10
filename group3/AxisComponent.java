@@ -1,5 +1,8 @@
 package group3;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.arrays.Array;
 import org.treez.javafxd3.d3.core.Selection;
@@ -21,7 +24,13 @@ import org.treez.javafxd3.d3.svg.Line;
 import org.treez.javafxd3.d3.time.JsDate;
 import org.treez.javafxd3.d3.time.TimeFormat;
 import org.treez.javafxd3.d3.time.TimeScale;
+import org.treez.javafxd3.d3.core.JsObject;
 
+import group1.FileImage;
+import group1.IImage;
+import group2.Blob;
+import group2.BlobDetection;
+import group2.IBlobDetection;
 import javafx.scene.layout.VBox;
 
 public class AxisComponent extends AbstractDemoCase {
@@ -58,8 +67,9 @@ public class AxisComponent extends AbstractDemoCase {
 		// Scales and axes. Note the inverted domain for the y-scale: bigger is
 		// up!
 
-		final TimeScale x = d3.time() //
-				.scale() //
+		final LinearScale x = d3.scale() //
+				//.scale() //
+				.linear()
 				.range(0, w);
 
 		final LinearScale y = d3.scale() //
@@ -80,9 +90,11 @@ public class AxisComponent extends AbstractDemoCase {
 		// An area generator, for the light fill.
 
 		DataFunction<Double> xFunction = new DataFunctionWrapper<>(DsvData.class, engine, (dsvData) -> {
-			JsDate date = dsvData.getDate();
+			int date = dsvData.getDate();
 			Value scaledValue = x.apply(date);
 			Double xResult = scaledValue.asDouble();
+			
+			System.out.println(dsvData);
 			
 			//System.out.println(dsvData.getDate());
 			
@@ -95,6 +107,11 @@ public class AxisComponent extends AbstractDemoCase {
 			Double yResult = scaledValue.asDouble();
 			return yResult;
 		});
+		
+		/*DataFunction<Double> test = new DataFunctionWrapper<>(DsvData.class, engine, (dsvData) -> {
+			Double pric = y.apply(dsvData.getPrice()).asDouble();
+			return pric;
+		});*/
 		
 		//System.out.println("xFunction: " + xFunction.getClass());
 
@@ -120,9 +137,21 @@ public class AxisComponent extends AbstractDemoCase {
 		String csvData = getCsvData();
 		Dsv<DsvData> csv = d3.<DsvData> csv();
 		Array<DsvData> data = csv.parse(csvData, accessor);
+		
+		//System.out.println(data.getJsObject());
+		
 		callback.get(null, data.getJsObject());
 		
-		System.out.println(csvData);
+		//System.out.println(callback);
+		
+		//System.out.println(csvData);
+		
+		//System.out.println(blobData());
+		
+		Array<DsvData> bData = csv.parse(blobData(), accessor);
+		System.out.println(bData);
+		
+		//callback.get(null, bData.getJsObject());
 		
 		//System.out.println("Data: "+data.getJsObject().unwrap());
 		
@@ -140,14 +169,683 @@ public class AxisComponent extends AbstractDemoCase {
 	@Override
 	public void stop() {
 	}
+	
+	private String blobData() {
+		
+		IImage image = new FileImage();
+		image.setAutoFreq(15);
+		
+		image.readCam();
+		
+		ArrayList<String> blobStrings = new ArrayList<String>();
+		
+		ArrayList<String> blobValues = new ArrayList<String>();
+		
+        IBlobDetection blobDetect = new BlobDetection();
+        IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
+
+        List<Blob> blobs = blobDetect.getBlobs(image);
+        List<MovingBlob> movingBlobs = movingBlobDetect.getMovingBlobs(blobs);
+                
+        
+        for(int i = 0; i < movingBlobs.toArray().length; i++) {
+        	
+        	String blobString = "\n"+movingBlobs.get(i).x + "," + movingBlobs.get(i).y + "," + movingBlobs.get(i).predictedX + "," + movingBlobs.get(i).predictedY + "," + movingBlobs.get(i).velocityX + "," + movingBlobs.get(i).velocityY + "," + movingBlobs.get(i).velocityChangeX + "," + movingBlobs.get(i).velocityChangeY + "," + movingBlobs.get(i).width + "," + movingBlobs.get(i).height + "," + movingBlobs.get(i).age + "," + movingBlobs.get(i).ageOffScreen;
+        	
+        	blobStrings.add(blobString);
+        	
+        	String blobValue = "\nX,"+i+","+movingBlobs.get(i).x+
+        					   "\nY,"+i+","+movingBlobs.get(i).y+
+        					   "\nPredicted X,"+i+","+movingBlobs.get(i).predictedX+
+        					   "\nPredicted Y,"+i+","+movingBlobs.get(i).predictedY+
+        					   "\nVelocity X,"+i+","+movingBlobs.get(i).velocityX+
+        					   "\nVelocity Y,"+i+","+movingBlobs.get(i).velocityY+
+        					   "\nVelocity Change X,"+i+","+movingBlobs.get(i).velocityChangeX+
+        					   "\nVelocity Change Y,"+i+","+movingBlobs.get(i).velocityChangeY+
+        					   "\nWidth,"+i+","+movingBlobs.get(i).width+
+        					   "\nHeight,"+i+","+movingBlobs.get(i).height+
+        					   "\nAge,"+i+","+movingBlobs.get(i).age+
+        					   "\nAge Off Screen,"+i+","+movingBlobs.get(i).ageOffScreen;
+        	
+        	blobValues.add(blobValue);
+        }     
+				
+		String blobString = "X, Y, Predicted X, Predicted Y, Velocity X, Velocity Y, Velocity Change X, Velocity Change Y, Width, Height, Age, Age Off Screen" +
+							blobStrings.toString().substring(1, blobStrings.toString().length()-1);
+		
+		String blobFormat = "Names, Blob Number, Values\n"+
+							blobValues.toString().substring(1, blobValues.toString().length()-1);
+		
+		System.out.println(blobFormat);
+		
+												
+		return blobString;
+	}
 
 	private String getCsvData() {
-		return "symbol,date,price\n" + //
-				"S&P 500,Jan 2000,1394.46\n" + //
+		
+		IImage image = new FileImage();
+		image.setAutoFreq(15);
+		
+		image.readCam();
+		
+		ArrayList<String> blobStrings = new ArrayList<String>();
+		
+		ArrayList<String> blobValues = new ArrayList<String>();
+		
+        IBlobDetection blobDetect = new BlobDetection();
+        IMovingBlobDetection movingBlobDetect = new MovingBlobDetection();
+
+        List<Blob> blobs = blobDetect.getBlobs(image);
+        List<MovingBlob> movingBlobs = movingBlobDetect.getMovingBlobs(blobs);
+                
+        
+        for(int i = 0; i < movingBlobs.toArray().length; i++) {
+        	
+        	String blobString = "\n"+movingBlobs.get(i).x + "," + movingBlobs.get(i).y + "," + movingBlobs.get(i).predictedX + "," + movingBlobs.get(i).predictedY + "," + movingBlobs.get(i).velocityX + "," + movingBlobs.get(i).velocityY + "," + movingBlobs.get(i).velocityChangeX + "," + movingBlobs.get(i).velocityChangeY + "," + movingBlobs.get(i).width + "," + movingBlobs.get(i).height + "," + movingBlobs.get(i).age + "," + movingBlobs.get(i).ageOffScreen;
+        	
+        	blobStrings.add(blobString);
+        	
+        	int scale = 500;
+        	
+        	String blobValue = "\nX,"+i+","+movingBlobs.get(i).x*scale+
+        					   "\nY,"+i+","+movingBlobs.get(i).y*scale+
+        					   "\nPredicted X,"+i+","+movingBlobs.get(i).predictedX*scale+
+        					   "\nPredicted Y,"+i+","+movingBlobs.get(i).predictedY*scale+
+        					   "\nVelocity X,"+i+","+movingBlobs.get(i).velocityX*scale+
+        					   "\nVelocity Y,"+i+","+movingBlobs.get(i).velocityY*scale+
+        					   "\nVelocity Change X,"+i+","+movingBlobs.get(i).velocityChangeX*scale+
+        					   "\nVelocity Change Y,"+i+","+movingBlobs.get(i).velocityChangeY*scale+
+        					   "\nWidth,"+i+","+movingBlobs.get(i).width*scale+
+        					   "\nHeight,"+i+","+movingBlobs.get(i).height*scale+
+        					   "\nAge,"+i+","+movingBlobs.get(i).age*scale+
+        					   "\nAge Off Screen,"+i+","+movingBlobs.get(i).ageOffScreen*scale;
+        	
+        	blobValues.add(blobValue);
+        }     
+				
+		String blobString = "X, Y, Predicted X, Predicted Y, Velocity X, Velocity Y, Velocity Change X, Velocity Change Y, Width, Height, Age, Age Off Screen" +
+							blobStrings.toString().substring(1, blobStrings.toString().length()-1);
+		
+		String blobFormat = "Names, Blob Number, Values\n"+
+							blobValues.toString().substring(1, blobValues.toString().length()-1);
+		
+		System.out.println(blobFormat);
+		
+												
+		//return blobString;
+		
+		return "symbol,date,price\n" //
+			+ "X,10,73000\n"
+			+ "Y,10,57000\n"
+			+ "Predicted X,10,85000.0\n"
+			+ "Predicted Y,10,64500.0\n"
+			+ "Velocity X,10,0.0\n"
+			+ "Velocity Y,10,0.0\n"
+			+ "Velocity Change X,10,0.0\n"
+			+ "Velocity Change Y,10,0.0\n"
+			+ "Width,10,24500\n"
+			+ "Height,10,15500\n"
+			+ "Age,10,0\n"
+			+ "Age Off Screen,10,0, \n"
+			+ "X,20,0\n"
+			+ "Y,20,3500\n"
+			+ "Predicted X,20,1500.0\n"
+			+ "Predicted Y,20,5000.0\n"
+			+ "Velocity X,20,0.0\n"
+			+ "Velocity Y,20,0.0\n"
+			+ "Velocity Change X,20,0.0\n"
+			+ "Velocity Change Y,20,0.0\n"
+			+ "Width,20,3500\n"
+			+ "Height,20,3000\n"
+			+ "Age,20,0\n"
+			+ "Age Off Screen,20,0, \n"
+			+ "X,30,16500\n"
+			+ "Y,30,23000\n"
+			+ "Predicted X,30,18000.0\n"
+			+ "Predicted Y,30,24500.0\n"
+			+ "Velocity X,30,0.0\n"
+			+ "Velocity Y,30,0.0\n"
+			+ "Velocity Change X,30,0.0\n"
+			+ "Velocity Change Y,30,0.0\n"
+			+ "Width,30,3500\n"
+			+ "Height,30,3000\n"
+			+ "Age,30,0\n"
+			+ "Age Off Screen,30,0, \n"
+			+ "X,40,145000\n"
+			+ "Y,40,0\n"
+			+ "Predicted X,40,152500.0\n"
+			+ "Predicted Y,40,5000.0\n"
+			+ "Velocity X,40,0.0\n"
+			+ "Velocity Y,40,0.0\n"
+			+ "Velocity Change X,40,0.0\n"
+			+ "Velocity Change Y,40,0.0\n"
+			+ "Width,40,15000\n"
+			+ "Height,40,10500\n"
+			+ "Age,40,0\n"
+			+ "Age Off Screen,40,0";
+			/*X,Jan 2000,47500
+			Y,Jun 2000,49000
+			Predicted X,Jan 2001,49000.0
+			Predicted Y,Jun 2001,50000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,3000
+			Height,Jun 2004,2000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,114500
+			Y,Jun 2000,71500
+			Predicted X,Jan 2001,116000.0
+			Predicted Y,Jun 2001,72500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,3000
+			Height,Jun 2004,2000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,138500
+			Y,Jun 2000,106000
+			Predicted X,Jan 2001,149000.0
+			Predicted Y,Jun 2001,108000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,21500
+			Height,Jun 2004,4500
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,114500
+			Y,Jun 2000,57500
+			Predicted X,Jan 2001,121500.0
+			Predicted Y,Jun 2001,58500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,14500
+			Height,Jun 2004,2000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,64500
+			Y,Jun 2000,76000
+			Predicted X,Jan 2001,69000.0
+			Predicted Y,Jun 2001,80500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,9500
+			Height,Jun 2004,9000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,0
+			Y,Jun 2000,14000
+			Predicted X,Jan 2001,2000.0
+			Predicted Y,Jun 2001,16500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,4000
+			Height,Jun 2004,5000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,29500
+			Y,Jun 2000,35500
+			Predicted X,Jan 2001,30500.0
+			Predicted Y,Jun 2001,36500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,2000
+			Height,Jun 2004,2000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,121000
+			Y,Jun 2000,0
+			Predicted X,Jan 2001,123500.0
+			Predicted Y,Jun 2001,1000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,5000
+			Height,Jun 2004,2000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,47000
+			Y,Jun 2000,49000
+			Predicted X,Jan 2001,60500.0
+			Predicted Y,Jun 2001,60500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,27000
+			Height,Jun 2004,23000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,107500
+			Y,Jun 2000,55500
+			Predicted X,Jan 2001,109000.0
+			Predicted Y,Jun 2001,57000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,3000
+			Height,Jun 2004,3000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,0
+			Y,Jun 2000,103500
+			Predicted X,Jan 2001,11500.0
+			Predicted Y,Jun 2001,105500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,23500
+			Height,Jun 2004,4500
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,39000
+			Y,Jun 2000,65500
+			Predicted X,Jan 2001,41500.0
+			Predicted Y,Jun 2001,67500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,5000
+			Height,Jun 2004,4500
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,13000
+			Y,Jun 2000,44500
+			Predicted X,Jan 2001,15500.0
+			Predicted Y,Jun 2001,45500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,5000
+			Height,Jun 2004,2500
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,92000
+			Y,Jun 2000,70000
+			Predicted X,Jan 2001,94000.0
+			Predicted Y,Jun 2001,71000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,4500
+			Height,Jun 2004,2500
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,38000
+			Y,Jun 2000,35000
+			Predicted X,Jan 2001,40000.0
+			Predicted Y,Jun 2001,37000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,4500
+			Height,Jun 2004,4500
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,153500
+			Y,Jun 2000,69500
+			Predicted X,Jan 2001,156500.0
+			Predicted Y,Jun 2001,73000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,6500
+			Height,Jun 2004,7000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,117000
+			Y,Jun 2000,0
+			Predicted X,Jan 2001,119000.0
+			Predicted Y,Jun 2001,1000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,4500
+			Height,Jun 2004,2000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,97000
+			Y,Jun 2000,64000
+			Predicted X,Jan 2001,99500.0
+			Predicted Y,Jun 2001,66500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,5000
+			Height,Jun 2004,5000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,43500
+			Y,Jun 2000,66000
+			Predicted X,Jan 2001,48000.0
+			Predicted Y,Jun 2001,68500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,9000
+			Height,Jun 2004,5000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,12000
+			Y,Jun 2000,2500
+			Predicted X,Jan 2001,13500.0
+			Predicted Y,Jun 2001,4000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,3000
+			Height,Jun 2004,3000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,45000
+			Y,Jun 2000,49500
+			Predicted X,Jan 2001,46000.0
+			Predicted Y,Jun 2001,50500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,2000
+			Height,Jun 2004,2000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,76000
+			Y,Jun 2000,57000
+			Predicted X,Jan 2001,78000.0
+			Predicted Y,Jun 2001,58500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,4000
+			Height,Jun 2004,3500
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,500
+			Y,Jun 2000,44000
+			Predicted X,Jan 2001,2500.0
+			Predicted Y,Jun 2001,45000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,4000
+			Height,Jun 2004,2000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,120500
+			Y,Jun 2000,118000
+			Predicted X,Jan 2001,140000.0
+			Predicted Y,Jun 2001,119000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,39500
+			Height,Jun 2004,2000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,96500
+			Y,Jun 2000,72500
+			Predicted X,Jan 2001,98000.0
+			Predicted Y,Jun 2001,73500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,3000
+			Height,Jun 2004,2000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,110000
+			Y,Jun 2000,58000
+			Predicted X,Jan 2001,111500.0
+			Predicted Y,Jun 2001,62000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,3500
+			Height,Jun 2004,8500
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,6000
+			Y,Jun 2000,11000
+			Predicted X,Jan 2001,7000.0
+			Predicted Y,Jun 2001,12000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,2500
+			Height,Jun 2004,2000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,94000
+			Y,Jun 2000,75000
+			Predicted X,Jan 2001,99500.0
+			Predicted Y,Jun 2001,81500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,11000
+			Height,Jun 2004,13500
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,0
+			Y,Jun 2000,32500
+			Predicted X,Jan 2001,2500.0
+			Predicted Y,Jun 2001,37000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,5000
+			Height,Jun 2004,9000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,14500
+			Y,Jun 2000,9500
+			Predicted X,Jan 2001,15500.0
+			Predicted Y,Jun 2001,10500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,2000
+			Height,Jun 2004,2000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,12500
+			Y,Jun 2000,67500
+			Predicted X,Jan 2001,13500.0
+			Predicted Y,Jun 2001,68500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,2000
+			Height,Jun 2004,2000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,150000
+			Y,Jun 2000,26000
+			Predicted X,Jan 2001,151500.0
+			Predicted Y,Jun 2001,27000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,3500
+			Height,Jun 2004,2500
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,152500
+			Y,Jun 2000,15500
+			Predicted X,Jan 2001,156000.0
+			Predicted Y,Jun 2001,17500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,7500
+			Height,Jun 2004,4000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,3500
+			Y,Jun 2000,38500
+			Predicted X,Jan 2001,5000.0
+			Predicted Y,Jun 2001,41000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,3000
+			Height,Jun 2004,5000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,106500
+			Y,Jun 2000,47000
+			Predicted X,Jan 2001,109500.0
+			Predicted Y,Jun 2001,48000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,6500
+			Height,Jun 2004,2000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,130000
+			Y,Jun 2000,0
+			Predicted X,Jan 2001,132500.0
+			Predicted Y,Jun 2001,1000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,5000
+			Height,Jun 2004,2000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,134500
+			Y,Jun 2000,7000
+			Predicted X,Jan 2001,147000.0
+			Predicted Y,Jun 2001,14000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,25000
+			Height,Jun 2004,14500
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,3000
+			Y,Jun 2000,13000
+			Predicted X,Jan 2001,4000.0
+			Predicted Y,Jun 2001,14000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,2500
+			Height,Jun 2004,2500
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,17000
+			Y,Jun 2000,25500
+			Predicted X,Jan 2001,20000.0
+			Predicted Y,Jun 2001,27000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,6000
+			Height,Jun 2004,3000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,53500
+			Y,Jun 2000,68000
+			Predicted X,Jan 2001,56000.0
+			Predicted Y,Jun 2001,70000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,5000
+			Height,Jun 2004,4000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,0
+			Y,Jun 2000,56500
+			Predicted X,Jan 2001,19000.0
+			Predicted Y,Jun 2001,66000.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,38500
+			Height,Jun 2004,19000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,120000
+			Y,Jun 2000,44000
+			Predicted X,Jan 2001,131000.0
+			Predicted Y,Jun 2001,50500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,22000
+			Height,Jun 2004,13000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0, 
+			X,Jan 2000,0
+			Y,Jun 2000,42000
+			Predicted X,Jan 2001,1000.0
+			Predicted Y,Jun 2001,43500.0
+			Velocity X,Jan 2002,0.0
+			Velocity Y,Jun 2002,0.0
+			Velocity Change X,Jan 2003,0.0
+			Velocity Change Y,Jun 2003,0.0
+			Width,Jan 2004,2500
+			Height,Jun 2004,3000
+			Age,Jan 2005,0
+			Age Off Screen,Jun 2005,0";*/
+		//blobValues.toString().substring(1, blobValues.toString().length()-1);
+				/*"S&P 500,Jan 2000,1394.46\n" + //
 				"S&P 500,Feb 2000,1366.42\n" + //
 				"S&P 500,Mar 2000,1498.58\n" + //
 				"S&P 500,Apr 2000,1452.43\n" + //
-				"S&P 500,May 2000,1420.6\n" + //
+				"S&P 500,May 2000,1420.6,\n" + //
 				"S&P 500,Jun 2000,1454.6\n" + //
 				"S&P 500,Jul 2000,1430.83\n" + //
 				"S&P 500,Aug 2000,1517.68\n" + //
@@ -948,7 +1646,7 @@ public class AxisComponent extends AbstractDemoCase {
 				"AAPL,Dec 2009,210.73\n" + //
 				"AAPL,Jan 2010,192.06\n" + //
 				"AAPL,Feb 2010,204.62\n" + //
-				"AAPL,Mar 2010,223.02\n";
+				"AAPL,Mar 2010,223.02\n";*/
 	}
 
 	//#end region	
