@@ -129,8 +129,7 @@ public class SimpleOptim {
         System.out.println("Score: " + max);
         System.out.println();
         for(int j = 0; j < threshNum; j++){
-            if(max == 0) thresholds[j] = defaultThresh[j];
-            else thresholds[j] = thresholdsMax[j];
+            thresholds[j] = thresholdsMax[j];
             System.out.print(thresholds[j]+"\t\t\t");
         }
         setThresholds();
