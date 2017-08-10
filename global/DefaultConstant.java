@@ -29,6 +29,9 @@ public class DefaultConstant {
 	public static float VELOCITY_LIMIT_INCREASE_X = 0.75f;
 	public static float VELOCITY_LIMIT_INCREASE_Y = 0.3f;
 
+	public static float ASPECT_RATIO = 1.2f;
+	public static int DIMENSION_MULTIPLE = 40;
+
 	/**
 	 * BlobFilter
 	 */
@@ -91,6 +94,8 @@ public class DefaultConstant {
 		case 21: return (T)(Number)MAX_HEIGHT;
 		//case 22: return MAX_SCALED_VELOCITY_X;
 		//case 23: return MAX_SCALED_VELOCITY_Y;
+			case 24: return (T)(Number)ASPECT_RATIO;
+			case 25: return (T)(Number)DIMENSION_MULTIPLE;
 
 
 		}

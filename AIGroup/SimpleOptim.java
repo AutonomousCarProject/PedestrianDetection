@@ -24,11 +24,12 @@ public class SimpleOptim {
     private List<MovingBlob> blobs;
     private String filename;
     private final static int threshNum = 5;
-    private final int threshLoc = 0b00001111100000000000000;  //this is the location in the switch case of the thresholds being used
-    private final int threshLocSize = 23;
+    private final int threshLoc = 0b00000001111100000000000000;  //this is the location in the switch case of the thresholds being used
+    private final int threshLocSize = 26;
     private float thresholds[] = new float[threshNum];
     private float gradients[] = new float[threshNum];
     private float increment[] = new float[threshNum];
+    private float defaultThresh[] = new float[threshNum];
 
     private float stepSize = 0.5f;
     private float incrementRatio = 10f;
@@ -44,6 +45,7 @@ public class SimpleOptim {
             if (((threshLoc >> i) & 1) == 1) {
                 float threshold = DefaultConstant.getVariable(i).floatValue();
                 thresholds[count] = threshold;
+                defaultThresh[count] = threshold;
                 increment[count] = threshold/incrementRatio;
                 count++;
             }
@@ -90,23 +92,32 @@ public class SimpleOptim {
 
     public void runCombined(){
         List<String> filenames = loadFilenames();
+
+        int scoreSum = 0;
         int sum[] = new int[threshNum];
         int length = filenames.size();
 
         for(int i =0 ; i < length; i++){
             System.out.println(filenames.get(i));
             filename = filenames.get(i);
+
             runForce();
+
+            float score = max;
+            scoreSum += score;
+
             for(int j = 0; j < threshNum; j++){
-                sum[j] += thresholdsMax[j];
+                sum[j] += thresholdsMax[j] * score;
             }
         }
+
+
         System.out.println();
         for(int i = 0; i < threshNum; i++){
-            thresholds[i] = sum[i]/length;
-            setThresholds();
+            thresholds[i] = sum[i]/scoreSum;
             System.out.print(thresholds[i]+"\t\t\t");
         }
+        setThresholds();
     }
 
 
@@ -116,8 +127,11 @@ public class SimpleOptim {
         recurseForce(0);
 
         System.out.println("Score: " + max);
+        System.out.println();
         for(int j = 0; j < threshNum; j++){
-            thresholds[j] = thresholdsMax[j];
+            if(max == 0) thresholds[j] = defaultThresh[j];
+            else thresholds[j] = thresholdsMax[j];
+            System.out.print(thresholds[j]+"\t\t\t");
         }
         setThresholds();
     }
@@ -126,10 +140,14 @@ public class SimpleOptim {
         for(float i = 0; i < increment[count]*incrementRatio*2; i+= increment[count]){
             thresholds[count] = i;
             float score = getScore()[0];
-            
+
+//            System.out.println();
+//            for(int j = 0; j < threshNum; j++){
+//                System.out.print(thresholds[j]+"\t\t\t");
+//            }
 
             if(score > max) {
-                System.out.println("max: " + max);
+                System.out.println("here");
                 max = score;
                 for(int j = 0; j < threshNum; j++){
                     thresholdsMax[j] = thresholds[j];

@@ -64,7 +64,7 @@ public class BlobFilter implements IMovingBlobReduction
 				Math.abs(blob.velocityX) > 0 &&
 				blob.velocityChangeX < Constant.MAX_VELOCITY_CHANGE_X &&
 				blob.velocityChangeY < Constant.MAX_VELOCITY_CHANGE_Y &&
-				(float)blob.width/(float)blob.height < 1.3 && (float)blob.width*(float)blob.height > 40;
+				(float)blob.width/(float)blob.height < Constant.ASPECT_RATIO && (float)blob.width*(float)blob.height > Constant.DIMENSION_MULTIPLE;
 				
 	}
 	

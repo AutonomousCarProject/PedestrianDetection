@@ -53,6 +53,9 @@ public class Constant {
 	public static int MAX_HEIGHT = 100000;
 	public static float MIN_SCALED_VELOCITY_X = 0.75f;
 	public static int MIN_SCALED_VELOCITY_Y = 0;
+
+	public static float ASPECT_RATIO = 1.2f;
+	public static int DIMENSION_MULTIPLE = 40;
 	
 	/*
     Image
@@ -92,6 +95,8 @@ public class Constant {
 		case 21: MAX_HEIGHT = (int)a; break;
 		case 22: MIN_SCALED_VELOCITY_X = (int)a; break;
 		case 23: MIN_SCALED_VELOCITY_Y = (int)a; break;
+		case 24: ASPECT_RATIO = (int)a; break;
+ 		case 25: DIMENSION_MULTIPLE = (int)a; break;
 		}
 	}
         public static <T extends Number> T getVariable(int index){
@@ -119,7 +124,8 @@ public class Constant {
 		case 21: return (T)(Number)MAX_HEIGHT;
 		//case 22: return MAX_SCALED_VELOCITY_X;
 		//case 23: return MAX_SCALED_VELOCITY_Y;
-                
+		case 24: return (T)(Number)ASPECT_RATIO;
+		case 25: return (T)(Number)DIMENSION_MULTIPLE;
                 
 		}
                 return (T)(Number)0;

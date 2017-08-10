@@ -69,7 +69,7 @@ public class Control extends LooiObject
     List<MovingBlob> movingBlobs;
     List<MovingBlob> fmovingBlobs;
     List<MovingBlob> unifiedBlobs;
-    
+
     private BlobSelector blobSelector;
     public static final String DATA_CREATION_MODE = "data_creation_mode";
     public static final String AI_MODE = "ai_mode";
@@ -79,7 +79,9 @@ public class Control extends LooiObject
                 "Max Velocity Change X", "Max Velocity Change Y", "Max Width Height Ratio", "Max Width",
                 "Max Height", "Max Scaled Velocity X", "Max Scaled Velocity Y"};
     private ConstantEditor[] constantEditors = new ConstantEditor[text.length];
-    private String fileName = "src/group1/fly0cam/Mix_0_0_0.By8";
+    private String fileName = "videos/Aud0.By8";
+    private final boolean showFilter = true;
+
     public Control(int frameDelay, boolean useCamera)
     {
         simpleOptim = new SimpleOptim("");
@@ -320,7 +322,7 @@ public class Control extends LooiObject
             fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
             
             unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
-            //funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
+            if(showFilter) unifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
             //boxDrawer.draw2(currentImage,fmovingBlobs,funifiedBlobs);
             
             
