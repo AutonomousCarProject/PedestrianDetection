@@ -38,5 +38,10 @@ public class Hotkeys extends LooiObject
         {
         	control.incrementCurrentFrame(1);
         }
+        if(e.getKeyCode() == KeyEvent.VK_P)
+        {
+            System.out.println("toggle");
+            control.toggleColors();
+        }
     } 
 }

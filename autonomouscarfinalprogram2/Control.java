@@ -84,7 +84,7 @@ public class Control extends LooiObject
             //currentImage = new Image();
         }
         boxDrawer = new IImageBoxDrawer();
-        boxDrawer.setUsingBasicColors(true);
+        boxDrawer.setUsingBasicColors(false);
         autoExposure = new AutoExposure(currentImage, 30);
 
         previousFrame = 0;
@@ -241,6 +241,11 @@ public class Control extends LooiObject
 		//boxDrawer.draw2(currentImage, unifiedBlobs, fmovingBlobs);
 	}   
 
+	public void toggleColors()
+	{
+	    boxDrawer.setUsingBasicColors(!boxDrawer.isUsingBasicColors());
+	}
+	
 	public void incrementCurrentFrame(int i){
 		setCurrentFrame(getCurrentFrame() + i);
 		if(currentFrame == frames.size()){

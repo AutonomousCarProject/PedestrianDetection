@@ -46,6 +46,10 @@ extern "C" {
 		jfieldID roseID = env->GetFieldID(thisClass, "rose", "I");
 		jfieldID colzID = env->GetFieldID(thisClass, "colz", "I");
 		jfieldID tileID = env->GetFieldID(thisClass, "tile", "I");
+		
+		jfieldID debugID = env->GetFieldID(thisClass, "debug", "I");
+		jfieldID debug2ID = env->GetFieldID(thisClass, "debug2", "I");
+		int debug = 10140, debug2 = 10140;
 
 		while (true) {
 			nRGBpixels = 0;
@@ -84,8 +88,14 @@ extern "C" {
 			imgSettings.mode = FC2_MODE_0;
 			imgSettings.offsetX = 0;
 			imgSettings.offsetY = 0;
-			imgSettings.width = fmtInfo.maxWidth;
-			imgSettings.height = fmtInfo.maxHeight;
+// 			imgSettings.width = fmtInfo.maxWidth;
+// 			imgSettings.height = fmtInfo.maxHeight;
+			
+			imgSettings.width = 640;
+			imgSettings.height = 480;
+			
+			debug = fmtInfo.maxWidth;
+			debug2 = fmtInfo.maxHeight;
 			imgSettings.pixelFormat = FC2_PIXEL_FORMAT_RAW16;
 
 			//send it to the camera
@@ -176,6 +186,8 @@ extern "C" {
 		if (colzID != NULL) env->SetIntField(thisObj, colzID, (jint)((colz&-16) >> 1)); // = number of pix
 		if (roseID != NULL) env->SetIntField(thisObj, roseID, (jint)((rose&-16) >> 1));
 		if (errnID != NULL) env->SetIntField(thisObj, errnID, (jint)why);
+		if (debugID != NULL) env->SetIntField(thisObj, debugID, (jint)debug);
+		if (debug2ID != NULL) env->SetIntField(thisObj, debug2ID, (jint)debug2);
 		return why == 0;
 	} //~Connect
 

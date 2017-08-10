@@ -43,6 +43,7 @@ public class HDRImage implements IImage {
 		tile = 1;
 		System.out.println("tile: "+tile+" width: "+width+" height: "+height);
 		//auto white balance such that our greys are maximized at at stared
+		System.out.println("debug: " + flyCam.debug);
 		autoWhiteBalance();
 	}
 

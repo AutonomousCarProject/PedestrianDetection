@@ -15,6 +15,8 @@ public class FlyCamera
     private long stuff; // used for error reporting, or not at all
 
     public int debug = 50, debug2 = 50;
+    
+    private boolean lowRes;
 
     public native boolean Connect(int frameRate, int exposure, int shutter, int gain); // required
                                                                                        // at
@@ -58,9 +60,10 @@ public class FlyCamera
 
     public void SafeWriteRegister(long addr, long val, String err)
     {
-        if (WriteRegister(addr, val) != FC2_ERROR_OK)
+        int errno;
+        if ((errno = WriteRegister(addr, val)) != FC2_ERROR_OK)
         {
-            throw new IllegalStateException(err + " (error code: " + -val + ").");
+            throw new IllegalStateException(err + " (error code: " + errno + ").");
         }
     }
 
