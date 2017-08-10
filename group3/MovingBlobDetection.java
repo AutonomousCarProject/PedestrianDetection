@@ -231,6 +231,7 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 		MovingBlob[][] pairs = new MovingBlob[blobList.size()*filteredUnifiedBlobs.size()][2];
 		int j = 0;
 		for(int i1=0;i1<filteredUnifiedBlobs.size();i1++){
+			filteredUnifiedBlobs.get(i1).updatePredictedPosition();
 			for(int i2=0;i2<blobList.size();i2++){
 				pairs[j][0] = filteredUnifiedBlobs.get(i1);
 				pairs[j][1] = blobList.get(i2);

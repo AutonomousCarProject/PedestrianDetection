@@ -1,6 +1,7 @@
 package group1;
 
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import fly2cam.FlyCamera;
 import global.Constant;
 
@@ -67,6 +68,7 @@ public class HDRImage implements IImage {
 	//this is where the HDR happens
 	@Override
 	public void readCam() {
+
 		//step 1: all the HDR images
 		flyCam.NextFrame(camBytes);
 		if(++autoCount < AUTO_FREQ) byteConvert();
@@ -133,6 +135,9 @@ public class HDRImage implements IImage {
 		*/
 
 
+		Constant.LAST_FRAME_MILLIS = Constant.CURRENT_FRAME_MILLIS;
+		Constant.CURRENT_FRAME_MILLIS = System.currentTimeMillis();
+		Constant.TIME_DIFFERENCE = Constant.CURRENT_FRAME_MILLIS-Constant.LAST_FRAME_MILLIS;
 	}
 
 	@Override
