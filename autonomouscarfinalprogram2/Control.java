@@ -82,7 +82,7 @@ public class Control extends LooiObject
         {
             //just evenly dispersed for now
             currentImage = new HDRImage(0, 0, 0);
-            //currentImage = new Image();
+//            currentImage = new Image();
         }
         boxDrawer = new IImageBoxDrawer();
         boxDrawer.setUsingBasicColors(false);

@@ -1,10 +1,8 @@
 package group1;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 
 //import group1.fly0cam.FlyCamera;
 import fly2cam.FlyCamera;
 import global.Constant;
-import jdk.nashorn.internal.runtime.regexp.joni.ast.ConsAltNode;
 
 //Defines image as an 2d array of pixels
 public class Image implements IImage
@@ -80,7 +78,7 @@ public class Image implements IImage
 
         //downcast to bytes
         for(int i = 0; i < camBytes.length; i++){
-            tempBytes[i] = (byte)(camBytes[i] >> 8);
+            tempBytes[i] = (byte)(camBytes[i] >> 4);
         }
 
         if(autoCount > autoFreq && autoFreq > -1) {

@@ -6,6 +6,7 @@ import java.util.List;
 import group1.FileImage;
 import group1.IImage;
 import group1.IPixel;
+import group1.Image;
 import group1.Pixel;
 import group3.MovingBlob;
 import group3.MovingBlobDetection;
@@ -51,7 +52,7 @@ public class BlobDetectionRender extends Application
         BlobFilter blobFilter = new BlobFilter();
         
         // IImage image = new JpgImage("src/testImage1.png");
-        IImage image = new FileImage(file == null ? "captures0801/FlyCapped6.By8" : file.getPath(), true);
+        IImage image = file == null ? new Image() : new FileImage(file.getPath(), true);
         
         
 

@@ -53,9 +53,9 @@ public class HDRImage implements IImage {
 		images = new int[height][width][3];
 		out = new IPixel[height][width];
 		justOnce = new int[images.length][images[0].length][3];
-		//tile = flyCam.PixTile();
-		tile = 1;
+		tile = flyCam.PixTile();
 		System.out.println("tile: " + tile + " width: " + width + " height: " + height);
+		tile = 1;
 		//auto white balance such that our greys are maximized at at stared
 		autoWhiteBalance();
 	}
@@ -76,6 +76,8 @@ public class HDRImage implements IImage {
 			//autoConvertWeighted();
 			byteConvert();
 		}
+		
+		/*
 
 		medianFilter();
 
@@ -128,6 +130,7 @@ public class HDRImage implements IImage {
 			}
 
 		}
+		*/
 
 
 	}
@@ -149,9 +152,11 @@ public class HDRImage implements IImage {
 			for (int i = 0; i < height; i++) {
 
 				for (int j = 0; j < width; j++) {
-					images[i][j][0] = (camBytes[pos] & 0xffff) >> 4;
-					images[i][j][1] = (camBytes[pos + 1] & 0xffff) >> 4;
-					images[i][j][2] = (camBytes[pos + 1 + width * 2] & 0xffff) >> 4;
+					final int r = (camBytes[pos] & 0xffff) >> 4;
+					final int g = (camBytes[pos + 1] & 0xffff) >> 4;
+					final int b = (camBytes[pos + 1 + width * 2] & 0xffff) >> 4;
+					out[i][j] = new Pixel((short)(r >> 4), (short)(g >> 4), (short)(b >> 4));
+//                    out[i][j] = new Pixel((short)(r), (short)(g), (short)(b));
 					pos += 2;
 
 				}
@@ -159,14 +164,16 @@ public class HDRImage implements IImage {
 				pos += width * 2;
 
 			}
-		} else if (tile == 3) {
+		} else if (tile == 3) { // should be unreachable
 			for (int i = 0; i < height; i++) {
+			    System.out.println("hai");
 
 				for (int j = 0; j < width; j++) {
 
-					images[i][j][0] = (camBytes[pos + width * 2] & 0xffff) >> 4;
-					images[i][j][1] = (camBytes[pos] & 0xffff) >> 4;
-					images[i][j][2] = (camBytes[pos + 1] & 0xfff) >> 4;
+					final int r = (camBytes[pos + width * 2] & 0xffff) >> 4;
+					final int g = (camBytes[pos] & 0xffff) >> 4;
+					final int b = (camBytes[pos + 1] & 0xffff) >> 4;
+					out[i][j] = new Pixel((short)(r >> 4), (short)(g >> 4), (short)(b >> 4));
 					pos += 2;
 
 				}
