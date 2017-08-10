@@ -11,6 +11,8 @@ public interface IPixel
 
     short getColor();
 
+    void setColor(int c);
+
     // RGB
     short getRed();
 

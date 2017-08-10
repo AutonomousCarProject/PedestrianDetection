@@ -169,27 +169,11 @@ public class Control extends LooiObject
 	 */
 	protected void looiStep()
 	{
-		if(keepGoing){
-			updateWhileUnpaused();
-		}  
-		else{
-			updateWhilePaused();
-		}
+		updateWhileUnpaused();
 	}
 
 	protected void updateWhileUnpaused(){
 		currentImage.readCam();
-		previousFrame++;
-
-		if(currentImage.getFrameNo()==previousFrame){
-			previousFrame = 0;
-			currentImage.finish();
-			currentImage = new FileImage(file, flip);
-			blobDetection = new BlobDetection();
-			movingBlobDetection = new MovingBlobDetection();
-			blobFilter = new BlobFilter();
-			currentImage.readCam();
-		}
 
 		final List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
 		final List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
@@ -209,6 +193,7 @@ public class Control extends LooiObject
 
 		//for(MovingBlob b: movingBlobs) System.out.println(b.velocityX);
 
+		/*
 		IPixel[][] image = currentImage.getImage();
 		IPixel[][] copy = new IPixel[image.length][image[0].length];
 		for(int i=0;i<image.length;i++){
@@ -221,6 +206,7 @@ public class Control extends LooiObject
 		if(frames.size() >= 8){
 			frames.removeLast();
 		}
+		*/
 
 	}
 

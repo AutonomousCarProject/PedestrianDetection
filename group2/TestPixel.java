@@ -34,6 +34,8 @@ public class TestPixel implements IPixel
         return color;
     }
 
+    public void setColor(int c) {}
+
     @Override
     public short getRed()
     {

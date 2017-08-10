@@ -36,8 +36,8 @@ public class MovingBlobDetection implements IMovingBlobDetection {
 	float vYWeight = 0.25f;
 	
 	float distanceUnifyMatchLimit = 60;
-	float percentWidthChangeUnifyMatchLimit = 0.3f;
-	float percentHeightChangeUnifyMatchLimit = 0.3f;
+	float percentWidthChangeUnifyMatchLimit = .5f;
+	float percentHeightChangeUnifyMatchLimit = .5f;
 
 	public MovingBlobDetection() {
 		movingBlobs = new LinkedList<>();

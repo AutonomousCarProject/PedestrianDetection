@@ -23,6 +23,10 @@ public class Pixel implements IPixel
     public static int whiteMargin = 700; // 0-765
 
     public Pixel(int color) {
+        this.setColor(color);
+    }
+
+    public void setColor(int color) {
         this.color = (short)color;
         switch (this.color){
             case 0:

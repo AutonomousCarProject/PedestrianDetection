@@ -54,6 +54,7 @@ public class HDRImage implements IImage {
 		images = new int[height][width][3];
 		out = new IPixel[height][width];
 		justOnce = new int[images.length][images[0].length][3];
+		for(int i = 0; i < out.length; i++) for(int j = 0; j < out[0].length; j++) out[i][j] = new Pixel(0);
 		tile = flyCam.PixTile();
 		System.out.println("tile: " + tile + " width: " + width + " height: " + height);
 		tile = 1;
@@ -68,20 +69,17 @@ public class HDRImage implements IImage {
 	//this is where the HDR happens
 	@Override
 	public void readCam() {
-
 		//step 1: all the HDR images
 		flyCam.NextFrame(camBytes);
-		if(++autoCount < AUTO_FREQ) byteConvert();
-		else {
-			autoCount = 0;
+		//if(++autoCount < AUTO_FREQ) byteConvert();
+		//else {
+			//autoCount = 0;
 			//autoConvert();
 			//autoConvertWeighted();
-			byteConvert();
-		}
-		
-		/*
+		byteConvert();
+		//}
 
-		medianFilter();
+		//medianFilter();
 
 		//attempt optimized conversion
 		for (int i = 0; i < images.length; i++) {
@@ -95,36 +93,25 @@ public class HDRImage implements IImage {
 				final int g3 = images[i][j][1] * 3;
 				final int b3 = images[i][j][2] * 3;
 
-				int rdiff = r3 - ave;
-				if (rdiff < 0) {
-					rdiff = -rdiff;
-				}
-
-				int gdiff = g3 - ave;
-				if (gdiff < 0) {
-					gdiff = -gdiff;
-				}
-
-				int bdiff = b3 - ave;
-				if (bdiff < 0) {
-					bdiff = -bdiff;
-				}
+				final int rdiff = Math.abs(r3 - ave);
+				final int gdiff = Math.abs(g3 - ave);
+				final int bdiff = Math.abs(b3 - ave);
 
 				if (rdiff < greyMargin * 3 && gdiff < greyMargin * 3 && bdiff < greyMargin * 3) { // if its not a distinct color
 					if (r3 < blackMargin * 3 && g3 < blackMargin * 3 && b3 < blackMargin * 3)
-						out[i][j] = new Pixel(4); // black
+						out[i][j].setColor(4); // black
 					else if (r3 > whiteMargin * 3 && g3 > whiteMargin * 3 && b3 > whiteMargin * 3)
-						out[i][j] = new Pixel(5); // white
+						out[i][j].setColor(5); // white
 					else
-						out[i][j] = new Pixel(3);
+						out[i][j].setColor(3);
 				} else if (r3 > g3 && r3 > b3)
-					out[i][j] = new Pixel(0);
+					out[i][j].setColor(0);
 				else if (g3 > r3 && g3 > b3)
-					out[i][j] = new Pixel(1);
+					out[i][j].setColor(1);
 				else if (b3 > r3 && b3 > g3)
-					out[i][j] = new Pixel(2);
+					out[i][j].setColor(2);
 					//uhhhh... red?
-				else out[i][j] = new Pixel(0);
+				else out[i][j].setColor(0);
 
 
 				//out[i][j] = new Pixel((short)(images[i][j][0] >> 4), (short)(images[i][j][1] >> 4), (short)(images[i][j][2] >> 4));
@@ -132,7 +119,7 @@ public class HDRImage implements IImage {
 			}
 
 		}
-		*/
+
 
 
 		Constant.LAST_FRAME_MILLIS = Constant.CURRENT_FRAME_MILLIS;
@@ -157,10 +144,10 @@ public class HDRImage implements IImage {
 			for (int i = 0; i < height; i++) {
 
 				for (int j = 0; j < width; j++) {
-					final int r = (camBytes[pos] & 0xffff) >> 4;
-					final int g = (camBytes[pos + 1] & 0xffff) >> 4;
-					final int b = (camBytes[pos + 1 + width * 2] & 0xffff) >> 4;
-					out[i][j] = new Pixel((short)(r >> 4), (short)(g >> 4), (short)(b >> 4));
+					images[i][j][0] = (camBytes[pos] & 0xffff) >> 4;
+					images[i][j][1]= (camBytes[pos + 1] & 0xffff) >> 4;
+					images[i][j][2] = (camBytes[pos + 1 + width * 2] & 0xffff) >> 4;
+					//out[i][j] = new Pixel((short)(r >> 4), (short)(g >> 4), (short)(b >> 4));
 //                    out[i][j] = new Pixel((short)(r), (short)(g), (short)(b));
 					pos += 2;
 
@@ -175,10 +162,10 @@ public class HDRImage implements IImage {
 
 				for (int j = 0; j < width; j++) {
 
-					final int r = (camBytes[pos + width * 2] & 0xffff) >> 4;
-					final int g = (camBytes[pos] & 0xffff) >> 4;
-					final int b = (camBytes[pos + 1] & 0xffff) >> 4;
-					out[i][j] = new Pixel((short)(r >> 4), (short)(g >> 4), (short)(b >> 4));
+					images[i][j][0] = (camBytes[pos + width * 2] & 0xffff) >> 4;
+					images[i][j][1] = (camBytes[pos] & 0xffff) >> 4;
+					images[i][j][2] = (camBytes[pos + 1] & 0xffff) >> 4;
+					//out[i][j] = new Pixel((short)(r >> 4), (short)(g >> 4), (short)(b >> 4));
 					pos += 2;
 
 				}
