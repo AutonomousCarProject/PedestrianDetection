@@ -39,7 +39,8 @@ You can now compile the shared object file. The command that I used is below. It
 gcc -shared -o libFlyCamera.so -fPIC FlyCamera.cpp -L ./ -lflycapture -lflycapture-c -I . -I /usr/java/jdk1.8.0_91/include/ -I /usr/java/jdk1.8.0_91/include/linux/
 
 =========================================================================
+For the code to run on Linux, you MUST allocate more than the default 2MB of memory to USBFS (otherwise, you cannot get the 16-bit color depth and 640x320 resolution this code requests.)
+Information for how to do so can be found on the Point Grey website (https://www.ptgrey.com/tan/10685#ConfiguringUSBFS).
 
 For any further information, read the "ReadMe" file.
-Note that since I don't actually have any camera hardware, I am unable to test this Linux build. 
 Sameer Suri
