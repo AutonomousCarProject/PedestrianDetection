@@ -21,11 +21,11 @@ public class AutonomousCarFinalProgram2 {
      */
     public static void main(String[] args) 
     {
-        mainWindow = new LooiWindow(10,true);
+        mainWindow = new LooiWindow(12,true);
         mainWindow.fitWindow();
         
         // parameter in this constructor is the delay (in milliseconds) between frames
-        control = new Control("captures0726/Sun_0_0_0.By8");
+        control = new Control("src/group1/fly0cam/FlyCapped6.By8", true);
         hotkeys = new Hotkeys(control);
     }
     

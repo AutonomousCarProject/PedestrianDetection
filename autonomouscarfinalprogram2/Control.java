@@ -84,7 +84,7 @@ public class Control extends LooiObject
             //currentImage = new Image();
         }
         boxDrawer = new IImageBoxDrawer();
-        boxDrawer.setUsingBasicColors(true);
+        boxDrawer.setUsingBasicColors(false);
         autoExposure = new AutoExposure(currentImage, 30);
 
         previousFrame = 0;
@@ -202,8 +202,8 @@ public class Control extends LooiObject
 		//boxDrawer.draw(currentImage, funifiedBlobs);
 		//boxDrawer.draw2(currentImage, fmovingBlobs, fmatchedUnifiedBlobs);
 		//boxDrawer.draw(currentImage, fmovingBlobs);
-	      boxDrawer.drawRisk(currentImage, fmatchedUnifiedBlobs);
-		//boxDrawer.draw(currentImage, fmatchedUnifiedBlobs);
+	     // boxDrawer.drawRisk(currentImage, fmatchedUnifiedBlobs);
+		boxDrawer.draw(currentImage, fmatchedUnifiedBlobs);
 		//for(MovingBlob b: fmovingBlobs) System.out.println(b.velocityChangeX);
 
 		IPixel[][] image = currentImage.getImage();
