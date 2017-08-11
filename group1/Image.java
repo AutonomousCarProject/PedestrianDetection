@@ -1,4 +1,5 @@
 package group1;
+
 //import group1.fly0cam.FlyCamera;
 import fly2cam.FlyCamera;
 import global.Constant;
@@ -66,6 +67,9 @@ public class Image implements IImage
     @Override
     public void readCam()
     {
+    	Constant.LAST_FRAME_MILLIS = Constant.CURRENT_FRAME_MILLIS;
+    	Constant.CURRENT_FRAME_MILLIS = System.currentTimeMillis();
+    	Constant.TIME_DIFFERENCE = Constant.CURRENT_FRAME_MILLIS-Constant.LAST_FRAME_MILLIS;
         autoCount++;
         //System.out.println("TILE: " + flyCam.PixTile());
         // System.out.println(flyCam.errn);
@@ -74,7 +78,7 @@ public class Image implements IImage
 
         //downcast to bytes
         for(int i = 0; i < camBytes.length; i++){
-            tempBytes[i] = (byte)(camBytes[i] >> 8);
+            tempBytes[i] = (byte)(camBytes[i] >> 4);
         }
 
         if(autoCount > autoFreq && autoFreq > -1) {

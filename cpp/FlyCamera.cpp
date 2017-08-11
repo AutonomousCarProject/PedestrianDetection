@@ -155,6 +155,9 @@ extern "C" {
 				form = (int)rawImage.format; // default FC2_PIXEL_FORMAT_RAW8
 				if (form == 0) why = 10;
 				else if (form != FC2_PIXEL_FORMAT_RAW8) why = (int)form;
+				
+				nerror= fc2SetImageDimensions(&rawImage, rose, colz, rawImage.stride, rawImage.format, (fc2BayerTileFormat)(1));
+				if (nerror != FC2_ERROR_OK) break;
 			}
 			else why++; // why = 9
 			if (why == 8) why = 0;

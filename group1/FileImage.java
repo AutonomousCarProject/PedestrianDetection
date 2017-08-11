@@ -515,6 +515,7 @@ public class FileImage implements IImage
 							gVar = -rVar;
 						}
 
+
 						int bVar = temp.getBlue() - average;
 						if (bVar < 0)
 						{

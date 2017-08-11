@@ -1,5 +1,6 @@
 package group3;
 
+import global.Constant;
 import group1.IPixel;
 import group2.Blob;
 
@@ -112,8 +113,8 @@ public class MovingBlob extends Blob
      */
     public void updatePredictedPosition()
     {
-        predictedX = velocityX + x+width/2;
-        predictedY = velocityY + y+height/2;
+        predictedX = velocityX/67*Constant.TIME_DIFFERENCE + x+width/2;
+        predictedY = velocityY/67*Constant.TIME_DIFFERENCE + y+height/2;
     }
 
     @Override

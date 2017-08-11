@@ -7,9 +7,14 @@ public class Constant {
 	    FileImage
 	 */
 
+	//time that last frame was collected
+	public static long LAST_FRAME_MILLIS = 0;
+	public static long CURRENT_FRAME_MILLIS = 0;
+	public static long TIME_DIFFERENCE = 0;
+
 	//constants for color margin calibrations
 	//ratio of absolute average deviation to greyMargin
-    public static float GREY_RATIO = 0.75f;
+    public static float GREY_RATIO = 0.4f;
 
     //how far to set black and white margins from mean
     public static int BLACK_RANGE = 100;
@@ -45,18 +50,18 @@ public class Constant {
 	
 	//Maximum 
 	public static int VELOCITY_X_MAX = 150;
-	public static int VELOCITY_Y_MAX = 20;
-	public static int VELOCITY_X_MIN = 2;
+	public static int VELOCITY_Y_MAX = 25;
+	public static float VELOCITY_X_MIN = 1f;
 	public static int VELOCITY_Y_MIN = 0;
-	public static float MAX_VELOCITY_CHANGE_X = 15;
-	public static float MAX_VELOCITY_CHANGE_Y = 20;
+	public static float MAX_VELOCITY_CHANGE_X = 200;
+	public static float MAX_VELOCITY_CHANGE_Y = 200;
 	//Unified Blob filters
 
 	//stuff
 	public static float MAX_WIDTH_HEIGHT_RATIO = .8f;
 	public static int MAX_WIDTH = 1300;
 	public static int MAX_HEIGHT = 1200;
-	public static float MIN_SCALED_VELOCITY_X = 1f;
+	public static float MIN_SCALED_VELOCITY_X = 0f;
 	public static int MIN_SCALED_VELOCITY_Y = 0;
 	
 	public static void setVariable(int index, double a){
