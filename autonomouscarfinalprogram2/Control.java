@@ -26,6 +26,8 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -40,8 +42,6 @@ public class Control extends LooiObject
     private MovingBlobDetection movingBlobDetection;
     private BlobFilter blobFilter;
     private IImageBoxDrawer boxDrawer;
-
-    private IImage currentImage;
 
     private Button toggleGraphics;
     private ScrollBox scrollBox;
@@ -61,6 +61,36 @@ public class Control extends LooiObject
     private String file;
     private boolean flip;
 
+    /* multithreading stuff */
+
+	private class ImageTest implements IImage {
+		private IPixel[][] out;
+		ImageTest(IPixel[][] ray) {
+			out = ray;
+		}
+		public void setAutoFreq(int thing) {}
+		public void finish() {}
+		public void readCam() {}
+		public IPixel[][] getImage() { return out; }
+	}
+
+    private LinkedBlockingDeque<ImageTest> frameBuffer = new LinkedBlockingDeque<>(1);
+
+    private class CameraThread extends Thread {
+	    @Override
+	    public void run() {
+	    	try {
+	    		IImage thing = new HDRImage(0, 0, 0);
+	    		while (true) {
+				    thing.readCam();
+				    frameBuffer.putFirst(new ImageTest(thing.getImage().clone()));
+			    }
+	    	} catch (InterruptedException e) { System.out.println("oops"); }
+	    }
+    }
+
+    private CameraThread readCam = new CameraThread();
+
     public Control(String file)
     {
         this(file, false);
@@ -74,6 +104,7 @@ public class Control extends LooiObject
         blobDetection = new BlobDetection();
         movingBlobDetection = new MovingBlobDetection();
         blobFilter = new BlobFilter();
+        /*
         if (file != null)
         {
             currentImage = new FileImage(file, flip);
@@ -84,25 +115,17 @@ public class Control extends LooiObject
             currentImage = new HDRImage(0, 0, 0);
 //            currentImage = new Image();
         }
+        */
         boxDrawer = new IImageBoxDrawer();
         boxDrawer.setUsingBasicColors(false);
-        autoExposure = new AutoExposure(currentImage, 30);
 
         previousFrame = 0;
         setCurrentFrame(1);
         keepGoing = true;
 
-        currentImage.readCam();
-        IPixel[][] firstFrame = currentImage.getImage();
-
-        frames = new ArrayDeque<IPixel[][]>(5);
-
-        frames.addFirst(firstFrame);
-
-        frameList = new ArrayList<>(frames); // maybe this needs to be removed?
-                                             // it was there in a merge conflict
-                                             // and I wasn't sure whether or not
-       /*                                      // to delete it.
+        //start multithreading
+	    readCam.start();
+/*
         yCoordinate = 10;
 /*
         sliderWindow = new DraggingWindow(100, 100, 500, 500, new Background(Color.WHITE));
@@ -173,43 +196,33 @@ public class Control extends LooiObject
 	}
 
 	protected void updateWhileUnpaused(){
-		currentImage.readCam();
+		try {
+			IImage point = frameBuffer.takeLast();
 
-		final List<Blob> knownBlobs = blobDetection.getBlobs(currentImage);
-		final List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
-		final List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
-		final List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
-		final List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
-		final List<MovingBlob> matchedUnifiedBlobs =  movingBlobDetection.getFilteredUnifiedBlobs(funifiedBlobs);
-		final List<MovingBlob> fmatchedUnifiedBlobs = blobFilter.filterFilteredUnifiedBlobs(matchedUnifiedBlobs);
-		
-		//boxDrawer.draw2(currentImage, unifiedBlobs, fmovingBlobs);
-		//boxDrawer.draw(currentImage, funifiedBlobs);
-		//boxDrawer.draw2(currentImage, fmovingBlobs, fmatchedUnifiedBlobs);
-		//boxDrawer.draw(currentImage, new LinkedList<>());
-		//boxDrawer.drawRisk(currentImage, fmovingBlobs);
-		//boxDrawer.draw(currentImage, movingBlobs);
-		boxDrawer.draw(currentImage, fmatchedUnifiedBlobs);
+			final List<Blob> knownBlobs = blobDetection.getBlobs(point);
+			final List<MovingBlob> movingBlobs = movingBlobDetection.getMovingBlobs(knownBlobs);
+			final List<MovingBlob> fmovingBlobs = blobFilter.filterMovingBlobs(movingBlobs);
+			final List<MovingBlob> unifiedBlobs = movingBlobDetection.getUnifiedBlobs(fmovingBlobs);
+			final List<MovingBlob> funifiedBlobs = blobFilter.filterUnifiedBlobs(unifiedBlobs);
+			final List<MovingBlob> matchedUnifiedBlobs =  movingBlobDetection.getFilteredUnifiedBlobs(funifiedBlobs);
+			final List<MovingBlob> fmatchedUnifiedBlobs = blobFilter.filterFilteredUnifiedBlobs(matchedUnifiedBlobs);
 
-		//for(MovingBlob b: movingBlobs) System.out.println(b.velocityX);
+			//boxDrawer.draw2(currentImage, unifiedBlobs, fmovingBlobs);
+			//boxDrawer.draw(currentImage, funifiedBlobs);
+			//boxDrawer.draw2(currentImage, fmovingBlobs, fmatchedUnifiedBlobs);
+			//boxDrawer.draw(currentImage, new LinkedList<>());
+			//boxDrawer.drawRisk(currentImage, fmovingBlobs);
+			//boxDrawer.draw(currentImage, movingBlobs);
+			boxDrawer.draw(point, fmatchedUnifiedBlobs);
 
-		/*
-		IPixel[][] image = currentImage.getImage();
-		IPixel[][] copy = new IPixel[image.length][image[0].length];
-		for(int i=0;i<image.length;i++){
-			for(int j=0;j<image[0].length;j++){
-				copy[i][j] = image[i][j];
-			}
+			//for(MovingBlob b: movingBlobs) System.out.println(b.velocityX);
 		}
-		frames.addFirst(copy);
-
-		if(frames.size() >= 8){
-			frames.removeLast();
+		catch (InterruptedException e) {
+			System.exit(0);
 		}
-		*/
-
 	}
 
+	/*
 	public void updateWhilePaused(){
 		currentImage.setImage(frameList.get(currentFrame));
 
@@ -228,7 +241,8 @@ public class Control extends LooiObject
 
 
 		//boxDrawer.draw2(currentImage, unifiedBlobs, fmovingBlobs);
-	}   
+	}
+	*/
 
 	public void incrementCurrentFrame(int i){
 		setCurrentFrame(getCurrentFrame() + i);
@@ -260,11 +274,15 @@ public class Control extends LooiObject
 		return !keepGoing;
 	}
 
+	private long lastTime = 0;
+
 	protected void looiPaint()
 	{
 		drawString(Constant.AGE_MIN,300,300);
 		drawImage(boxDrawer.getCurrentImage(),0,0,getInternalWidth(),getInternalHeight());
 		//drawImage(testBI,0,0,getInternalWidth(),getInternalHeight());
+		System.out.println("Frame! " + (System.currentTimeMillis() - lastTime));
+		lastTime = System.currentTimeMillis();
 	}
 
 
