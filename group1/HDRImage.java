@@ -59,7 +59,7 @@ public class HDRImage implements IImage {
 		System.out.println("tile: " + tile + " width: " + width + " height: " + height);
 		tile = 1;
 		//auto white balance such that our greys are maximized at at stared
-		autoWhiteBalance();
+		//autoWhiteBalance();
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class HDRImage implements IImage {
 		byteConvert();
 		//}
 
-		//medianFilter();
+		medianFilter();
 
 		//attempt optimized conversion
 		for (int i = 0; i < images.length; i++) {

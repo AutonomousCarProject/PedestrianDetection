@@ -74,7 +74,7 @@ public class Control extends LooiObject
 		public IPixel[][] getImage() { return out; }
 	}
 
-    private LinkedBlockingDeque<ImageTest> frameBuffer = new LinkedBlockingDeque<>(1);
+    private LinkedBlockingDeque<ImageTest> frameBuffer = new LinkedBlockingDeque<>(2);
 
     private class CameraThread extends Thread {
 	    @Override
@@ -274,15 +274,11 @@ public class Control extends LooiObject
 		return !keepGoing;
 	}
 
-	private long lastTime = 0;
-
 	protected void looiPaint()
 	{
 		drawString(Constant.AGE_MIN,300,300);
 		drawImage(boxDrawer.getCurrentImage(),0,0,getInternalWidth(),getInternalHeight());
 		//drawImage(testBI,0,0,getInternalWidth(),getInternalHeight());
-		System.out.println("Frame! " + (System.currentTimeMillis() - lastTime));
-		lastTime = System.currentTimeMillis();
 	}
 
 
