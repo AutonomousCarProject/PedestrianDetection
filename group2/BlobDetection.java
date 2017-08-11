@@ -43,7 +43,7 @@ public class BlobDetection implements IBlobDetection
         {
             for(int i = 0; i < bips.length; i++)
             {
-                for(int j = 0; j < bips.length; j++)
+                for(int j = 0; j < bips[0].length; j++)
                 {
                     BlobInProgress bip = bips[i][j];
                     if(bip != null)
